@@ -1,0 +1,27 @@
+COM3505 week 01 course notes
+===
+
+# The Lecture
+
+This week's lecture slides are here: https://goo.gl/GdKEmx
+
+
+# Learning Objectives
+
+Our objectives this week are to:
+
+- get to know the Diamond electronics lab
+- understand how to prototype basic circuits on a breadboard
+- practice soldering on stripboard
+- check out the course materials from github
+
+
+# Assignments and Assessment
+
+- Accept the github classroom assignment (by clicking on the link). This will
+  create a git repository for you, hosted on github. All your work **must** be
+  pushed to this repository promptly each week.
+- Check out the repository from github into your own file space.
+- Use any method you like to post your Sheffield email address and github ID
+  to our server. The URL will be given during the lecture.
+- Learn a little C! See the resources listed in the lecture slides for help.

@@ -21,7 +21,62 @@ Our objectives this week are to:
 - Accept the github classroom assignment (by clicking on the link). This will
   create a git repository for you, hosted on github. All your work **must** be
   pushed to this repository promptly each week.
-- Check out the repository from github into your own file space.
+- Check out the repository from github into your own file space. (If you're
+  reading it there then you've done that task!)
 - Use any method you like to post your Sheffield email address and github ID
   to our server. The URL will be given during the lecture.
 - Learn a little C! See the resources listed in the lecture slides for help.
+- Study the notes below about LiPo batteries.
+
+
+# Reading
+
+- Schneier, Bruce. 2017. “Click Here to Kill Everyone.” NY Mag, January.
+  http://nymag.com/selectall/2017/01/the-internet-of-things-dangerous-future-bruce-schneier.html.
+- Ashton, Kevin. 2011. “That ‘internet of Things’ Thing.” RFiD Journal 22 (7).
+  http://www.itrco.jp/libraries/RFIDjournal-That%20Internet%20of%20Things%20Thing.pdf
+
+
+# LiPo Safety
+
+## What are lithium polymer batteries?
+
+Lithium Polymer (or LiPo) cells are one of the most effective commercially
+available rechargeable batteries, having high energy and power density. These
+batteries are used in all manner of mobile applications and are particularly
+popular with RC hobbyists.
+
+You will be given a LiPo battery to power your ESP32 for COM3505.
+
+## What are the dangers?
+
+Although these cells are very useful, they can be dangerous when mistreated or
+misused. There are three main causes of cell failure: puncture, over-heating
+and over-charging. If the battery fails as a result of any of these, hazardous
+electrolyte leakage, fire or explosions may occur.
+
+The rate of transfer of energy within the battery is strongly linked to its
+internal heat; when the over-heated the cell's long term performance will
+degrade, more energy is released and the battery gets hotter, creating a
+dangerous feedback loop. If this continues the electrolyte will vaporise and
+cause the battery to expand, which may lead to fire or even an explosion.
+
+This same effect can be caused by over-charging the battery, or in some cases
+even just leaving it charged in the wrong circumstances. Henry (one of our
+teaching assistants on the course) used to fly an RC helicopter that ran off a
+multi-cell LiPo pack. Having forgotten to discharge it, it was left in a
+container in his shed. Many months later the cell exploded in a ball of flame
+nearly burning down the shed!
+
+The sensitive chemistry of the batteries can also lead to fire if the battery
+gets punctured and vents into the air.
+
+## Avoiding problems
+
+Manufacturers take a number of precautions to avoid danger when using LiPo
+cells. Most higher voltage cells are fitted with controlling circuits
+restricting battery charge levels. Cells are heavily insulated and designed to
+withstand puncture damage. Also when installed in larger power systems the
+cells are often connected via power controllers to taper discharge rates. 
+
+**TODO** more specifics about what to do with the cell delivered in COM3505

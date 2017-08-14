@@ -21,8 +21,10 @@ Our objectives this week are to:
 - Accept the github classroom assignment (by clicking on the link). This will
   create a git repository for you, hosted on github. All your work **must** be
   pushed to this repository promptly each week.
+- Use the Linux option when booting machines in the electronics lab.
 - Check out the repository from github into your own file space. (If you're
   reading it there then you've done that task!)
+    - `git clone ...url...`
 - Use any method you like to post your Sheffield email address and github ID
   to our server. The URL will be given during the lecture.
 - Learn a little C! See the resources listed in the lecture slides for help.

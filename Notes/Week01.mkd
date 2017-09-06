@@ -23,10 +23,10 @@ Our objectives this week are to:
   pushed to this repository promptly each week.
 - Use the Linux option when booting machines in the electronics lab.
 - Check out the repository from github into your own file space. (If you're
-  reading it there then you've done that task!)
+  reading this from there then you've done that task!)
     - `git clone ...url...`
 - Use any method you like to post your Sheffield email address and github ID
-  to our server. The URL will be given during the lecture.
+  to our server. The URL was given during the lecture.
 - Learn a little C! See the resources listed in the lecture slides for help.
 - Study the notes below about LiPo batteries.
 
@@ -77,10 +77,20 @@ gets punctured and vents into the air.
 
 ## Avoiding problems
 
-Manufacturers take a number of precautions to avoid danger when using LiPo
-cells. Most higher voltage cells are fitted with controlling circuits
-restricting battery charge levels. Cells are heavily insulated and designed to
-withstand puncture damage. Also when installed in larger power systems the
-cells are often connected via power controllers to taper discharge rates. 
+**ALWAYS** take the following precautions when using LiPos in COM3505:
 
-**TODO** more specifics about what to do with the cell delivered in COM3505
+- Only use the battery we gave you.
+- Only charge the battery using the Adafruit ESP32 Feather board which we gave
+  you.
+- Every time you move, handle or charge the battery check it visually for
+  damage, heating or possible puncture. If you spot anything potentially
+  problematic inform a member of staff immediately.
+- Always monitor the battery when in use.
+- When moving the battery, unplug it and store it in the fire safety bag
+  provided.
+- If a battery is hot:
+    - if it appears safe to do so, unplug it from the power source
+    - warn others present to move away from the battery and do so yourself
+    - inform a member of staff immediately
+- If you are at all unsure of any of these instructions please inform a member
+  of staff.

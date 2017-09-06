@@ -35,8 +35,10 @@ Our objectives this week are to:
 
 - Schneier, Bruce. 2017. “Click Here to Kill Everyone.” NY Mag, January.
   http://nymag.com/selectall/2017/01/the-internet-of-things-dangerous-future-bruce-schneier.html.
-- Ashton, Kevin. 2011. “That ‘internet of Things’ Thing.” RFiD Journal 22 (7).
+- Ashton, Kevin. 2011. “That ‘Internet of Things’ Thing.” RFiD Journal 22 (7).
   http://www.itrco.jp/libraries/RFIDjournal-That%20Internet%20of%20Things%20Thing.pdf
+- NERC. 2016. “NERC Guidance on the Safe Use of Lithium Batteries.”
+  http://www.nerc.ac.uk/about/policy/safety/procedures/guidance-lithium-batteries/
 
 
 # LiPo Safety

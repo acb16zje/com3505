@@ -33,51 +33,56 @@ Our objectives this week are to:
 
 # Timetable
 
-- Notes:
-    - Yes, this is a bombsite. Soz!
-    - Diamond 202 is the electronics lab.
-    - Diamond 101 is the project space.
+- **Notes**:
+    - Yes, this is a bombsite. Soz! We've got the builders in...
+    - Diamond 2.02 is the electronics lab (weeks 1-5, 10).
+    - Diamond 1.01 is the project space (week 8, dropins).
+    - NC PC is the North Campus PC lab (allow lots of travel time!).
+    - Denny A04 is room A04 in the Alfred Denny building (week 11).
+    - Bookings below [in sq brackets] are currently not planned to be used.
 - **Week  1** (Mon 25th Sept...)
     - lec:  MON 12-12:50 Diamond LT6    **L1**
     - [lab: TUE 10-11:50 NC PC]
     - lec:  THU 10-10:50 Diamond LT8    **L2**
-    - lab:  FRI  9-10:50 Diamond 202    **Week01 lab**
+    - lab:  FRI  9-10:50 Diamond 2.02   **Week01 lab**
 - **Week  2**
-    - lab:  MON 9-10:50  Diamond 202    **Week02 lab**
+    - lab:  MON 9-10:50  Diamond 2.02   **Week02 lab**
     - [lec: MON 12-12:50 Diamond LT6]
     - [lab: TUE 10-11:50 NC PC]
 - **Week  3**
     - lec:  MON 12-12:50 Diamond LT6    **L3**
-    - lab:  WED  1-1:50  Diamond 202    **Week03 lab**
+    - lab:  WED  1-1:50  Diamond 2.02   **Week03 lab (part 1)**
 - **Week  4**
-    - lab:  MON  9-10:50 Diamond 202    **Week04 lab**
+    - lab:  MON  9-10:50 Diamond 2.02   **Week03 lab (part 2)**
     - lec:  MON 12-12:50 Diamond LT6    **L4**
-    - [lab: TUE 10-11:50 NC PC]
+    - lab:  TUE 10-11:50 NC PC          **Week04 lab**
 - **Week  5**
     - lec:  MON 12-12:50 Diamond LT6    **L5**
     - [lab: TUE 10-11:50 NC PC]
-    - lab:  WED  1-1:50  Diamond 202    **Week05 lab**
+    - lab:  WED  1-1:50  Diamond 2.02   **Week05 lab**
 - **Week  6**
     - reading week A
-    - [lab: TUE 10-11:50 NC PC]
-    - [lab: WED  1-1:50  Diamond 202]
+    - [lec: MON 12-12:50 Diamond LT6]
+    - [lab: TUE 10-11:50 Denny A04]
+    - [lab: WED  1-1:50  Diamond 2.02]
 - **Week  7**
-    - lec:  MON 12-12:50 Diamond LT6    **L6**
-    - lab:  TUE 10-11:50 NC PC          **Week06 lab**
+    - lec:  MON 12-12:50 Diamond LT6    **L6..7**
+    - lab:  TUE 10-11:50 NC PC          **Week07 lab**
 - **Week  8**
-    - lec:  MON 12-12:50 Diamond LT6    **L7**
-    - lab:  THU  9-10:50 Diamond 101    **Week07 lab**
-- **Week  9**
     - lec:  MON 12-12:50 Diamond LT6    **L8**
-    - lab:  TUE 10-11:50 NC PC          **Week08 lab**
-- **Week 10**
+    - lab:  THU  9-10:50 Diamond 1.01   **Week08 lab**
+- **Week  9**
     - lec:  MON 12-12:50 Diamond LT6    **L9**
-    - lab:  FRI  9-10:50 Diamond 202    **Week09 lab**
-- **Week 11**
+    - lab:  TUE 10-11:50 NC PC          **Week09 lab**
+- **Week 10**
     - lec:  MON 12-12:50 Diamond LT6    **L10**
-    - lab:  TUE 10-11:50 NC PC          **Week10 lab**
+    - lab:  FRI  9-10:50 Diamond 2.02   **Week10 lab**
+- **Week 11**
+    - lec:  MON 12-12:50 Diamond LT6    **L11**
+    - lab:  TUE 10-11:50 Denny A04      **Week11 lab**
 - **Week 12** (...Fri Dec 15th)
     - reading week B
+    - [lec: MON 12-12:50 Diamond LT6]
     - [lab: TUE 10-11:50 NC PC]
 
 

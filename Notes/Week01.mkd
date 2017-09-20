@@ -35,16 +35,21 @@ Our objectives this week are to:
 
 - **Notes**:
     - Yes, this is a bombsite. Soz! We've got the builders in...
+    - Generally we have one lecture (of one hour) and one lab (of two hours)
+      per week, but because some of the rooms are in high demand in weeks 1
+      and 2 they are compressed into 8 days).
     - Diamond 2.02 is the electronics lab (weeks 1-5, 10).
     - Diamond 1.01 is the project space (week 8, dropins).
-    - NC PC is the North Campus PC lab (allow lots of travel time!).
+    - NC PC is the North Campus PC lab; turn right through the gates and it is
+      on the ground floor of the big grey portacabin on your right (allow lots
+      of travel time!).
     - Denny A04 is room A04 in the Alfred Denny building (week 11).
     - Bookings below [in sq brackets] are currently not planned to be used.
 - **Week  1** (Mon 25th Sept...)
     - lec:  MON 12-12:50 Diamond LT6    **L1**
-    - [lab: TUE 10-11:50 NC PC]
+    - lab:  TUE 10-11:50 NC PC          **Week01 lab (part 1)**
     - lec:  THU 10-10:50 Diamond LT8    **L2**
-    - lab:  FRI  9-10:50 Diamond 2.02   **Week01 lab**
+    - lab:  FRI  9-10:50 Diamond 2.02   **Week01 lab (part 2)**
 - **Week  2**
     - lab:  MON 9-10:50  Diamond 2.02   **Week02 lab**
     - [lec: MON 12-12:50 Diamond LT6]

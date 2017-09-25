@@ -36,8 +36,6 @@ Our objectives this week are to:
 
 ## Set up your environment
 
-- pull any new stuff into your com3505-labs-... tree:
-    - `cd com3505-labs-YourGitHubId; git pull`
 - copy the libraries and support files for ESP32 on the Arduino IDE
     - [linux/ubuntu]:
         - in the top left of your desktop (possibly hidden by the browser) you

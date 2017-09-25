@@ -12,8 +12,10 @@ Our objectives this week are to:
 
 - get to know the Diamond electronics lab
 - understand how to prototype basic circuits on a breadboard
-- practice soldering on stripboard
+- practice soldering on a simple circuit
+- learn about measuring simple values in the electronics lab
 - check out the course materials from github
+- set up the programming environment and start coding
 
 
 # Assignments and Assessment
@@ -30,6 +32,55 @@ Our objectives this week are to:
   to our server. The URL was given during the lecture.
 - Learn a little C! See the resources listed in the lecture slides for help.
 - Study the notes below about LiPo batteries.
+
+
+## Set up your environment
+
+- pull any new stuff into your com3505-labs-... tree:
+    - `cd com3505-labs-YourGitHubId; git pull`
+- copy the libraries and support files for ESP32 on the Arduino IDE
+    - [linux/ubuntu]:
+        - in the top left of your desktop (possibly hidden by the browser) you
+          should have an icon "Access-U-drive"; click on it and enter your
+          password
+        - you should now have "Access-Shared-Resources"; click on it
+        - open a terminal (Cntrl&T)
+        - create a link to your U drive filespace and move there:
+            - `ln -s $U u-drive`
+            - `cd u-drive`
+        - unpack the Arduino libraries and compiler chain:
+            - `tar xvzf /mnt/resources/arduino/Public/Arduino.tgz`
+        - in your home directory make a link to the Arduino directory that you
+          just created:
+            - `cd; ln -s u-drive/Arduino`
+    - [windows]:
+        - on each new machine you use:
+        - is Arduino installed? if not go to Software Center and install
+          Arduino-1.8.4-MSI
+        - you also need a specific set of libraries which are available from
+          the Software Center called `Arduino COM3505 Libraries and Hardware`
+- you should now have something like this:
+    - `com3505-labs-YourGitHubId/MyThing/`: your code goes here
+    - `com3505-labs-YourGitHubId/Notes/`  : weekly notes update
+    - `com3505-labs-YourGitHubId/Things/` : weekly model code update
+    - `Arduino/`: libraries & core to support ESP32
+    - **NOTE**: DON'T edit the `Thing/\*` and `Notes/\*` trees!
+- set up the Arduino IDE
+    - from the Linux terminal do: `/apps/arduino/arduino`
+    - from Windows use the start menu to run `Arduino 1.8.4`
+    - (**note**: this step is not needed if you have linked this in your home
+      directory) in the File > Preferences dialog, set the `Sketchbook
+      location` to point to your copy of the Arduino dir
+    - use an external editor if you like
+    - **don't** ask the IDE to update your libraries -- we'll do that via your
+      github repo -- so uncheck File > Preferences > Check for updates on
+      startup
+- get ready to code
+    - plug in your ESP32
+    - open the MyThing sketch
+    - select the board (Adafruit ESP32 Feather) from the Tools menu
+    - select the port (probably `/dev/ttyUSB0` or `/dev/ttyUSB1` on Ubuntu)
+    - serial monitor baud rate should be 115200
 
 
 # Timetable

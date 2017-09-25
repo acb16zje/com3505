@@ -198,6 +198,7 @@ gets punctured and vents into the air.
   damage, heating or possible puncture. If you spot anything potentially
   problematic inform a member of staff immediately.
 - Always monitor the battery when in use.
+- Always use the fire safety bag when charging the battery.
 - When moving the battery, unplug it and store it in the fire safety bag
   provided.
 - If a battery is hot:
@@ -206,3 +207,4 @@ gets punctured and vents into the air.
     - inform a member of staff immediately
 - If you are at all unsure of any of these instructions please inform a member
   of staff.
+- See also https://goo.gl/HyrxFb

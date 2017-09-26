@@ -61,7 +61,6 @@ Our objectives this week are to:
 - you should now have something like this:
     - `com3505-labs-YourGitHubId/MyThing/`: your code goes here
     - `com3505-labs-YourGitHubId/Notes/`  : weekly notes update
-    - `com3505-labs-YourGitHubId/Things/` : weekly model code update
     - `Arduino/`: libraries & core to support ESP32
     - **NOTE**: DON'T edit the `Thing/\*` and `Notes/\*` trees!
 - set up the Arduino IDE

@@ -58,10 +58,15 @@ Our objectives this week are to:
           Arduino-1.8.4-MSI
         - you also need a specific set of libraries which are available from
           the Software Center called `Arduino COM3505 Libraries and Hardware`
+    - on your own machines: install the Arduino IDE from
+      https://www.arduino.cc/ and then follow the instructions at
+      https://github.com/espressif/arduino-esp32
 - you should now have something like this:
     - `com3505-labs-YourGitHubId/MyThing/`: your code goes here
     - `com3505-labs-YourGitHubId/Notes/`  : weekly notes update
     - `Arduino/`: libraries & core to support ESP32
+    - from Week 2 you'll also have
+      `com3505-labs-YourGitHubId/Thing/`  : weekly model code update
     - **NOTE**: DON'T edit the `Thing/\*` and `Notes/\*` trees!
 - set up the Arduino IDE
     - from the Linux terminal do: `/apps/arduino/arduino`

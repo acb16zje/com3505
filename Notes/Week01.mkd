@@ -45,7 +45,7 @@ Our objectives this week are to:
         - you should now have "Access-Shared-Resources"; click on it
         - open a terminal (Cntrl&T)
         - create a link to your U drive filespace and move there:
-            - `ln -s $U u-drive`
+            - `cd; ln -s $U u-drive`
             - `cd u-drive`
         - unpack the Arduino libraries and compiler chain:
             - `tar xvzf /mnt/resources/arduino/Public/Arduino.tgz`

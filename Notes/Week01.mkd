@@ -28,7 +28,7 @@ Our objectives this week are to:
 - Check out the repository from github into your own file space. (If you're
   reading this from there then you've done that task!)
     - `git clone ...url...`
-    - Note: don't "download" from github, you need to "clone.
+    - Note: don't "download" from github, you need to "clone".
 - Use any method you like to post your Sheffield email address and github ID
   to our server. The URL was given during the lecture.
 - Learn a little C! See the resources listed in the lecture slides for help.

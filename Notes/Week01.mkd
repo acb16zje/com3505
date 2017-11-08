@@ -118,7 +118,7 @@ Our objectives this week are to:
     - lab:  TUE 10-11:50 NC PC          **Week04 lab**
 - **Week  5**
     - lec:  MON 12-12:50 Diamond LT6    **L5**
-    - lab: TUE 10-11:50 NC PC           **Week05 lab (part 1)**
+    - lab:  TUE 10-11:50 NC PC          **Week05 lab (part 1)**
     - lab:  WED  1-1:50  Diamond 2.02   **Week05 lab (part 2)**
 - **Week  6**
     - reading week A

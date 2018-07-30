@@ -3,7 +3,7 @@ COM3505 week 01 course notes
 
 # The Lecture
 
-This week's lecture slides are here: https://goo.gl/GdKEmx
+This week's lecture slides are here: https://goo.gl/HejEFz
 
 
 # Learning Objectives
@@ -23,7 +23,7 @@ Our objectives this week are to:
 - Accept the github classroom assignment (by clicking on the link). This will
   create a git repository for you, hosted on github. All your work **must** be
   pushed to this repository promptly each week. The assignment URL is:
-  https://tinyurl.com/com3505-2017-b
+  https://tinyurl.com/com3505-2018-repo
 - Use the Linux option when booting machines in the electronics lab.
 - Check out the repository from github into your own file space. (If you're
   reading this from there then you've done that task!)

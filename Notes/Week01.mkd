@@ -89,61 +89,62 @@ Our objectives this week are to:
 # Timetable
 
 - **Notes**:
-    - Yes, this is a bombsite. Soz! We've got the builders in...
-    - Generally we have one lecture (of one hour) and one lab (of two hours)
-      per week, but because some of the rooms are in high demand in weeks 1
-      and 2 they are compressed into 8 days).
-    - Diamond 2.02 is the electronics lab (weeks 1-5, 10).
-    - Diamond 1.01 is the project space (week 8, dropins).
-    - NC PC is the North Campus PC lab; turn right through the gates and it is
-      on the ground floor of the big grey portacabin on your right (allow lots
-      of travel time!).
-    - Denny A04 is room A04 in the Alfred Denny building (week 11).
-    - Bookings below [in sq brackets] are currently not planned to be used.
-- **Week  1** (Mon 25th Sept...)
-    - lec:  MON 12-12:50 Diamond LT6    **L1**
-    - lab:  TUE 10-11:50 NC PC          **Week01 lab (part 1)**
-    - lec:  THU 10-10:50 Diamond LT8    **L2**
-    - lab:  FRI  9-10:50 Diamond 2.02   **Week01 lab (part 2)**
-- **Week  2**
-    - lab:  MON 9-10:50  Diamond 2.02   **Week02 lab**
-    - [lec: MON 12-12:50 Diamond LT6]
-    - [lab: TUE 10-11:50 NC PC]
-- **Week  3**
-    - lec:  MON 12-12:50 Diamond LT6    **L3**
-    - lab:  WED  1-1:50  Diamond 2.02   **Week03 lab (part 1)**
-- **Week  4**
-    - lab:  MON  9-10:50 Diamond 2.02   **Week03 lab (part 2)**
-    - lec:  MON 12-12:50 Diamond LT6    **L4**
-    - lab:  TUE 10-11:50 NC PC          **Week04 lab**
-- **Week  5**
-    - lec:  MON 12-12:50 Diamond LT6    **L5**
-    - lab:  TUE 10-11:50 NC PC          **Week05 lab (part 1)**
-    - lab:  WED  1-1:50  Diamond 2.02   **Week05 lab (part 2)**
-- **Week  6**
-    - reading week A
-    - [lec: MON 12-12:50 Diamond LT6]
-    - [lab: TUE 10-11:50 Denny A04]
-    - [lab: WED  1-1:50  Diamond 2.02]
-- **Week  7**
-    - lec:  MON 12-12:50 Diamond LT6    **L6..7**
-    - lab:  TUE 10-11:50 NC PC          **Week07 lab**
-- **Week  8**
-    - lec:  MON 12-12:50 Diamond LT6    **L8**
-    - lab:  THU  9-10:50 Diamond 1.01   **Week08 lab**
-- **Week  9**
-    - lec:  MON 12-12:50 Diamond LT6    **L9**
-    - lab:  TUE 10-11:50 NC PC          **Week09 lab**
-- **Week 10**
-    - lec:  MON 12-12:50 Diamond LT6    **L10**
-    - lab:  FRI  9-10:50 Diamond 2.02   **Week10 lab**
-- **Week 11**
-    - lec:  MON 12-12:50 Diamond LT6    **L11**
-    - lab:  TUE 10-11:50 Denny A04      **Week11 lab**
-- **Week 12** (...Fri Dec 15th)
-    - reading week B
-    - [lec: MON 12-12:50 Diamond LT6]
-    - [lab: TUE 10-11:50 NC PC]
+    - Sorry this is so complex! The Diamond Electronics Lab (DIA 2.02) is very
+      popular...
+    - We have one lecture (of one hour) and one lab (of two hours) per week.
+    - Diamond 2.02 is the electronics lab.
+    - Diamond 1.01 is the project space (where you can use the iForge
+      facilities).
+    - NC PC is the North Campus PC lab; enter from Broad Lane, turn right
+      through the gates and it is on the ground floor of the big grey
+      portacabin on your right. (Allow lots of travel time!)
+- Weekly schedule:
+    - Lectures
+        - DIA LT5  11am--12pm Fridays weeks 1-12
+    - Labs (assessments: **week 4**, **week 12**)
+        - DIA 2.02
+            -      12pm--2pm  Fridays weeks 1,7,9,10,12
+            -       1pm--3pm  Friday  week  8
+            -       9am--11am Mondays weeks 2-6,11
+    - MOLE quizzes (one mock, in week 7, one exam, in **week 12**)
+        - NC PC     9am--11am Mondays weeks 7,12
+    - Week by week:
+        - Week  1
+            - Fri 11-12 LT5       lecture  1
+            - Fri 12-2  DIA 2.02  lab      1
+        - Week  2
+            - Mon  9-11 DIA 2.02  lab      2
+            - Fri 11-12 LT5       lecture  2
+        - Week  3
+            - Mon  9-11 DIA 2.02  lab      3
+            - Fri 11-12 LT5       lecture  3
+        - Week  4
+            - Mon  9-11 DIA 2.02  lab      4
+            - Fri 11-12 LT5       lecture  4
+        - Week  5
+            - Mon  9-11 DIA 2.02  [LAB ASS 1]
+            - Fri 11-12 LT5       lecture  5
+        - Week  6 [READING WEEK]
+            - Mon  9-11 DIA 2.02  spare lab
+        - Week  7
+            - Mon  9-11 NC PC [MOLE Q mock]
+            - Fri 11-12 LT5       lecture  6
+            - Fri 12-2  DIA 2.02  lab      5
+        - Week  8
+            - Fri 11-12 LT5       lecture  7
+            - Fri  1-3  DIA 2.02  lab      6
+        - Week  9
+            - Fri 11-12 LT5       lecture  8
+            - Fri 12-2  DIA 2.02  lab      7
+        - Week 10
+            - Fri 11-12 LT5       lecture  9
+            - Fri 12-2  DIA 2.02  lab      8
+        - Week 11
+            - Mon  9-11 DIA 2.02  lab      9
+            - Fri 11-12 LT5       lecture 10
+        - Week 12
+            - Mon  9-11 NC PC [MOLE Q exam]
+            - Fri 12-2  DIA 2.02  [LAB ASS 2]
 
 
 # Reading
@@ -163,9 +164,12 @@ Our objectives this week are to:
 Lithium Polymer (or LiPo) cells are one of the most effective commercially
 available rechargeable batteries, having high energy and power density. These
 batteries are used in all manner of mobile applications and are particularly
-popular with RC hobbyists.
+popular with remote control (RC) hobbyists.
 
-You will be given a LiPo battery to power your ESP32 for COM3505.
+You will be given a LiPo battery in the second half of term as part of the
+ESP32 project hardware for COM3505. The battery is inside a case with the
+other electronics, but is potentially dangerous if the case is damaged or
+removed.
 
 ## What are the dangers?
 
@@ -175,17 +179,17 @@ and over-charging. If the battery fails as a result of any of these, hazardous
 electrolyte leakage, fire or explosions may occur.
 
 The rate of transfer of energy within the battery is strongly linked to its
-internal heat; when the over-heated the cell's long term performance will
-degrade, more energy is released and the battery gets hotter, creating a
-dangerous feedback loop. If this continues the electrolyte will vaporise and
-cause the battery to expand, which may lead to fire or even an explosion.
+internal heat; when over-heated the cell's long term performance will degrade,
+more energy is released and the battery gets hotter, creating a dangerous
+feedback loop. If this continues the electrolyte will vaporise and cause the
+battery to expand, which may lead to fire or even an explosion.
 
 This same effect can be caused by over-charging the battery, or in some cases
 even just leaving it charged in the wrong circumstances. Henry (one of our
-teaching assistants on the course) used to fly an RC helicopter that ran off a
-multi-cell LiPo pack. Having forgotten to discharge it, it was left in a
-container in his shed. Many months later the cell exploded in a ball of flame
-nearly burning down the shed!
+previous teaching assistants on the course) used to fly an RC helicopter that
+ran off a multi-cell LiPo pack. Having forgotten to discharge it, it was left
+in a container in his shed. Many months later the cell exploded in a ball of
+flame nearly burning down the shed!
 
 The sensitive chemistry of the batteries can also lead to fire if the battery
 gets punctured and vents into the air.
@@ -194,17 +198,13 @@ gets punctured and vents into the air.
 
 **ALWAYS** take the following precautions when using LiPos in COM3505:
 
-- Only use the battery we gave you.
-- Only charge the battery using the Adafruit ESP32 Feather board which we gave
-  you.
-- Every time you move, handle or charge the battery check it visually for
-  damage, heating or possible puncture. If you spot anything potentially
-  problematic inform a member of staff immediately.
-- Always monitor the battery when in use.
-- Always use the fire safety bag when charging the battery.
-- When moving the battery, unplug it and store it in the fire safety bag
-  provided.
-- If a battery is hot:
+- Only use the battery as installed in the hardware we gave you.
+- Only charge the battery using the board which we gave you.
+- Regularly inspect the hardware, especially if you need to open the case to
+  make connections; check the battery visually for damage, heating or possible
+  puncture. If you spot anything potentially problematic inform a member of
+  staff immediately.
+- If a battery becomes hot:
     - if it appears safe to do so, unplug it from the power source
     - warn others present to move away from the battery and do so yourself
     - inform a member of staff immediately

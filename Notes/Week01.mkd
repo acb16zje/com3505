@@ -20,6 +20,8 @@ Our objectives this week are to:
 
 # Assignments and Assessment
 
+- Use the separate handout _COM3505 DIA 2.02 introduction_ to practice
+  breadboarding, soldering and using a multimeter.
 - Accept the github classroom assignment (by clicking on the link). This will
   create a git repository for you, hosted on github. All your work **must** be
   pushed to this repository promptly each week. The assignment URL is:

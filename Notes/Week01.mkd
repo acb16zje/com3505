@@ -20,6 +20,7 @@ Our objectives this week are to:
 
 # Assignments and Assessment
 
+- Get into a pair (or we will assign you to a pair): https://goo.gl/2z8LEM
 - Use the separate handout _COM3505 DIA 2.02 introduction_ to practice
   breadboarding, soldering and using a multimeter.
 - Accept the github classroom assignment (by clicking on the link). This will

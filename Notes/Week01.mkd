@@ -106,9 +106,9 @@ Our objectives this week are to:
         - DIA LT5  11am--12pm Fridays weeks 1-12
     - Labs (assessments: **week 4**, **week 12**)
         - DIA 2.02
-            -       9am--11am Mondays weeks 2-5,10,11
+            -       9am--11am Mondays weeks 2-5,10
             -      12pm--2pm  Fridays weeks 1,7,9,12
-            -       1pm--3pm  Friday  week  8
+            -       1pm--3pm  Friday  week  6 [reading week], 8
     - MOLE quizzes (one mock, in week 7, one exam, in **week 12**)
         - NC PC     9am--11am Mondays weeks 7,12
     - Week by week:
@@ -129,6 +129,7 @@ Our objectives this week are to:
             - Mon  9-11 DIA 2.02  [LAB ASS 1]
             - Fri 11-12 LT5       lecture  5
         - Week  6 [READING WEEK]
+            - Fri 1-3   DIA 2.02  spare lab
         - Week  7
             - Mon  9-11 NC PC [MOLE Q mock]
             - Fri 11-12 LT5       lecture  6

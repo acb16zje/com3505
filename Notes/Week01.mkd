@@ -103,17 +103,16 @@ Our objectives this week are to:
       portacabin on your right. (Allow lots of travel time!)
 - Weekly schedule:
     - Lectures
-        - DIA LT5  11am--12pm Fridays weeks 1-12
-    - Labs (assessments: **week 4**, **week 12**)
+        - DIA LT5  11am--12pm Fridays weeks 1-5,7-11
+    - Labs (assessments: **week 6**, **week 12**)
         - DIA 2.02
             -       9am--11am Mondays weeks 2-5,10
-            -      12pm--2pm  Fridays weeks 1,7,9,12
-            -       1pm--3pm  Friday  week  6 [reading week], 8
-        - NC PC     9am--11am Monday  week  11
+            -      12pm--2pm  Fridays weeks 1,7,12
+            -       1pm--3pm  Friday  week  6,8
+        - NC PC     9am--11am Monday  week  9,11
     - MOLE quizzes (one mock, in week 7, one exam, in **week 12**)
         - NC PC     9am--11am Mondays weeks 7,12
     - Week by week:
-    - **TODO is this out of date?**
         - Week  1
             - Fri 11-12 LT5       lecture  1
             - Fri 12-2  DIA 2.02  lab      1
@@ -127,29 +126,29 @@ Our objectives this week are to:
             - Mon  9-11 DIA 2.02  lab      4
             - Fri 11-12 LT5       lecture  4
         - Week  5
-            - Mon  9-11 DIA 2.02  [LAB ASS 1]
+            - Mon  9-11 DIA 2.02  lab      5
             - Fri 11-12 LT5       lecture  5
-        - Week  6 [READING WEEK]
-            - Fri 1-3   DIA 2.02  spare lab
+        - Week  6 [reading week / assessment 1]
+            - Fri  1-3  DIA 2.02  [LAB ASSMT. 1]
         - Week  7
-            - Mon  9-11 NC PC [MOLE Q mock]
+            - Mon  9-11 NC PC [MOLE quiz: mock]
             - Fri 11-12 LT5       lecture  6
-            - Fri 12-2  DIA 2.02  lab      5
+            - Fri 12-2  DIA 2.02  lab      6
         - Week  8
             - Fri 11-12 LT5       lecture  7
-            - Fri  1-3  DIA 2.02  lab      6
+            - Fri  1-3  DIA 2.02  lab      7
         - Week  9
-            - Mon  9-11 NC PC     lab      7
+            - Mon  9-11 NC PC     lab      8
             - Fri 11-12 LT5       lecture  8
         - Week 10
-            - Mon  9-11 DIA 2.02  lab      8
+            - Mon  9-11 DIA 2.02  lab      9
             - Fri 11-12 LT5       lecture  9
         - Week 11
-            - Mon  9-11 NC PC     lab      9
+            - Mon  9-11 NC PC     lab     10
             - Fri 11-12 LT5       lecture 10
-        - Week 12
-            - Mon  9-11 NC PC [MOLE Q exam]
-            - Fri 12-2  DIA 2.02  [LAB ASS 2]
+        - Week 12 [exam / assessment 2]
+            - Mon  9-11 NC PC [MOLE quiz: EXAM]
+            - Fri 12-2  DIA 2.02  [LAB ASSMT. 2]
 
 
 # Reading

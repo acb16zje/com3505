@@ -116,46 +116,46 @@ Our objectives this week are to:
         - Week  1
             - Fri 11-12 LT5       lecture  1
                 - Click Here to Kill Everyone
-                - Revolutionary Code: from MIT Printers to the Arduino
-                - Small but Perfectly Formed... Digging into the ESP32
-                - Country of the Blind: Networking Devices Without UIs
-                - Sensing and responding
-                - Joinme/WiFi, Sigfox, LoraWan and NB-IoT
-                - unPhone Yourself...: the project Platform_ TODO MOVE UP?
-                - Projects Q&A
-                - WaterElves, Gripples and Fish Poo: IoT Case Studies
-                - IoT 2018: Review
             - Fri 12-2  DIA 2.02  lab      1
         - Week  2
             - Mon  9-11 DIA 2.02  lab      2
             - Fri 11-12 LT5       lecture  2
+                - Revolutionary Code: from MIT Printers to the Arduino
         - Week  3
             - Mon  9-11 DIA 2.02  lab      3
             - Fri 11-12 LT5       lecture  3
+                - Small but Perfectly Formed... Digging into the ESP32
         - Week  4
             - Mon  9-11 DIA 2.02  lab      4
             - Fri 11-12 LT5       lecture  4
+                - Country of the Blind: Networking Devices Without UIs
         - Week  5
             - Mon  9-11 DIA 2.02  lab      5
             - Fri 11-12 LT5       lecture  5
+                - Sensing and responding
         - Week  6 [reading week / assessment 1]
             - Fri  1-3  DIA 2.02  [LAB ASSMT. 1]
         - Week  7
             - Mon  9-11 NC PC [MOLE quiz: mock]
             - Fri 11-12 LT5       lecture  6
+                - Connectivity and Provisionning: Joinme/WiFi, Sigfox, LoraWan and NB-IoT
             - Fri 12-2  DIA 2.02  lab      6
         - Week  8
             - Fri 11-12 LT5       lecture  7
+                - unPhone Yourself — an IoT Projects Platform
             - Fri  1-3  DIA 2.02  lab      7
         - Week  9
             - Mon  9-11 NC PC     lab      8
             - Fri 11-12 LT5       lecture  8
+                - Projects Q&A
         - Week 10
             - Mon  9-11 DIA 2.02  lab      9
             - Fri 11-12 LT5       lecture  9
+                - WaterElves, Gripples and Fish Poo: IoT Case Studies
         - Week 11
             - Mon  9-11 NC PC     lab     10
             - Fri 11-12 LT5       lecture 10
+                - IoT 2018: Review
         - Week 12 [exam / assessment 2]
             - Mon  9-11 NC PC [MOLE quiz: EXAM]
             - Fri 12-2  DIA 2.02  [LAB ASSMT. 2]

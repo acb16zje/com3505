@@ -115,6 +115,16 @@ Our objectives this week are to:
     - Week by week:
         - Week  1
             - Fri 11-12 LT5       lecture  1
+                - Click Here to Kill Everyone
+                - Revolutionary Code: from MIT Printers to the Arduino
+                - Small but Perfectly Formed... Digging into the ESP32
+                - Country of the Blind: Networking Devices Without UIs
+                - Sensing and responding
+                - Joinme/WiFi, Sigfox, LoraWan and NB-IoT
+                - unPhone Yourself...: the project Platform_ TODO MOVE UP?
+                - Projects Q&A
+                - WaterElves, Gripples and Fish Poo: IoT Case Studies
+                - IoT 2018: Review
             - Fri 12-2  DIA 2.02  lab      1
         - Week  2
             - Mon  9-11 DIA 2.02  lab      2

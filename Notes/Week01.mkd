@@ -18,11 +18,11 @@ Our objectives this week are to:
 - set up the programming environment and start coding
 
 
-# Assignments and Assessment
+# Assignments
 
 - Get into a pair (or we will assign you to a pair): https://goo.gl/2z8LEM
 - Use the separate handout _COM3505 DIA 2.02 introduction_ to practice
-  breadboarding, soldering and using a multimeter.
+  breadboarding, soldering and using a multimeter: https://goo.gl/GkGvJT
 - Accept the github classroom assignment (by clicking on the link). This will
   create a git repository for you, hosted on github. All your work **must** be
   pushed to this repository promptly each week. The assignment URL is:

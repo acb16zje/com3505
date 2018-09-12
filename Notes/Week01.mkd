@@ -23,10 +23,10 @@ Our objectives this week are to:
 - Get into a pair (or we will assign you to a pair): https://goo.gl/2z8LEM
 - Use the separate handout _COM3505 DIA 2.02 introduction_ to practice
   breadboarding, soldering and using a multimeter: https://goo.gl/GkGvJT
-- Accept the github classroom assignment (by clicking on the link). This will
-  create a git repository for you, hosted on github. All your work **must** be
-  pushed to this repository promptly each week. The assignment URL is:
-  https://tinyurl.com/com3505-2018-repo
+- Accept the github classroom assignment by following this link:
+  https://tinyurl.com/com3505-2018-repo (this will create a git repository for
+  you, hosted on github). All your work **must** be pushed to this repository
+  promptly each week. **Create ONE repository per pair.**
 - Use the Linux option when booting machines in the electronics lab.
 - Check out the repository from github into your own file space. (If you're
   reading this from there then you've done that task!)
@@ -35,6 +35,7 @@ Our objectives this week are to:
 - Use any method you like to post your Sheffield email address and github ID
   to our server. The URL was given during the lecture.
 - Learn a little C! See the resources listed in the lecture slides for help.
+- Set up your programming environment (next section).
 - Study the notes below about LiPo batteries.
 
 

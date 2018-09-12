@@ -69,9 +69,12 @@ Our objectives this week are to:
     - `com3505-labs-YourGitHubId/MyThing/`: your code goes here
     - `com3505-labs-YourGitHubId/Notes/`  : weekly notes update
     - `Arduino/`: libraries & core to support ESP32
-    - from Week 2 you'll also have
-      `com3505-labs-YourGitHubId/Thing/`  : weekly model code update
+    - from Week 2 you'll also have `com3505-labs-YourGitHubId/Thing/`  :
+      weekly model code update
     - **NOTE**: DON'T edit the `Thing/\*` and `Notes/\*` trees!
+- pair working and github: both members of the pair can have copies of the
+  repository and push code if that works for you, but make sure that you're
+  both working with the same repository (and pushing back to origin / master)
 - set up the Arduino IDE
     - from the Linux terminal do: `/apps/arduino/arduino`
     - from Windows use the start menu to run `Arduino 1.8.4`
@@ -98,7 +101,7 @@ Our objectives this week are to:
     - We have one lecture (of one hour) and one lab (of two hours) per week.
     - Diamond 2.02 is the electronics lab.
     - Diamond 1.01 is the project space (where you can use the iForge
-      facilities).
+      facilities if you wish).
     - NC PC is the North Campus PC lab; enter from Broad Lane, turn right
       through the gates and it is on the ground floor of the big grey
       portacabin on your right. (Allow lots of travel time!)
@@ -139,7 +142,8 @@ Our objectives this week are to:
         - Week  7
             - Mon  9-11 NC PC [MOLE quiz: mock]
             - Fri 11-12 LT5       lecture  6
-                - Connectivity and Provisionning: Joinme/WiFi, Sigfox, LoraWan and NB-IoT
+                - Connectivity and Provisionning: Joinme/WiFi, Sigfox, LoraWan
+                  and NB-IoT
             - Fri 12-2  DIA 2.02  lab      6
         - Week  8
             - Fri 11-12 LT5       lecture  7

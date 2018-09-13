@@ -47,9 +47,9 @@ Our objectives this week are to:
         - make a link to a directory called `Arduino` to pick up the Adafruit
           ESP32 Feather board definition, and the libraries that we're using
           on the course:
-              - `cd; ln -s /resources/hc/esp-resources/esp-ide-arduino/Arduino`
+              - `cd; ln -s /resources/hc/esp-resources/esp-arduino-ide/Arduino`
         - make a link to the Arduino IDE runner script:
-              - `cd; ln -s /resources/hc/esp-resources/esp-ide-arduino/arduino-1.8.6/arduino`
+              - `cd; ln -s /resources/hc/esp-resources/esp-arduino-ide/arduino-1.8.6/arduino`
         - you can now start the Arduino IDE by running `cd; ./arduino` in a
           terminal
     - [windows]:

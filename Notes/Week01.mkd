@@ -41,21 +41,17 @@ Our objectives this week are to:
 
 ## Set up your environment
 
-- copy the libraries and support files for ESP32 on the Arduino IDE
+- copy or link the libraries and support files for ESP32 on the Arduino IDE
     - [linux/ubuntu]:
-        - in the top left of your desktop (possibly hidden by the browser) you
-          should have an icon "Access-U-drive"; click on it and enter your
-          password
-        - you should now have "Access-Shared-Resources"; click on it
-        - open a terminal (Cntrl&T)
-        - create a link to your U drive filespace and move there:
-            - `cd; ln -s $U u-drive`
-            - `cd u-drive`
-        - unpack the Arduino libraries and compiler chain:
-            - `tar xvzf /mnt/resources/arduino/Public/Arduino.tgz`
-        - in your home directory make a link to the Arduino directory that you
-          just created:
-            - `cd; ln -s u-drive/Arduino`
+        - open a terminal (Cntrl&Alt&T)
+        - make a link to a directory called `Arduino` to pick up the Adafruit
+          ESP32 Feather board definition, and the libraries that we're using
+          on the course:
+              - `cd; ln -s /resources/hc/esp-resources/esp-ide-arduino/Arduino`
+        - make a link to the Arduino IDE runner script:
+              - `cd; ln -s /resources/hc/esp-resources/esp-ide-arduino/arduino-1.8.6/arduino`
+        - you can now start the Arduino IDE by running `cd; ./arduino` in a
+          terminal
     - [windows]:
         - on each new machine you use:
         - is Arduino installed? if not go to Software Center and install
@@ -76,7 +72,7 @@ Our objectives this week are to:
   repository and push code if that works for you, but make sure that you're
   both working with the same repository (and pushing back to origin / master)
 - set up the Arduino IDE
-    - from the Linux terminal do: `/apps/arduino/arduino`
+    - from the Linux terminal do: `./arduino`
     - from Windows use the start menu to run `Arduino 1.8.4`
     - (**note**: this step is not needed if you have linked this in your home
       directory) in the File > Preferences dialog, set the `Sketchbook
@@ -91,6 +87,22 @@ Our objectives this week are to:
     - select the board (Adafruit ESP32 Feather) from the Tools menu
     - select the port (probably `/dev/ttyUSB0` or `/dev/ttyUSB1` on Ubuntu)
     - serial monitor baud rate should be 115200
+
+<!-- OLD VERSION
+        - in the top left of your desktop (possibly hidden by the browser) you
+          should have an icon "Access-U-drive"; click on it and enter your
+          password
+        - you should now have "Access-Shared-Resources"; click on it
+        - open a terminal (Cntrl&Alt&T)
+        - create a link to your U drive filespace and move there:
+            - `cd; ln -s $U u-drive`
+            - `cd u-drive`
+        - unpack the Arduino libraries and compiler chain:
+            - `tar xvzf /mnt/resources/arduino/Public/Arduino.tgz`
+        - in your home directory make a link to the Arduino directory that you
+          just created:
+            - `cd; ln -s u-drive/Arduino`
+-->
 
 
 # Timetable

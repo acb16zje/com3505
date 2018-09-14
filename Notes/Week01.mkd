@@ -74,9 +74,6 @@ Our objectives this week are to:
 - set up the Arduino IDE
     - from the Linux terminal do: `./arduino`
     - from Windows use the start menu to run `Arduino 1.8.4`
-    - (**note**: this step is not needed if you have linked this in your home
-      directory) in the File > Preferences dialog, set the `Sketchbook
-      location` to point to your copy of the Arduino dir
     - use an external editor if you like
     - **don't** ask the IDE to update your libraries -- we'll do that via your
       github repo -- so uncheck File > Preferences > Check for updates on

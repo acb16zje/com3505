@@ -11,7 +11,7 @@ circuit prototyping, measurement and soldering), some firmware elements
 (developing code that runs a networked microcontroller and associated sensors
 and actuators), and some software elements that run in the cloud (to process
 data posted by firmware). Each lab pair must check in their firmware code
-regularly (at minimum weekly).
+regularly (at minimum weekly, before the model solutions are published).
 
 Each week's lecture finishes with a TODO list for the subsequent week, and
 each week a set of notes are published to your GitHub repository. If you
@@ -26,6 +26,15 @@ from the first half of term, and the second covers project work.
 
 In week 12 individuals are given a **MOLE quiz** covering the material in the
 lectures. (This is not assesssed as a pair but as individuals.)
+
+Code is assessed according to both functionality (does the device do what is
+intended? is the operation robust in face of different conditions?) and
+quality (is it structured to enhance readability and maintainability? is there
+appropriate commenting? does it conform to a style and stick to it? are
+interfaces minimised and simplicity maximised? etc.). In addition
+documentation (when requested) is assessed, and students' abilities to explain
+their work during the two formal assessments. Your understanding of the
+principles behind the material is further assessed during the exam in week 12.
 
 The assessment schedule is:
 

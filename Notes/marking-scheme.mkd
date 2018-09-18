@@ -1,4 +1,5 @@
-# COM3505 2018 Marking Scheme
+COM3505 2018 Marking Scheme
+===
 
 COM3505 is a 10 credit level 3 course. Marks are allocated for **practical
 work** (60%, based in the DIA 2.02 Electronics Lab) and for a **MOLE exam**

@@ -41,15 +41,25 @@ Our objectives this week are to:
 
 ## Set up your environment
 
+- **Note:** as discussed in the lecture, we're most able to support you if you
+  use the Linux option on the lab machines. You're welcome to use the windows
+  option instead, or to install the Arduino IDE and libraries on your own
+  laptop -- but we won't necessarily be able to fix all problems you may
+  encounter if you do so. If you choose to do your own installation,
+  instructions for the Arduino IDE and ESP32 layer can be found here --
+  https://github.com/espressif/arduino-esp32#installation-instructions
+  Otherwise read on!
 - copy or link the libraries and support files for ESP32 on the Arduino IDE
     - [linux/ubuntu]:
         - open a terminal (Cntrl&Alt&T)
         - make a link to a directory called `Arduino` to pick up the Adafruit
           ESP32 Feather board definition, and the libraries that we're using
           on the course:
-              - `cd; ln -s /resources/hc/esp-resources/esp-arduino-ide/Arduino`
+              - `cd; ln -s
+                /resources/hc/esp-resources/esp-arduino-ide/Arduino`
         - make a link to the Arduino IDE runner script:
-              - `cd; ln -s /resources/hc/esp-resources/esp-arduino-ide/arduino-1.8.5/arduino`
+              - `cd; ln -s
+                /resources/hc/esp-resources/esp-arduino-ide/arduino-1.8.5/arduino`
         - you can now start the Arduino IDE by running `cd; ./arduino` in a
           terminal
     - [windows]:

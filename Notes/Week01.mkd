@@ -68,9 +68,13 @@ Our objectives this week are to:
           Arduino-1.8.4-MSI
         - you also need a specific set of libraries which are available from
           the Software Center called `Arduino COM3505 Libraries and Hardware`
-    - on your own machines: install the Arduino IDE from
-      https://www.arduino.cc/ and then follow the instructions at
-      https://github.com/espressif/arduino-esp32
+        - when you've started the IDE, make sure from `File>Preferences` that
+          the `Sketchbook location` is set to your home directory, not `My
+          Documents` (as this is where the libraries from the previous step
+          get installed)
+    - [on your own machines]:
+      - install the Arduino IDE from https://www.arduino.cc/ and then follow
+        the instructions at https://github.com/espressif/arduino-esp32
 - you should now have something like this:
     - `com3505-labs-YourGitHubId/MyThing/`: your code goes here
     - `com3505-labs-YourGitHubId/Notes/`  : weekly notes update

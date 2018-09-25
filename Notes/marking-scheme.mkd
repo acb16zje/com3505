@@ -11,7 +11,8 @@ circuit prototyping, measurement and soldering), some firmware elements
 (developing code that runs a networked microcontroller and associated sensors
 and actuators), and some software elements that run in the cloud (to process
 data posted by firmware). Each lab pair must check in their firmware code
-regularly (at minimum weekly, before the model solutions are published).
+regularly (at minimum weekly, before the model solutions are published). You
+must also get a teaching assistant to scan your uCard at each lab session.
 
 Each week's lecture finishes with a TODO list for the subsequent week, and
 each week a set of notes are published to your GitHub repository. If you

@@ -20,7 +20,12 @@ Our objectives this week are to:
 
 # Assignments
 
-- You should by now be allocated to a pair: https://goo.gl/2z8LEM
+- You should by now be allocated to a pair: https://goo.gl/DX8UeB
+    - if you have a TODO by your name add a comment with the relevant detail
+    - if you're not there, or need to change your pair, see Hamish ASAP
+- Pick up a kit from the staff; you can keep this until week 6 but then you
+  need to hand it back (in good condition!). You will need to have your uCard
+  scanned to pick up a kit.
 - Use the separate handout _COM3505 DIA 2.02 introduction_ to practice
   breadboarding, soldering and using a multimeter: https://goo.gl/GkGvJT
 - Accept the github classroom assignment by following this link:

@@ -5,8 +5,8 @@ COM3505 is a 10 credit level 3 course. Marks are allocated for **practical
 work** (60%, based in the DIA 2.02 Electronics Lab) and for a **MOLE exam**
 (40%).
 
-Practical work is done in pairs, with each pair checking into a joint code
-repository (on GitHub). This work comprises some hardware elements (basic
+Practical work is mostly done in pairs, with each pair checking into a joint
+code repository (on GitHub). This work comprises some hardware elements (basic
 circuit prototyping, measurement and soldering), some firmware elements
 (developing code that runs a networked microcontroller and associated sensors
 and actuators), and some software elements that run in the cloud (to process
@@ -18,12 +18,19 @@ Each week's lecture finishes with a TODO list for the subsequent week, and
 each week a set of notes are published to your GitHub repository. If you
 completed all the TODOs and all the assignments in the notes at perfect
 quality you would score 100% in the lab assessments. If you completed half the
-assigments at acceptable quality you should pass the course. Most students
-fall somewhere between these two extremes!
+assignments at acceptable quality you should pass the course. Most performance
+falls somewhere between these two extremes!
 
 In weeks 6 and 12 each pair demonstrates their work to the teaching staff
 during two formal lab assessment sessions. The first of these covers exercises
 from the first half of term, and the second covers project work.
+
+(Note: during weeks 1 to 5 and 7 to 11 we **do not** mark your work, but we do
+record data about how the labs are going, how people find the exercises, what
+the levels of learning are like and so on. This is needed for two reasons: 1.
+as background knowledge that we will use in weeks 6 and 12 to help structure
+our formal assessments; 2. to help us give you feedback and help us adjust the
+course to better fit student capabilities.)
 
 In week 12 individuals are given a **MOLE quiz** covering the material in the
 lectures. (This is not assesssed as a pair but as individuals.)

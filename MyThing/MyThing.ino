@@ -3,23 +3,51 @@
 #include <SPI.h>
 #include <WiFi.h>
 
-uint64_t chipid;  
+uint64_t chipid;
+byte mac[6];
+
+const char* ssid = "VM5521249";
+const char* password =  "mgvw7GcNckn5";
 
 // initialisation entry point
 void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(115200);
+  
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.println("Connecting to WiFi..");
+  }
+
+  Serial.println("Connected to the WiFi network");
+  WiFi.macAddress(mac);
 }
 
 // task loop entry point
 void loop() {
-  chipid=ESP.getEfuseMac();//The chip ID is essentially its MAC address(length: 6 bytes).
-  Serial.printf("ESP32 Chip ID = %04X",(uint16_t)(chipid>>32));//print High 2 bytes
-  Serial.printf("%08X\n",(uint32_t)chipid);//print Low 4bytes.
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(1000);                       // wait for a second
+  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+  delay(1000);                       // wait for a second
+
+  chipid = ESP.getEfuseMac();                                    // The chip ID is not the MAC address(length: 6 bytes).
+  Serial.printf("ESP32 Chip ID = %04X",(uint16_t)(chipid>>32));  // Print High 2 bytes
+  Serial.printf("%08X\n",(uint32_t)chipid);                      // Print Low 4 bytes
+
+  Serial.print("MAC: ");
+  Serial.print(mac[0], HEX);
+  Serial.print(":");
+  Serial.print(mac[1], HEX);
+  Serial.print(":");
+  Serial.print(mac[2], HEX);
+  Serial.print(":");
+  Serial.print(mac[3], HEX);
+  Serial.print(":");
+  Serial.print(mac[4], HEX);
+  Serial.print(":");
+  Serial.println(mac[5], HEX);
 
   delay(3000);
-
-//  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-//  delay(1000);                       // wait for a second
-//  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-//  delay(1000);                       // wait for a second
 }

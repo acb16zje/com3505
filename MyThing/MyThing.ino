@@ -3,7 +3,7 @@
 #include <SPI.h>
 #include <WiFi.h>
 
-uint64_t chipid;
+uint64_t chipid;                    // 6 bytes = 48 bits wide, need at least 64 bits to fit in
 byte mac[6];
 
 const char* ssid = "VM5521249";
@@ -14,12 +14,12 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(115200);
   
-  WiFi.begin(ssid, password);
+  WiFi.begin();
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println("Connecting to WiFi..");
-  }
+//  while (WiFi.status() != WL_CONNECTED) {
+//    delay(500);
+//    Serial.println("Connecting to WiFi..");
+//  }
 
   Serial.println("Connected to the WiFi network");
   WiFi.macAddress(mac);
@@ -32,20 +32,24 @@ void loop() {
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
   delay(1000);                       // wait for a second
 
-  chipid = ESP.getEfuseMac();                                    // The chip ID is not the MAC address(length: 6 bytes).
-  Serial.printf("ESP32 Chip ID = %04X",(uint16_t)(chipid>>32));  // Print High 2 bytes
-  Serial.printf("%08X\n",(uint32_t)chipid);                      // Print Low 4 bytes
-
   Serial.print("MAC: ");
 
+  // Serial.println(mac[i]); will print out the MAC as decimal value
+  // MAC Address is usually displayed in hexadecimal values
+  // Serial.println(mac[i], HEX); will print out the MAC as hexadecimal value
   for (int i = 0; i < 6; i++) {
     if (i == 5) {
-      Serial.println(mac[i], HEX);
+      Serial.println(mac[i], HEX);  
     } else {
       Serial.print(mac[i], HEX);
       Serial.print(":");
     }
   }
-  
+
+                                                     // Serial.printf() only prints up to uint32 (according to Arduino forum)
+  chipid = ESP.getEfuseMac();                        // The chip ID is the reverse of the MAC address(length: 6 bytes), reason unknown yet
+  Serial.printf("ESP32 Chip ID = %4X", chipid>>32);  // chipid needs to be shifted right by 32 bits to print the first 2 bytes of the MAC
+  Serial.printf("%8X\n", chipid);                    // print the last 4 bytes of the MAC
+
   delay(3000);
 }

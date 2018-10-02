@@ -37,17 +37,15 @@ void loop() {
   Serial.printf("%08X\n",(uint32_t)chipid);                      // Print Low 4 bytes
 
   Serial.print("MAC: ");
-  Serial.print(mac[0], HEX);
-  Serial.print(":");
-  Serial.print(mac[1], HEX);
-  Serial.print(":");
-  Serial.print(mac[2], HEX);
-  Serial.print(":");
-  Serial.print(mac[3], HEX);
-  Serial.print(":");
-  Serial.print(mac[4], HEX);
-  Serial.print(":");
-  Serial.println(mac[5], HEX);
 
+  for (int i = 0; i < 6; i++) {
+    if (i == 5) {
+      Serial.println(mac[i], HEX);
+    } else {
+      Serial.print(mac[i], HEX);
+      Serial.print(":");
+    }
+  }
+  
   delay(3000);
 }

@@ -5,9 +5,9 @@
 
 uint64_t chipid;                    // 6 bytes = 48 bits wide, need at least 64 bits to fit in
 byte mac[6];
-int pushButton = 14, externalLED = 32;
-int state = HIGH;      // the current state of the output pin
-int prev_state = HIGH;
+int pushButton = 14, externalRED = 32, externalYELLOW = 15, externalGREEN = 12;
+int state = 0;      // the current state of the output pin
+int led_select = 0;
 long t = 0;         // the last time the output pin was toggled
 long debounce = 500;   // the debounce time, increase if the output flickers
 
@@ -18,7 +18,9 @@ long debounce = 500;   // the debounce time, increase if the output flickers
 void setup() {
 //  pinMode(LED_BUILTIN, OUTPUT);
   pinMode(pushButton, INPUT_PULLUP);
-  pinMode(externalLED, OUTPUT);
+  pinMode(externalRED, OUTPUT);
+  pinMode(externalYELLOW, OUTPUT);
+  pinMode(externalGREEN, OUTPUT);
   Serial.begin(115200);
   
 //  WiFi.begin();
@@ -76,16 +78,37 @@ void loop() {
 //      } 
 //  }
   if (state == LOW && (millis() - t) > debounce) {
-      if (prev_state == LOW) {
-        state = HIGH; 
+      if (led_select == 3) {
+        led_select = 0; 
       }
       else {
-        state = LOW;
+        led_select += 1;
       }
       t = millis(); 
-      prev_state = state; 
-      Serial.printf("state: %X\n",state);
-      Serial.printf("prev_state: %X\n",prev_state);  
-      digitalWrite(externalLED, state);
+//      led_select = state; 
+      Serial.printf("state: %X\n",state); 
+      Serial.printf("led_select: %X\n", led_select);  
+      switch (led_select) {
+        case 0:
+          digitalWrite(externalRED, LOW);
+          digitalWrite(externalGREEN, LOW);
+          digitalWrite(externalYELLOW, LOW);
+          break;
+        case 1:
+          digitalWrite(externalRED, HIGH);
+          digitalWrite(externalGREEN, LOW);
+          digitalWrite(externalYELLOW, LOW);
+          break;
+        case 2:
+          digitalWrite(externalRED, LOW);
+          digitalWrite(externalGREEN, LOW);
+          digitalWrite(externalYELLOW, HIGH);
+          break;
+        case 3:
+          digitalWrite(externalRED, LOW);
+          digitalWrite(externalGREEN, HIGH);
+          digitalWrite(externalYELLOW, LOW);
+          break;
+        }
     } 
 }

@@ -1,4 +1,4 @@
-// MyThing.ino
+// Ex01.ino
 // COM3505 lab exercises sketch template
 #include <SPI.h>
 #include <WiFi.h>
@@ -11,7 +11,7 @@ void setup() {
   Serial.begin(115200);
   pinMode(pushButton, INPUT_PULLUP);
   pinMode(externalLED, OUTPUT);
-  
+
   WiFi.begin();
   WiFi.macAddress(mac);
 }

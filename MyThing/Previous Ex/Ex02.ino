@@ -1,4 +1,4 @@
-// MyThing.ino
+// Ex02.ino
 // COM3505 lab exercises sketch template
 #include <SPI.h>
 

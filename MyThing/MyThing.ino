@@ -2,14 +2,15 @@
 // COM3505 lab exercises sketch template
 #include <SPI.h>
 
-int pushButton     = 14;
-int externalRED    = 32;
-int externalYELLOW = 15;
-int externalGREEN  = 12;
+#define pushButton      14
+#define externalRED     32
+#define externalYELLOW  15
+#define externalGREEN   12
+#define debounce        500   // the debounce time, increase if the output flickers
 int state          = 0;     // the current state of the output pin
 int led_select     = 0;
 long t             = 0;     // the last time the output pin was toggled
-long debounce      = 500;   // the debounce time, increase if the output flickers
+int loop_count     = 0;
 
 // initialisation entry point
 void setup() {
@@ -23,7 +24,16 @@ void setup() {
 // task loop entry point
 void loop() {
   state = digitalRead(pushButton);
-
+  loop_count++;
+  if (loop_count % 10000000 == 0) {
+    digitalWrite(externalYELLOW, HIGH);
+    digitalWrite(externalGREEN, HIGH);
+    digitalWrite(externalRED, HIGH);       
+    delay(1000);
+    digitalWrite(externalYELLOW, LOW);
+    digitalWrite(externalGREEN, LOW);
+    digitalWrite(externalRED, LOW);       
+  }
   if (state == LOW && (millis() - t) > debounce) {
       if (led_select == 3) {
         led_select = 0;
@@ -32,7 +42,7 @@ void loop() {
       }
 
       t = millis();
-
+      
       Serial.printf("state: %X\n",state);
       Serial.printf("led_select: %X\n", led_select);
       switch (led_select) {

@@ -11,8 +11,6 @@ int led_select = 0;
 long t = 0;         // the last time the output pin was toggled
 long debounce = 500;   // the debounce time, increase if the output flickers
 
-// const char* ssid = "VM5521249";
-// const char* password =  "mgvw7GcNckn5";
 
 // initialisation entry point
 void setup() {

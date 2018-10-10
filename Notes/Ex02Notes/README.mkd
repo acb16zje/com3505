@@ -48,8 +48,8 @@ abstract representation of the components and connections: ![Blinky
 schematic](Blinky-schematic.png  "Blinky schematic")
 
 The trick here is that the LED is connected to pin 32 and the switch to pin
-14, so we might usefully define these as `int pushButton = 32, externalLED =
-14;`.
+14, so we might usefully define these as `int pushButton = 14, externalLED =
+32;`.
 
 The code for this sketch should make use of the internal pull-ups inside the
 ESP32. Simply pass a different macro to the pinMode command:

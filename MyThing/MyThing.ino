@@ -1,25 +1,32 @@
 // Ex06.ino
 // COM3505 lab exercises sketch template
-#include <ESPWebServer.h>
-#include <SPI.h>
 #include <WiFi.h>
+#include <WebServer.h>
+
+#include "Ex07_index.h"
+
+//SSID and Password of your WiFi router
+const char* ssid = "Aragaki Yui";
+const char* password = "ismywife";
+
+WebServer webServer(80);
 
 // initialisation entry point
 void setup() {
-  Serial.begin(115200);
+  WiFi.mode(WIFI_AP_STA);
+  WiFi.softAP(ssid, password);
 
-  ESPWebServer webServer(80);
+
   webServer.on("/", handleRoot);
-
-  String toSend = "Aragaki Yui?";
-
-  webServer.send(200, "text/html", toSend);
-
-  WiFi.mode(WIFI_AP_STA));
-  WiFi.softAP("ssid", "password");
+  webServer.begin();
 }
 
 // task loop entry point
 void loop() {
+  webServer.handleClient();
+}
 
+void handleRoot() {
+  String s = MAIN_page;
+  webServer.send(200, "text/html", s);
 }

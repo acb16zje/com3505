@@ -1,32 +1,45 @@
-// Ex06.ino
-// COM3505 lab exercises sketch template
-#include <WiFi.h>
-#include <WebServer.h>
+// Thing.ino
+// COM3505 lab exercise runner sketch
 
-#include "Ex07_index.h"
+/////////////////////////////////////////////////////////////////////////////
+// NOTE!!!
+// DON'T edit these files, do your coding in MyThing!
+/////////////////////////////////////////////////////////////////////////////
 
-//SSID and Password of your WiFi router
-const char* ssid = "Aragaki Yui";
-const char* password = "ismywife";
+#include "Ex01.h"
+#include "Ex02.h"
+#include "Ex03.h"
+#include "Ex04.h"
+#include "Ex05.h"
+#include "Ex06.h"
+#include "Ex07.h"
 
-WebServer webServer(80);
+int LABNUM = 6; // which lab exercise number are we doing?
 
 // initialisation entry point
 void setup() {
-  WiFi.mode(WIFI_AP_STA);
-  WiFi.softAP(ssid, password);
-
-
-  webServer.on("/", handleRoot);
-  webServer.begin();
+  switch(LABNUM) {
+    case 1: setup01(); break;
+    case 2: setup02(); break;
+    case 3: setup03(); break;
+    case 4: setup04(); break;
+    case 5: setup05(); break;
+    case 6: setup06(); break;
+    case 7: setup07(); break;
+    default: Serial.println("Invalid lab number");
+  }
 }
 
 // task loop entry point
 void loop() {
-  webServer.handleClient();
-}
-
-void handleRoot() {
-  String s = MAIN_page;
-  webServer.send(200, "text/html", s);
+  switch(LABNUM) {
+    case 1: loop01(); break;
+    case 2: loop02(); break;
+    case 3: loop03(); break;
+    case 4: loop04(); break;
+    case 5: loop05(); break;
+    case 6: loop06(); break;
+    case 7: loop07(); break;
+    default: Serial.println("Invalid lab number");
+  }
 }

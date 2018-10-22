@@ -2,11 +2,7 @@
 
 // initialisation entry point
 void setup07() {
-  WiFi.mode(WIFI_AP_STA);
-  WiFi.softAP(ssid, password);
-
-  webServer.on("/", handleRoot);
-  webServer.begin();
+  setup06();
 }
 
 // task loop entry point
@@ -14,5 +10,7 @@ void loop07() {
   webServer.handleClient();
 }
 
-void handleRoot() {
-}
+// void handleRoot() {
+//   String toSend = root;
+//   webServer.send(200, "text/html", toSend);
+// }

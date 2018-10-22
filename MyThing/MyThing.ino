@@ -6,40 +6,81 @@
 // DON'T edit these files, do your coding in MyThing!
 /////////////////////////////////////////////////////////////////////////////
 
-#include "Ex01.h"
-#include "Ex02.h"
-#include "Ex03.h"
-#include "Ex04.h"
-#include "Ex05.h"
-#include "Ex06.h"
-#include "Ex07.h"
+#include <WiFi.h>
+#include<WebServer.h>
 
-int LABNUM = 6; // which lab exercise number are we doing?
+const char* ssid     = "gakki";
+const char* password = "gakkismile";
+
+const char* host = "com3505.gate.ac.uk";
+
+WebServer webServer(80);
 
 // initialisation entry point
 void setup() {
-  switch(LABNUM) {
-    case 1: setup01(); break;
-    case 2: setup02(); break;
-    case 3: setup03(); break;
-    case 4: setup04(); break;
-    case 5: setup05(); break;
-    case 6: setup06(); break;
-    case 7: setup07(); break;
-    default: Serial.println("Invalid lab number");
+  Serial.begin(115200);
+  Serial.println();
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
   }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
 }
 
-// task loop entry point
-void loop() {
-  switch(LABNUM) {
-    case 1: loop01(); break;
-    case 2: loop02(); break;
-    case 3: loop03(); break;
-    case 4: loop04(); break;
-    case 5: loop05(); break;
-    case 6: loop06(); break;
-    case 7: loop07(); break;
-    default: Serial.println("Invalid lab number");
+int value = 0;
+
+void loop(){
+  webServer.handleClient();
+  delay(5000);
+  ++value;
+
+  Serial.print("connecting to ");
+  Serial.println(host);
+
+  WiFiClient client;
+  const int httpPort = 9191;
+  if (!client.connect(host, httpPort)) {
+      Serial.println("connection failed");
+      return;
   }
+
+  String url = "/com3505";
+  url += "?email=";
+  url += "jhng1@sheffield.ac.uk";
+  url += "&mac=";
+  url += "30:ae:a4:27:57:3c";
+
+  Serial.print("Requesting URL: ");
+  Serial.println(url);
+
+  // This will send the request to the server
+  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
+                "Host: " + host + "\r\n" +
+                "Connection: close\r\n\r\n");
+  unsigned long timeout = millis();
+  while (client.available() == 0) {
+      if (millis() - timeout > 5000) {
+          Serial.println(">>> Client Timeout !");
+          client.stop();
+          return;
+      }
+  }
+
+  while(client.available()) {
+        String line = client.readStringUntil('\r');
+        Serial.print(line);
+    }
+
+  Serial.println();
+  Serial.println("closing connection");
 }

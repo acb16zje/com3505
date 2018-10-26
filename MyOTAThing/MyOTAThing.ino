@@ -3,8 +3,8 @@
 // COM3505 lab assessment: Over-The-Air update template; ADD YOUR CODE HERE!
 /////////////////////////////////////////////////////////////////////////////
 
-// the wifi and HTTP server libraries ///////////////////////////////////////
-#include <WiFi.h>         // wifi
+// the WiFi and HTTP server libraries ///////////////////////////////////////
+#include <WiFi.h>         // WiFi
 #include <ESPWebServer.h> // simple webserver
 #include <HTTPClient.h>   // ESP32 library for making HTTP requests
 #include <Update.h>       // OTA update library
@@ -12,15 +12,15 @@
 // OTA stuff ////////////////////////////////////////////////////////////////
 int doCloudGet(HTTPClient *, String, String); // helper for downloading 'ware
 void doOTAUpdate();                           // main OTA logic
-int currentVersion = 1; // TODO keep up-to-date! (used to check for updates)
-String gitID = "juneezee"; // TODO change to your team's git ID
+const int currentVersion = 1;                 // used to check for updates
+const String gitID = "juneezee";              // team's git ID
 
 // MAC and IP helpers ///////////////////////////////////////////////////////
 char MAC_ADDRESS[13]; // MAC addresses are 12 chars, plus the NULL terminator
 void getMAC(char *);
 String ip2str(IPAddress);                 // helper for printing IP addresses
 
-// LED utilities, loop slicing ///////////////////////////////////////////////
+// LED utilities, loop slicing //////////////////////////////////////////////
 void ledOn();
 void ledOff();
 void blink(int = 1, int = 300);
@@ -31,7 +31,7 @@ void setup() {
   Serial.begin(115200);         // initialise the serial line
   getMAC(MAC_ADDRESS);          // store the MAC address
   Serial.printf("\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);
-  Serial.printf("firmware is at version %d\n", currentVersion);
+  Serial.printf("Firmware is at version %d\n", currentVersion);
 
   // get on the network
   WiFi.begin("uos-other", "shefotherkey05");
@@ -47,10 +47,10 @@ void setup() {
 
 // LOOP: task entry point ///////////////////////////////////////////////////
 void loop() {
-  int sliceSize = 500000;
-  loopIteration++;
-  if(loopIteration % sliceSize == 0) // a slice every sliceSize iterations
-    Serial.println("OTA loop");
+  // int sliceSize = 500000;
+  // loopIteration++;
+  // if (loopIteration % sliceSize == 0) // a slice every sliceSize iterations
+  //   Serial.println("OTA loop");
 
   // do other useful stuff here...?
 }
@@ -63,20 +63,20 @@ void doOTAUpdate() {             // the main OTA logic
   int highestAvailableVersion = -1;  // version of latest firmware on server
 
   // do a GET to read the version file from the cloud
-  Serial.println("checking for firmware updates...");
+  Serial.println("Checking for firmware updates...");
   respCode = doCloudGet(&http, gitID, "version");
-  if(respCode == 200) // check response code (-ve on failure)
+  if (respCode == 200) // check response code (-ve on failure)
     highestAvailableVersion = atoi(http.getString().c_str());
   else
-    Serial.printf("couldn't get version! rtn code: %d\n", respCode);
+    Serial.printf("Couldn't get version! rtn code: %d\n", respCode);
   http.end(); // free resources
 
   // do we know the latest version, and does the firmware need updating?
-  if(respCode != 200) {
-    Serial.printf("cannot update\n\n");
+  if (respCode != 200) {
+    Serial.printf("Cannot update\n\n");
     return;
-  } else if(currentVersion >= highestAvailableVersion) {
-    Serial.printf("firmware is up to date\n\n");
+  } else if (currentVersion >= highestAvailableVersion) {
+    Serial.printf("Firmware is up to date\n\n");
     return;
   }
 
@@ -115,7 +115,7 @@ int doCloudGet(HTTPClient *http, String gitID, String fileName) {
   return http->GET();
 }
 
-// misc utilities //////////////////////////////////////////////////////////
+// Misc utilities ///////////////////////////////////////////////////////////
 // get the ESP's MAC address
 void getMAC(char *buf) { // the MAC is 6 bytes, so needs careful conversion...
   uint64_t mac = ESP.getEfuseMac(); // ...to string (high 2, low 4):

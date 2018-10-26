@@ -13,7 +13,7 @@
 int doCloudGet(HTTPClient *, String, String); // helper for downloading 'ware
 void doOTAUpdate();                           // main OTA logic
 int currentVersion = 1; // TODO keep up-to-date! (used to check for updates)
-String gitID = "anotherexamplestudent"; // TODO change to your team's git ID
+String gitID = "juneezee"; // TODO change to your team's git ID
 
 // MAC and IP helpers ///////////////////////////////////////////////////////
 char MAC_ADDRESS[13]; // MAC addresses are 12 chars, plus the NULL terminator
@@ -34,12 +34,12 @@ void setup() {
   Serial.printf("firmware is at version %d\n", currentVersion);
 
   // get on the network
-  /* TODO
-  Here you need to use the WiFi class to join the uos-other network, e.g. by
-  calling:
-      WiFi.begin("uos-other", "shefotherkey05"); // TODO register MAC first!
-  You'll then need to wait until the wifi status is WL_CONNECTED
-  */
+  WiFi.begin("uos-other", "shefotherkey05");
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.println("Connecting to WiFi..");
+  }
 
   // check for and perform firmware updates as needed
   doOTAUpdate();

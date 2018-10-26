@@ -14,6 +14,8 @@ int doCloudGet(HTTPClient *, String, String); // helper for downloading 'ware
 void doOTAUpdate();                           // main OTA logic
 const int currentVersion = 1;                 // used to check for updates
 const String gitID = "Juneezee";              // team's git ID
+const int minSize = 100000;                   // 100k bytes
+const int maxSize = 1000000;                  // 1 mega bytes
 
 // MAC and IP helpers ///////////////////////////////////////////////////////
 char MAC_ADDRESS[13]; // MAC addresses are 12 chars, plus the NULL terminator
@@ -84,7 +86,7 @@ void doOTAUpdate() {             // the main OTA logic
 
   // ok, we need to do a firmware update...
   Serial.printf(
-    "upgrading firmware from version %d to version %d\n",
+    "Upgrading firmware from version %d to version %d\n",
     currentVersion, highestAvailableVersion
   );
 
@@ -101,7 +103,20 @@ void doOTAUpdate() {             // the main OTA logic
   has been performed correctly, you can restart the device via ESP.restart().
   */
 
-  
+  Serial.println("Retrieving update file...");
+
+  // Get the response code of the HTTP
+  int binRespCode = doCloudGet(
+    &http, gitID, String(highestAvailableVersion) + ".bin"
+  );
+
+  // The size of the bin file
+  int size = http.getSize();
+
+  // Perform the update
+  if (binRespCode == 200) {
+    Serial.printf("Received bin file of size %d bytes.", size);
+  }
 }
 
 // helper for downloading from cloud firmware server via HTTP GET

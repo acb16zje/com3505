@@ -13,7 +13,7 @@
 int doCloudGet(HTTPClient *, String, String); // helper for downloading 'ware
 void doOTAUpdate();                           // main OTA logic
 const int currentVersion = 1;                 // used to check for updates
-const String gitID = "juneezee";              // team's git ID
+const String gitID = "Juneezee";              // team's git ID
 
 // MAC and IP helpers ///////////////////////////////////////////////////////
 char MAC_ADDRESS[13]; // MAC addresses are 12 chars, plus the NULL terminator
@@ -38,8 +38,10 @@ void setup() {
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.println("Connecting to WiFi..");
+    Serial.println("Connecting to WiFi...");
   }
+
+  Serial.println("Connected to WiFi.");
 
   // check for and perform firmware updates as needed
   doOTAUpdate();
@@ -98,6 +100,8 @@ void doOTAUpdate() {             // the main OTA logic
   needed are Update.end, Update.isFinished and Update.getError. When an update
   has been performed correctly, you can restart the device via ESP.restart().
   */
+
+  
 }
 
 // helper for downloading from cloud firmware server via HTTP GET

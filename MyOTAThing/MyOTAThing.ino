@@ -12,7 +12,7 @@
 // OTA stuff ////////////////////////////////////////////////////////////////
 int doCloudGet(HTTPClient *, String, String); // helper for downloading 'ware
 void doOTAUpdate();                           // main OTA logic
-const int currentVersion = 1;                 // used to check for updates
+int currentVersion = 1;                 // used to check for updates
 const String gitID = "Juneezee";              // team's git ID
 const int minSize = 100000;                   // 100k bytes
 const int maxSize = 1000000;                  // 1 mega bytes
@@ -111,11 +111,45 @@ void doOTAUpdate() {             // the main OTA logic
   );
 
   // The size of the bin file
-  int size = http.getSize();
+  int fileSize = http.getSize();
 
   // Perform the update
-  if (binRespCode == 200) {
-    Serial.printf("Received bin file of size %d bytes.", size);
+  if (binRespCode == 200 && fileSize >= minSize && fileSize <= maxSize) {
+    Serial.printf("Received bin file of size %d bytes.\n", fileSize);
+
+    bool canBegin = Update.begin(fileSize);
+
+    if (canBegin) {
+      Serial.println("Performing OTA... Please do not turn off the ESP32...");
+
+      // No activity would appear on the Serial monitor
+      // So be patient. This may take 2 - 5mins to complete
+      size_t written = Update.writeStream(http.getStream());
+
+      if (written == fileSize) {
+        Serial.println("Written : " + String(written) + " successfully");
+      } else {
+        Serial.println(
+          "Written only : " + String(written) + "/" + String(fileSize) + ". Retry?"
+        );
+      }
+
+      if (Update.end()) {
+        Serial.println("OTA done!");
+        if (Update.isFinished()) {
+          Serial.println("Update successfully completed. Rebooting.");
+          ESP.restart();
+        } else {
+          Serial.println("Update not finished? Something went wrong!");
+        }
+      } else {
+        Serial.println("Error Occurred. Error #: " + String(Update.getError()));
+      }
+    } else {
+      Serial.println("Not enough memory space to perform the update.");
+    }
+  } else {
+    Serial.println("An error occurred when retrieving the bin file.");
   }
 }
 

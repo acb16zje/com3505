@@ -31,6 +31,7 @@ int loopIteration = 0;
 
 // SETUP: initialisation entry point ////////////////////////////////////////
 void setup() {
+  pinMode(BUILTIN_LED, OUTPUT);
   Serial.begin(115200);                       // initialise the serial line
   getMAC(MAC_ADDRESS);                        // store the MAC address
   Serial.printf("\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);

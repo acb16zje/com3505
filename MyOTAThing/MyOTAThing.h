@@ -27,4 +27,7 @@ void doOTAUpdate();                           // main OTA logic
 
 int loopIteration = 0;
 
+HTTPClient http; // manage the HTTP request process
+int respCode;    // the response code from the request (e.g. 404, 200, ...)
+int highestAvailableVersion = -1;  // version of latest firmware on server
 #endif

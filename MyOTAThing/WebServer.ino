@@ -3,6 +3,8 @@
 // Generate all pages and handle all requests
 /////////////////////////////////////////////////////////////////////////////
 
+#include "MyOTAThing.h"
+
 void startWebServer() {
   WiFi.mode(WIFI_AP_STA);
   WiFi.softAP(apSSID.c_str(), apPass.c_str());
@@ -21,7 +23,9 @@ void routes() {
   webServer.on("/wifi", hndlWifi);          // page for choosing an AP
   webServer.on("/wifichz", hndlWifichz);    // landing page for AP form submit
   webServer.on("/status", hndlStatus);      // status check, e.g. IP address
+  webServer.on("/ota", hndlOTA);      // status check, e.g. IP address
 
+  start_ota = false;
   webServer.begin();
   dln(setupDBG, "HTTP server started");
 }
@@ -41,7 +45,20 @@ void hndlRoot() {
   };
   String htmlPage = ""; // a String to hold the resultant page
   GET_HTML(htmlPage, templatePage, repls);
+
   htmlPage += "<h1>今日山の日なんだよ、祝日だよ！</h1>\n";
+
+  respCode = doCloudGet(&http, gitID, "version");
+  if (respCode == 200)
+    highestAvailableVersion = atoi(http.getString().c_str());
+    if (currentVersion < highestAvailableVersion) {
+      htmlPage += "Current Version:";
+      htmlPage += String(currentVersion)+"\n";
+      htmlPage += "Newest Version:";
+      htmlPage += String(highestAvailableVersion)+"\n";
+      htmlPage += "<a href='/ota'>Click to update</a>\n";
+    }
+
   webServer.send(200, "text/html", htmlPage);
 }
 void hndlWifi() {
@@ -94,6 +111,25 @@ void hndlWifichz() {
 
   webServer.send(200, "text/html", htmlPage);
 }
+
+void hndlOTA() {
+  dln(netDBG, "serving page at /ota");
+
+  String title = "<h2>OTA Update</h2>";
+  String message = "<p>The machine will restart when complete.</p>";
+
+  replacement_t repls[] = { // the elements to replace in the template
+    { 3, title.c_str() },
+    { 4, message.c_str() },
+  };
+
+  String htmlPage = "";     // a String to hold the resultant page
+  GET_HTML(htmlPage, templatePage, repls);
+
+  webServer.send(200, "text/html", htmlPage);
+  start_ota = true;
+}
+
 void hndlStatus() {         // UI for checking connectivity etc.
   dln(netDBG, "serving page at /status");
 

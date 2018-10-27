@@ -16,10 +16,10 @@ void setup() {
   Serial.printf("\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);
   Serial.printf("Firmware is at version %d\n", currentVersion);
 
-  startWiFi();
-  // startWebServer();
+  // startWiFi();
+  startWebServer();
 
-  doOTAUpdate(); // Check for and perform firmware updates as needed
+  // doOTAUpdate(); // Check for and perform firmware updates as needed
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
@@ -29,20 +29,23 @@ void loop() {
   // if (loopIteration % sliceSize == 0) // a slice every sliceSize iterations
   //   dln(loopDBG, "OTA loop");
 
-  // webServer.handleClient();
+
 
   // Check for firmware updates every 10 seconds
-  dln(loopDBG, "\n");
-  doOTAUpdate();
-  delay(10000);
+  if (start_ota) {
+    delay(1000);
+    webServer.close();
+    dln(loopDBG, "\n");
+    doOTAUpdate();
+  }
+  else {
+    webServer.handleClient();
+  }
 }
 
 // OTA over-the-air update stuff ///////////////////////////////////////////
 void doOTAUpdate() {             // the main OTA logic
   // materials for doing an HTTP GET on github from the BinFiles/ dir
-  HTTPClient http; // manage the HTTP request process
-  int respCode;    // the response code from the request (e.g. 404, 200, ...)
-  int highestAvailableVersion = -1;  // version of latest firmware on server
 
   // do a GET to read the version file from the cloud
   dln(monitDBG, "Checking for firmware updates...");
@@ -149,6 +152,8 @@ void doOTAUpdate() {             // the main OTA logic
     dln(monitDBG, "An error occurred when retrieving the bin file.");
     blink();
   }
+  start_ota = false;
+  startWebServer();
 }
 
 // Helper for downloading from cloud firmware server via HTTP GET

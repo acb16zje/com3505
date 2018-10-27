@@ -57,6 +57,9 @@ void loop() {
   //   Serial.println("OTA loop");
 
   // do other useful stuff here...?
+  Serial.println("\n\n");
+  doOTAUpdate();
+  delay(5000);
 }
 
 // OTA over-the-air update stuff ///////////////////////////////////////////
@@ -122,10 +125,10 @@ void doOTAUpdate() {             // the main OTA logic
     if (canBegin) {
       Serial.println("Performing OTA... Please do not turn off the ESP32...");
 
-      // No activity would appear on the Serial monitor
-      // So be patient. This may take 2 - 5mins to complete
+      // Start writing to the flash
       size_t written = Update.writeStream(http.getStream());
 
+      // Check if finished writing
       if (written == fileSize) {
         Serial.println("Written : " + String(written) + " successfully");
       } else {
@@ -134,17 +137,25 @@ void doOTAUpdate() {             // the main OTA logic
         );
       }
 
+      // Final process
       if (Update.end()) {
-        Serial.println("OTA done!");
+        Serial.println("OTA finished.");
+
         if (Update.isFinished()) {
           Serial.println("Update successfully completed. Rebooting.");
-          ESP.restart();
+
+          currentVersion = highestAvailableVersion;
+          // Restarting the device will loop the update
+          // ESP.restart();
         } else {
-          Serial.println("Update not finished? Something went wrong!");
+          Serial.println("Update unsuccessful. Unknown error occurred.");
         }
       } else {
         Serial.println("Error Occurred. Error #: " + String(Update.getError()));
       }
+
+      // Free resource
+      http.end();
     } else {
       Serial.println("Not enough memory space to perform the update.");
     }

@@ -71,10 +71,23 @@ void doOTAUpdate() {             // the main OTA logic
 
   while (buttonState == HIGH) {
     buttonState = digitalRead(pushButton);
+    blink(1,100);
   }
+  ledOff();
+  // do a GET for the .bin
+  /* TODO
+  Your main OTA update logic goes here. Use doCloudGet to do an HTTP GET for
+  the .bin file, and check that the length of the update is appropriate (via
+  HTTPClient's getSize() method. (You might note that a minimal sketch takes
+  more than 100k bytes, so perhaps that is a good length to check for. Check
+  the response code, and if all is well call Update.begin (which takes the
+  size of the update as parameter) and Update.writeStream (which takes a
+  Stream that you can get from HTTPClient's getStream() method). Other methods
+  needed are Update.end, Update.isFinished and Update.getError. When an update
+  has been performed correctly, you can restart the device via ESP.restart().
+  */
 
-  // Do a GET for the .bin
-  dln(monitDBG, "Retrieving update file...");
+  Serial.println("Retrieving update file...");
 
   // Get the response code of the HTTP
   int binRespCode = doCloudGet(

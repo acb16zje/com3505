@@ -16,7 +16,7 @@ int currentVersion = 1;                       // used to check for updates
 const String gitID = "Juneezee";              // team's git ID
 const int minSize = 100000;                   // 100k bytes
 const int maxSize = 1000000;                  // 1 mega bytes
-
+const int pushButton = 14;                    // pushButton pin 14
 
 // MAC and IP helpers ///////////////////////////////////////////////////////
 char MAC_ADDRESS[13]; // MAC addresses are 12 chars, plus the NULL terminator
@@ -32,6 +32,7 @@ int loopIteration = 0;
 // SETUP: initialisation entry point ////////////////////////////////////////
 void setup() {
   pinMode(BUILTIN_LED, OUTPUT);
+  pinMode(14, INPUT_PULLUP);
   Serial.begin(115200);                       // initialise the serial line
   getMAC(MAC_ADDRESS);                        // store the MAC address
   Serial.printf("\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);
@@ -60,10 +61,10 @@ void loop() {
   // if (loopIteration % sliceSize == 0) // a slice every sliceSize iterations
   //   Serial.println("OTA loop");
 
-  // do other useful stuff here...?
+  // Check for firmware updates every 10 seconds
   Serial.println("\n\n");
   doOTAUpdate();
-  delay(5000);
+  delay(10000);
 }
 
 // OTA over-the-air update stuff ///////////////////////////////////////////
@@ -93,9 +94,15 @@ void doOTAUpdate() {             // the main OTA logic
 
   // ok, we need to do a firmware update...
   Serial.printf(
-    "Upgrading firmware from version %d to version %d\n",
+    "Upgrade firmware from version %d to version %d?\n",
     currentVersion, highestAvailableVersion
   );
+
+  int buttonState = digitalRead(pushButton);
+
+  while (buttonState == HIGH) {
+    buttonState = digitalRead(pushButton);
+  }
 
   // do a GET for the .bin
   /* TODO
@@ -128,10 +135,14 @@ void doOTAUpdate() {             // the main OTA logic
 
     if (canBegin) {
       Serial.println("Performing OTA... Please do not turn off the ESP32...");
-      ledOn();
+
+      ledOn(); // Start the LED when it is flashing
+
       // Start writing to the flash
       size_t written = Update.writeStream(http.getStream());
-      ledOff();
+
+      ledOff(); // Turn off LED when finished flashing
+
       // Check if finished writing
       if (written == fileSize) {
         Serial.println("Written : " + String(written) + " successfully");
@@ -147,20 +158,19 @@ void doOTAUpdate() {             // the main OTA logic
         blink();
 
         if (Update.isFinished()) {
-          Serial.println("Update successfully completed. Rebooting.");
+          Serial.println("Update completed successfully.");
 
           currentVersion = highestAvailableVersion;
 
           // ESP.restart(); // Restarting the device will loop the update
         } else {
-          Serial.println("Update unsuccessful. Unknown error occurred.");
+          Serial.println("Update failed. Unknown error occurred.");
         }
       } else {
         Serial.println("Error Occurred. Error #: " + String(Update.getError()));
       }
 
-      // Free resource
-      http.end();
+      http.end(); // Free resource
     } else {
       Serial.println("Not enough memory space to perform the update.");
     }

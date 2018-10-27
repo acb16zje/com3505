@@ -12,7 +12,7 @@
 // OTA stuff ////////////////////////////////////////////////////////////////
 int doCloudGet(HTTPClient *, String, String); // helper for downloading 'ware
 void doOTAUpdate();                           // main OTA logic
-int currentVersion = 1;                 // used to check for updates
+int currentVersion = 1;                       // used to check for updates
 const String gitID = "Juneezee";              // team's git ID
 const int minSize = 100000;                   // 100k bytes
 const int maxSize = 1000000;                  // 1 mega bytes
@@ -31,13 +31,13 @@ int loopIteration = 0;
 
 // SETUP: initialisation entry point ////////////////////////////////////////
 void setup() {
-  pinMode(BUILTIN_LED, OUTPUT);
-  Serial.begin(115200);         // initialise the serial line
-  getMAC(MAC_ADDRESS);          // store the MAC address
+  Serial.begin(115200);                       // initialise the serial line
+  getMAC(MAC_ADDRESS);                        // store the MAC address
   Serial.printf("\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);
   Serial.printf("Firmware is at version %d\n", currentVersion);
 
   // get on the network
+  WiFi.disconnect();
   WiFi.begin("uos-other", "shefotherkey05");
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -84,7 +84,7 @@ void doOTAUpdate() {             // the main OTA logic
   // do we know the latest version, and does the firmware need updating?
   if (respCode != 200) {
     Serial.printf("Cannot update\n\n");
-    return;
+    setup();
   } else if (currentVersion >= highestAvailableVersion) {
     Serial.printf("Firmware is up to date\n\n");
     return;
@@ -149,8 +149,8 @@ void doOTAUpdate() {             // the main OTA logic
           Serial.println("Update successfully completed. Rebooting.");
 
           currentVersion = highestAvailableVersion;
-          // Restarting the device will loop the update
-          // ESP.restart();
+
+          // ESP.restart(); // Restarting the device will loop the update
         } else {
           Serial.println("Update unsuccessful. Unknown error occurred.");
         }

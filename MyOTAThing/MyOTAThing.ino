@@ -17,6 +17,7 @@ const String gitID = "Juneezee";              // team's git ID
 const int minSize = 100000;                   // 100k bytes
 const int maxSize = 1000000;                  // 1 mega bytes
 
+
 // MAC and IP helpers ///////////////////////////////////////////////////////
 char MAC_ADDRESS[13]; // MAC addresses are 12 chars, plus the NULL terminator
 void getMAC(char *);
@@ -30,6 +31,7 @@ int loopIteration = 0;
 
 // SETUP: initialisation entry point ////////////////////////////////////////
 void setup() {
+  pinMode(BUILTIN_LED, OUTPUT);
   Serial.begin(115200);         // initialise the serial line
   getMAC(MAC_ADDRESS);          // store the MAC address
   Serial.printf("\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);
@@ -43,6 +45,7 @@ void setup() {
     Serial.println("Connecting to WiFi...");
   }
 
+  delay(500);
   Serial.println("Connected to WiFi.");
 
   // check for and perform firmware updates as needed
@@ -124,10 +127,10 @@ void doOTAUpdate() {             // the main OTA logic
 
     if (canBegin) {
       Serial.println("Performing OTA... Please do not turn off the ESP32...");
-
+      ledOn();
       // Start writing to the flash
       size_t written = Update.writeStream(http.getStream());
-
+      ledOff();
       // Check if finished writing
       if (written == fileSize) {
         Serial.println("Written : " + String(written) + " successfully");
@@ -140,6 +143,7 @@ void doOTAUpdate() {             // the main OTA logic
       // Final process
       if (Update.end()) {
         Serial.println("OTA finished.");
+        blink();
 
         if (Update.isFinished()) {
           Serial.println("Update successfully completed. Rebooting.");
@@ -161,6 +165,7 @@ void doOTAUpdate() {             // the main OTA logic
     }
   } else {
     Serial.println("An error occurred when retrieving the bin file.");
+    blink();
   }
 }
 

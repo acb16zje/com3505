@@ -2,26 +2,32 @@
 #ifndef WEB_H
 #define WEB_H
 
-#include <ESPWebServer.h>           // simple webserver
+#include <ESPWebServer.h>
 
 // SSID and Password of your WiFi AP
 String apSSID = "赤道以北，gakki 最美";
 String apPass = "gakkismile";
 
-const char *templatePage[] = {    // we'll use Ex07 templating to build pages
-  "<html><head><title>",                                                //  0
-  "default title",                                                      //  1
-  "</title>\n",                                                         //  2
-  "<meta charset='utf-8'>",                                             //  3
-  "<meta name='viewport' content='width=device-width, initial-scale=1.0'>\n"
-  "<style>body{background:#FFF; color: #000; font-family: sans-serif;", //  4
-  "font-size: 150%;}</style>\n",                                        //  5
-  "</head><body>\n",                                                    //  6
-  "<h2>Welcome to Thing!</h2>\n",                                       //  7
-  "<!-- page payload goes here... -->\n",                               //  8
-  "<!-- ...and/or here... -->\n",                                       //  9
-  "\n<p><a href='/'>Home</a>&nbsp;&nbsp;&nbsp;</p>\n",                  // 10
-  "</body></html>\n\n",                                                 // 11
+const char *templatePage[] = {
+  "<html><head>"
+  "<meta charset='utf-8'>"
+  "<meta name='viewport' content='width=device-width, initial-scale=1.0'>"
+  "<title>",
+  "Gakki Access Point - Home",                                          // 1
+  "</title><style>body {font-family: sans-serif;font-size: 1.5em;"
+  "text-align: center;} nav ul {list-style-type: none; margin: 0;"
+  "padding: 0; background-color: #f1f1f1;} nav ul li {display: inline;}"
+  "li a {color: #000; padding: 8px 16px;"
+  "text-decoration: none;}"
+  "</style></head><body>"
+  "<nav><ul>"
+  "<li><a href='/'>Home</a></li>"
+  "<li><a href='/status'>Status</a></li>"
+  "<li><a href='/wifi'>WiFi</a></li>"
+  "</ul></nav>",                                                        // 2
+  "",                                                                   // 3
+  "",                                                                   // 4
+  "</body></html>"
 };
 
 ESPWebServer webServer(80);     // Create a WebServer on port 80

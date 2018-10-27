@@ -8,16 +8,16 @@ void startWebServer() {
   WiFi.softAP(apSSID.c_str(), apPass.c_str());
 
   routes();
-  WiFi.begin(); // for when credentials are already stored by board
+  WiFi.begin("uos-other", "shefotherkey05"); // Connect to uos-other by default
 }
 
 void routes() {
   // register routes to handle different paths
-  webServer.on("/", hndlRoot);              // slash
   webServer.onNotFound(hndlNotFound);       // 404s...
+  webServer.on("/", hndlRoot);              // root
   webServer.on("/generate_204", hndlRoot);  // Android captive portal support
   webServer.on("/L0", hndlRoot);            // TODO is this...
-  webServer.on("/L2", hndlRoot);            // ...IoS captive portal...
+  webServer.on("/L2", hndlRoot);            // ...iOS captive portal...
   webServer.on("/wifi", hndlWifi);          // page for choosing an AP
   webServer.on("/wifichz", hndlWifichz);    // landing page for AP form submit
   webServer.on("/status", hndlStatus);      // status check, e.g. IP address
@@ -36,12 +36,12 @@ void hndlRoot() {
   dln(netDBG, "serving page notionally at /");
   replacement_t repls[] = { // the elements to replace in the boilerplate
     {  1, apSSID.c_str() },
-    {  8, "" },
-    {  9, "<p>Choose a <a href=\"wifi\">wifi access point</a>.</p>" },
-    { 10, "<p>Check <a href='/status'>wifi status</a>.</p>" },
+    {  3, "<p>Choose a <a href=\"wifi\">wifi access point</a>.</p>" },
+    {  4, "<p>Check <a href='/status'>wifi status</a>.</p>" },
   };
   String htmlPage = ""; // a String to hold the resultant page
-  GET_HTML(htmlPage, templatePage, repls); // GET_HTML sneakily added to Ex07
+  GET_HTML(htmlPage, templatePage, repls);
+  htmlPage += "<h1>今日山の日なんだよ、祝日だよ！</h1>\n";
   webServer.send(200, "text/html", htmlPage);
 }
 void hndlWifi() {
@@ -51,12 +51,11 @@ void hndlWifi() {
   apListForm(form);
   replacement_t repls[] = { // the elements to replace in the boilerplate
     { 1, apSSID.c_str() },
-    { 7, "<h2>Network configuration</h2>\n" },
-    { 8, "" },
-    { 9, form.c_str() },
+    { 3, "<h2>Network configuration</h2>\n" },
+    { 4, form.c_str() },
   };
   String htmlPage = ""; // a String to hold the resultant page
-  GET_HTML(htmlPage, templatePage, repls); // GET_HTML sneakily added to Ex07
+  GET_HTML(htmlPage, templatePage, repls);
 
   webServer.send(200, "text/html", htmlPage);
 }
@@ -87,9 +86,8 @@ void hndlWifichz() {
 
   replacement_t repls[] = { // the elements to replace in the template
     { 1, apSSID.c_str() },
-    { 7, title.c_str() },
-    { 8, "" },
-    { 9, message.c_str() },
+    { 3, title.c_str() },
+    { 4, message.c_str() },
   };
   String htmlPage = "";     // a String to hold the resultant page
   GET_HTML(htmlPage, templatePage, repls);
@@ -135,12 +133,11 @@ void hndlStatus() {         // UI for checking connectivity etc.
 
   replacement_t repls[] = { // the elements to replace in the boilerplate
     { 1, apSSID.c_str() },
-    { 7, "<h2>Status</h2>\n" },
-    { 8, "" },
-    { 9, s.c_str() },
+    { 3, "<h2>Status</h2>\n" },
+    { 4, s.c_str() },
   };
   String htmlPage = ""; // a String to hold the resultant page
-  GET_HTML(htmlPage, templatePage, repls); // GET_HTML sneakily added to Ex07
+  GET_HTML(htmlPage, templatePage, repls);
 
   webServer.send(200, "text/html", htmlPage);
 }

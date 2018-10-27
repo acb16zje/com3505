@@ -5,7 +5,7 @@
 
 // Get on the network
 void startWiFi() {
-  WiFi.disconnect();
+  WiFi.disconnect(true);
   WiFi.begin("uos-other", "shefotherkey05");
 
   while (WiFi.status() != WL_CONNECTED) {

@@ -34,7 +34,6 @@ void loop() {
   // Check for firmware updates every 10 seconds
   if (start_ota) {
     delay(1000);
-    webServer.close();
     dln(loopDBG, "\n");
     doOTAUpdate();
   }
@@ -62,6 +61,7 @@ void doOTAUpdate() {             // the main OTA logic
     setup();
   } else if (currentVersion >= highestAvailableVersion) {
     dln(monitDBG, "Firmware is up to date\n\n");
+    start_ota = false;
     return;
   }
 
@@ -152,8 +152,9 @@ void doOTAUpdate() {             // the main OTA logic
     dln(monitDBG, "An error occurred when retrieving the bin file.");
     blink();
   }
+  // WiFi.stop();
   start_ota = false;
-  startWebServer();
+  // startWebServer();
 }
 
 // Helper for downloading from cloud firmware server via HTTP GET

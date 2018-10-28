@@ -9,6 +9,7 @@ void startWebServer() {
   WiFi.mode(WIFI_AP_STA);
   WiFi.softAP(apSSID.c_str(), apPass.c_str());
 
+  start_ota = false;
   routes();
   WiFi.begin("uos-other", "shefotherkey05"); // Connect to uos-other by default
 }
@@ -25,7 +26,7 @@ void routes() {
   webServer.on("/status", hndlStatus);      // status check, e.g. IP address
   webServer.on("/ota", hndlOTA);      // status check, e.g. IP address
 
-  start_ota = false;
+  
   webServer.begin();
   dln(setupDBG, "HTTP server started");
 }
@@ -49,7 +50,7 @@ void hndlRoot() {
   htmlPage += "<h1>今日山の日なんだよ、祝日だよ！</h1>\n";
 
   respCode = doCloudGet(&http, gitID, "version");
-  if (respCode == 200)
+  if (respCode == 200) {
     highestAvailableVersion = atoi(http.getString().c_str());
     if (currentVersion < highestAvailableVersion) {
       htmlPage += "Current Version:";
@@ -58,7 +59,7 @@ void hndlRoot() {
       htmlPage += String(highestAvailableVersion)+"\n";
       htmlPage += "<a href='/ota'>Click to update</a>\n";
     }
-
+  }
   webServer.send(200, "text/html", htmlPage);
 }
 void hndlWifi() {

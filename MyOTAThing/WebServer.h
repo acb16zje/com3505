@@ -3,6 +3,7 @@
 #define WEB_H
 
 #include <ESPWebServer.h>
+#include <WiFiClient.h>
 
 // SSID and Password of your WiFi AP
 String apSSID = "赤道以南,gakki还是最美";

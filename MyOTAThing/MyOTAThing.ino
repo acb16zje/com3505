@@ -3,8 +3,8 @@
 // COM3505 lab assessment: Over-The-Air update
 /////////////////////////////////////////////////////////////////////////////
 
-#include "Misc.h"                   // WiFi, MAC, LED...
-#include "WebServer.h"              // WebServer header file
+#include "Misc.h"                    // WiFi, MAC, LED...
+#include "WebServer.h"               // WebServer header file
 #include "MyOTAThing.h"
 
 // SETUP: initialisation entry point ////////////////////////////////////////

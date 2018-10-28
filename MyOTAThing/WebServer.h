@@ -3,7 +3,6 @@
 #define WEB_H
 
 #include <ESPWebServer.h>
-#include <WiFiClient.h>
 
 // SSID and Password of your WiFi AP
 String apSSID = "赤道以南,gakki还是最美";
@@ -17,15 +16,17 @@ const char *templatePage[] = {
   "<meta name='viewport' content='width=device-width, initial-scale=1.0'>"
   "<title>",
   "Gakki Access Point - Home",                                          // 1
-  "</title><style>body {font-family: sans-serif;font-size: 1.5em;"
-  "text-align: center;} nav ul {list-style-type: none; margin: 0;"
-  "padding: 0; background-color: #f1f1f1;} nav ul li {display: inline;}"
-  "li a {color: #000; padding: 8px 16px;"
-  "text-decoration: none;}"
+  "</title><style>body {font-family: sans-serif; font-size: 1.5em;"
+  "text-align: center; max-width:600px; margin: 0 auto}"
+  ".menu {list-style-type: none; margin: 0; padding: 0; overflow: auto;"
+  "border: 1px solid #e7e7e7; background-color: #f1f1f1;}"
+  ".menu li {float: left} .menu li a {display: block; color: #000;"
+  "text-decoration: none; padding: 10px} .menu li a:hover"
+  "{background-color: #ddd} table {width:100%; font-size: 24px;}"
+  "td {border: 1px solid #dddddd; padding: 8px;}"
   "</style></head><body>"
-  "<nav><ul>"
-  "<li><a href='/'>Home</a></li>"
-  "<li><a href='/status'>Status</a></li>"
+  "<nav><ul class='menu'>"
+  "<li><a href='/'>Status</a></li>"
   "<li><a href='/wifi'>WiFi</a></li>"
   "</ul></nav>",                                                        // 2
   "",                                                                   // 3

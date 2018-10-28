@@ -30,16 +30,18 @@ void loop() {
   //   dln(loopDBG, "OTA loop");
 
 
-
   // Check for firmware updates every 10 seconds
   if (start_ota) {
-    delay(1000);
-    dln(loopDBG, "\n");
-    doOTAUpdate();
+    int buttonState = digitalRead(pushButton);
+    blink(1, 100);
+
+    if (buttonState == LOW) {
+      dln(loopDBG, "\n");
+      doOTAUpdate();
+      delay(1000);
+    }
   }
-  else {
-    webServer.handleClient();
-  }
+  webServer.handleClient();
 }
 
 // OTA over-the-air update stuff ///////////////////////////////////////////
@@ -66,16 +68,10 @@ void doOTAUpdate() {             // the main OTA logic
   }
 
   // Newer firmware available
-  Serial.printf("Upgrade firmware from version %d to version %d?\n",
+  Serial.printf("Upgrade firmware from version %d to version %d\n",
     currentVersion, highestAvailableVersion
   );
 
-  int buttonState = digitalRead(pushButton);
-
-  while (buttonState == HIGH) {
-    buttonState = digitalRead(pushButton);
-    blink(1,100);
-  }
   ledOff();
   // do a GET for the .bin
   /* TODO

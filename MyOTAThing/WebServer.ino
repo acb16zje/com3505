@@ -106,6 +106,7 @@ void hndlRoot() {         // UI for checking connectivity etc.
   GET_HTML(htmlPage, templatePage, repls);
 
   webServer.send(200, "text/html", htmlPage);
+  start_ota = false;
 }
 
 void hndlWifi() {
@@ -122,6 +123,7 @@ void hndlWifi() {
   GET_HTML(htmlPage, templatePage, repls);
 
   webServer.send(200, "text/html", htmlPage);
+  start_ota = false;
 }
 void hndlWifichz() {
   dln(netDBG, "serving page at /wifichz");
@@ -163,7 +165,7 @@ void hndlOTA() {
   dln(netDBG, "serving page at /ota");
 
   String title = "<h2>OTA Update</h2>";
-  String message = "<p>The machine will restart when complete.</p>";
+  String message = "<p>Please press button to start update.</p>";
 
   replacement_t repls[] = { // the elements to replace in the template
     { 3, title.c_str() },

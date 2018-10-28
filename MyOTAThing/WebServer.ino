@@ -6,6 +6,8 @@
 #include "MyOTAThing.h"
 
 void startWebServer() {
+  apSSID.concat(MAC_ADDRESS);
+
   WiFi.mode(WIFI_AP_STA);
   WiFi.softAP(apSSID.c_str(), apPass.c_str());
 

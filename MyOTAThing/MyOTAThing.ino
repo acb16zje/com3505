@@ -16,7 +16,6 @@ void setup() {
   Serial.printf("\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);
   Serial.printf("Firmware is at version %d\n", currentVersion);
 
-  // startWiFi();
   startWebServer();
 
   // doOTAUpdate(); // Check for and perform firmware updates as needed
@@ -24,23 +23,25 @@ void setup() {
 
 // LOOP: task entry point ///////////////////////////////////////////////////
 void loop() {
+  // Check for firmware updates every 10 seconds
   // int sliceSize = 500000;
   // loopIteration++;
   // if (loopIteration % sliceSize == 0) // a slice every sliceSize iterations
   //   dln(loopDBG, "OTA loop");
 
-
-  // Check for firmware updates every 10 seconds
+  // Update the firmware when OTA page is visted
   if (start_ota) {
     int buttonState = digitalRead(pushButton);
     blink(1, 100);
 
+    // User confirmation
     if (buttonState == LOW) {
       dln(loopDBG, "\n");
       doOTAUpdate();
       delay(1000);
     }
   }
+
   webServer.handleClient();
 }
 
@@ -148,9 +149,8 @@ void doOTAUpdate() {             // the main OTA logic
     dln(monitDBG, "An error occurred when retrieving the bin file.");
     blink();
   }
-  // WiFi.stop();
-  start_ota = false;
-  // startWebServer();
+
+  start_ota = false; // Allow the user to update again
 }
 
 // Helper for downloading from cloud firmware server via HTTP GET

@@ -5,7 +5,7 @@
 #include <ESPWebServer.h>
 
 // SSID and Password of your WiFi AP
-String apSSID = "赤道以南,gakki还是最美";
+String apSSID = "Gakki - ";
 String apPass = "gakkismile";
 
 bool start_ota;

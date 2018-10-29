@@ -1,3 +1,34 @@
 Exercise 10: OTA update via GitHub
 ===
 
+In this assignment, we are tasked to design a system using ESP32 that is able to perform over-the-air update (OTA) and flash itself to a new version. The system should be secure, preventing any exploits to interupt the OTA update progress or gain control of the device itself. The system should also be easy to use, allowing the user to update the device without much hassle.
+
+# Design
+
+Our design will include a 2-step confirmation process that requires the user to do to allow the update. Below is a pseudocode of the system:
+
+### 1. Setting Up
+- Connect to Internet
+- Initialize Access Point
+- Host System Page
+### 2. System Page Interaction
+- User connects to Access Point
+- User is able to view details regarding the device
+- User is able to click **UPDATE** if there is a *higher version available*
+- User does not see **UPDATE** button if there is not update available
+### 3. Physical Verification
+- User is required to **press pull up button** to initiate OTA update
+- User will be able to **cancel the update prompt** by entering another page
+- Once the button is pressed, the user will be unable to access the system page until the update is completed or failed
+### 4. OTA update
+- System connects to GitHub server to check for new version
+- System downloads bin file and flashes
+
+In the situation where the system page is unaccessible, the system should be able to provide feedback to the user. We opt to use the internal LED on ESP32, as this reduces the reliability on external components. The feedback should be direct and inexcessive, allowing the user to understand the current situation easily. Below are a list that take upmost priority for the LED feedback:
+
+- Initialisation of the device
+- Prompt for press of physical button
+- Prompt while update is ongoing
+- Prompt once update is completed/failed
+
+# Implementation & Testing

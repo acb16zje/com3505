@@ -89,10 +89,11 @@ void hndlRoot() {         // UI for checking connectivity etc.
     s += String(highestAvailableVersion);
 
     if (currentVersion < highestAvailableVersion) {
-      s += " <a href='/ota'>(Update)</a></td></tr>";
+      s += " <a href='/ota' class='update'>Update</a></td></tr>";
     }
 
     s += "</td></tr></table>";
+
   } else {
     s += "No connection</td></tr></table>";
   }
@@ -167,7 +168,13 @@ void hndlOTA() {
   dln(netDBG, "serving page at /ota");
 
   String title = "<h2>OTA Update</h2>";
-  String message = "<p>Please press button to start update.</p>";
+  String message;
+  if ( currentVersion >= highestAvailableVersion ) {
+    message = "<p>There are no updates available.</p>";
+  } else {
+    message = "<p>Please press button to start update or return to cancel.</p>";
+    start_ota = true;
+  }
 
   replacement_t repls[] = { // the elements to replace in the template
     { 3, title.c_str() },
@@ -178,7 +185,6 @@ void hndlOTA() {
   GET_HTML(htmlPage, templatePage, repls);
 
   webServer.send(200, "text/html", htmlPage);
-  start_ota = true;
 }
 
 void apListForm(String& f) { // utility to create a form for choosing AP

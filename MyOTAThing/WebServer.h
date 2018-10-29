@@ -4,11 +4,14 @@
 
 #include <ESPWebServer.h>
 
+// Create a WebServer on port 80
+ESPWebServer webServer(80);
+
 // SSID and Password of your WiFi AP
 String apSSID = "Gakki - ";
 String apPass = "gakkismile";
 
-bool start_ota;
+bool start_ota = false;
 
 const char *templatePage[] = {
   "<html><head>"
@@ -24,11 +27,11 @@ const char *templatePage[] = {
   "text-decoration: none; padding: 10px} .menu li a:hover"
   "{background-color: #ddd} table {width:100%; font-size: 24px;}"
   "td {border: 1px solid #dddddd; padding: 8px;}"
-  ".update {border: none; display: inline-block; padding: 8px 16px;"
-  "vertical-align: middle; overflow: hidden; text-decoration: none;"
-  "color: #fff!important; background-color: #000!important; text-align: center;"
-  "cursor: pointer; white-space: nowrap; }"
-  " .update:hover{background-color: #dee2e8!important; color: #000!important;}"
+  ".update {border: 3px solid #12a138; display: inline-block; padding:"
+  "8px 16px; vertical-align: middle; overflow: hidden; text-decoration:"
+  "none; color: #12a138; background-color: #fff; text-align: center;"
+  "cursor: pointer; white-space: nowrap;} .update:hover {background-color:"
+  "#12a138; color: #fff;}"
   "</style></head><body>"
   "<nav><ul class='menu'>"
   "<li><a href='/'>Status</a></li>"
@@ -38,8 +41,6 @@ const char *templatePage[] = {
   "",                                                                   // 4
   "</body></html>"
 };
-
-ESPWebServer webServer(80);     // Create a WebServer on port 80
 
 // Ex07.h model solution
 typedef struct { int position; const char *replacement; } replacement_t;

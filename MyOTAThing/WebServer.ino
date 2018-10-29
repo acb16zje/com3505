@@ -11,7 +11,6 @@ void startWebServer() {
   WiFi.mode(WIFI_AP_STA);
   WiFi.softAP(apSSID.c_str(), apPass.c_str());
 
-  start_ota = false;
   routes();
   WiFi.begin("uos-other", "shefotherkey05"); // Connect to uos-other by default
 }
@@ -105,6 +104,7 @@ void hndlRoot() {         // UI for checking connectivity etc.
     { 3, "<h2>Status</h2>\n" },
     { 4, s.c_str() },
   };
+
   String htmlPage = ""; // a String to hold the resultant page
   GET_HTML(htmlPage, templatePage, repls);
 
@@ -128,11 +128,12 @@ void hndlWifi() {
   webServer.send(200, "text/html", htmlPage);
   start_ota = false;
 }
+
 void hndlWifichz() {
   dln(netDBG, "serving page at /wifichz");
 
-  String title = "<h2>Joining wifi network...</h2>";
-  String message = "<p>Check <a href='/status'>wifi status</a>.</p>";
+  String title = "<h2>Joining WiFi network...</h2>";
+  String message = "<p>Check <a href='/'>WiFi status</a>.</p>";
 
   String ssid = "";
   String key = "";
@@ -144,7 +145,7 @@ void hndlWifichz() {
   }
 
   if(ssid == "") {
-    message = "<h2>Ooops, no SSID...?</h2>\n<p>Looks like a bug :-(</p>";
+    message = "<h2>Ooops, no SSID...?</h2>\n<p>Looks like a bug</p>";
   } else {
     char ssidchars[ssid.length()+1];
     char keychars[key.length()+1];
@@ -169,10 +170,12 @@ void hndlOTA() {
 
   String title = "<h2>OTA Update</h2>";
   String message;
-  if ( currentVersion >= highestAvailableVersion ) {
+
+  if (currentVersion >= highestAvailableVersion) {
     message = "<p>There are no updates available.</p>";
   } else {
-    message = "<p>Please press button to start update or return to cancel.</p>";
+    message = "<p>Press button to start update or click ";
+    message += "<a href='/'>here</a> to cancel.</p>";
     start_ota = true;
   }
 

@@ -4,7 +4,6 @@
 
 // the WiFi and HTTP server libraries ///////////////////////////////////////
 #include <HTTPClient.h>             // ESP32 library for making HTTP requests
-#include <WiFiClient.h>
 #include <Update.h>                 // OTA update library
 
 // debugging infrastructure; setting different DBGs true triggers prints ////

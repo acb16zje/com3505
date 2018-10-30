@@ -10,6 +10,7 @@
 // debugging infrastructure; setting different DBGs true triggers prints ////
 #define dbg(b, s) if(b) Serial.print(s)
 #define dln(b, s) if(b) Serial.println(s)
+#define df(b, s, f) if(b) Serial.printf(s, f)
 #define setupDBG        true
 #define netDBG          true
 #define monitDBG        true

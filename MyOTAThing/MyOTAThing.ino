@@ -13,22 +13,14 @@ void setup() {
   pinMode(BUILTIN_LED, OUTPUT);
   pinMode(pushButton, INPUT_PULLUP);
   getMAC(MAC_ADDRESS);                        // store the MAC address
-  Serial.printf("\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);
-  Serial.printf("Firmware is at version %d\n", currentVersion);
+  df(setupDBG, "\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);
+  df(setupDBG, "Firmware is at version %d\n", currentVersion);
 
   startWebServer();
-
-  // doOTAUpdate(); // Check for and perform firmware updates as needed
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
 void loop() {
-  // Check for firmware updates every 10 seconds
-  // int sliceSize = 500000;
-  // loopIteration++;
-  // if (loopIteration % sliceSize == 0) // a slice every sliceSize iterations
-  //   dln(loopDBG, "OTA loop");
-
   // Update the firmware when OTA page is visted
   if (start_ota) {
     int buttonState = digitalRead(pushButton);
@@ -41,7 +33,7 @@ void loop() {
       delay(1000);
     }
   }
-  ledOff();
+  ledOff(); //ensures led turns off in the occasion user leaves /ota
   webServer.handleClient();
 }
 

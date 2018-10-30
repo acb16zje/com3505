@@ -44,20 +44,20 @@ void doOTAUpdate() {             // the main OTA logic
 
   // Do a GET to read the version file from the cloud
   // This step is already performed in WebServer.ino, double check only
-  dln(monitDBG, "Checking for firmware updates...");
+  dln(otaDBG, "Checking for firmware updates...");
   respCode = doCloudGet(&http, gitID, "version");
   if (respCode == 200) // check response code (-ve on failure)
     highestAvailableVersion = atoi(http.getString().c_str());
   else
-    df(monitDBG, "Couldn't get version! rtn code: %d\n", respCode);
+    df(otaDBG, "Couldn't get version! rtn code: %d\n", respCode);
   http.end(); // free resources
 
   // do we know the latest version, and does the firmware need updating?
   if (respCode != 200) {
-    dln(monitDBG, "Cannot update\n\n");
+    dln(otaDBG, "Cannot update\n\n");
     setup();
   } else if (currentVersion >= highestAvailableVersion) {
-    dln(monitDBG, "Firmware is up to date\n\n");
+    dln(otaDBG, "Firmware is up to date\n\n");
     start_ota = false;
     return;
   }
@@ -68,20 +68,9 @@ void doOTAUpdate() {             // the main OTA logic
   );
 
   ledOff();
-  // do a GET for the .bin
-  /* TODO
-  Your main OTA update logic goes here. Use doCloudGet to do an HTTP GET for
-  the .bin file, and check that the length of the update is appropriate (via
-  HTTPClient's getSize() method. (You might note that a minimal sketch takes
-  more than 100k bytes, so perhaps that is a good length to check for. Check
-  the response code, and if all is well call Update.begin (which takes the
-  size of the update as parameter) and Update.writeStream (which takes a
-  Stream that you can get from HTTPClient's getStream() method). Other methods
-  needed are Update.end, Update.isFinished and Update.getError. When an update
-  has been performed correctly, you can restart the device via ESP.restart().
-  */
 
-  Serial.println("Retrieving update file...");
+  // Do a GET for the .bin
+  dln(otaDBG, "Retrieving update file...");
 
   // Get the response code of the bin file
   respCode = doCloudGet(
@@ -93,12 +82,12 @@ void doOTAUpdate() {             // the main OTA logic
 
   // Perform the update
   if (respCode == 200 && fileSize >= minSize && fileSize <= maxSize) {
-    df(monitDBG, "Received bin file of size %d bytes.\n", fileSize);
+    df(otaDBG, "Received bin file of size %d bytes.\n", fileSize);
 
     bool canBegin = Update.begin(fileSize);
 
     if (canBegin) {
-      dln(monitDBG, "Performing OTA... Please do not turn off the ESP32...");
+      dln(otaDBG, "Performing OTA... Please do not turn off the ESP32...");
 
       ledOn(); // Start the LED when it is flashing
 
@@ -110,9 +99,9 @@ void doOTAUpdate() {             // the main OTA logic
 
       // Check if finished writing
       if (written == fileSize) {
-        dln(monitDBG, "Written : " + String(written) + " successfully");
+        dln(otaDBG, "Written : " + String(written) + " successfully");
       } else {
-        dln(monitDBG,
+        dln(otaDBG,
           "Written only : " +
             String(written) + "/" + String(fileSize) + ". Retry?"
         );
@@ -120,28 +109,28 @@ void doOTAUpdate() {             // the main OTA logic
 
       // Final process
       if (Update.end()) {
-        dln(monitDBG, "OTA finished.");
+        dln(otaDBG, "OTA finished.");
         blink();
 
         if (Update.isFinished()) {
-          dln(monitDBG, "Update completed successfully.");
+          dln(otaDBG, "Update completed successfully.");
 
           currentVersion = highestAvailableVersion;
 
           // ESP.restart(); // Restarting the device will loop the update
         } else {
-          dln(monitDBG, "Update failed. Unknown error occurred.");
+          dln(otaDBG, "Update failed. Unknown error occurred.");
         }
       } else {
-        dln(monitDBG, "Error Occurred. Error #: " + String(Update.getError()));
+        dln(otaDBG, "Error Occurred. Error #: " + String(Update.getError()));
       }
 
       http.end(); // Free resource
     } else {
-      dln(monitDBG, "Not enough memory space to perform the update.");
+      dln(otaDBG, "Not enough memory space to perform the update.");
     }
   } else {
-    dln(monitDBG, "An error occurred when retrieving the bin file.");
+    dln(otaDBG, "An error occurred when retrieving the bin file.");
     blink();
   }
 

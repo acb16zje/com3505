@@ -1,66 +1,120 @@
 Exercise 10: OTA update via GitHub
 ===
 
-In this assignment, we are tasked to design a system using ESP32 that is able to perform over-the-air update (OTA) and flash itself to a new version. The system should be secure, preventing any exploits to interupt the OTA update progress or gain control of the device itself. The system should also be easy to use, allowing the user to update the device without much hassle.
+The objective of this assignment is to design an Over-the-Air (OTA) update system for updating the
+ESP32 firmware to the latest version. The OTA system should be secure, preventing any exploits to
+interrupt the OTA update progress or gain control of the device itself. The OTA system should also be
+easy to use, allowing the user to update the device without much hassle.
 
 # Design
 
-Our design will include a 2-step confirmation process that requires the user to do to allow the update. Below is a pseudocode of the system:
+Our design will include a 2-step confirmation process that requires the user to do to allow the
+update. Below is a pseudocode of the system:
 
 ### 1. Setting Up
-- Connect to Internet
+- Connect to the Internet
 - Initialize Access Point
 - Host System Page
+
 ### 2. System Page Interaction
 - User connects to Access Point
 - User is able to view details regarding the device
 - User is able to click **UPDATE** if there is a *higher version available*
 - User does not see **UPDATE** button if there is not update available
+
 ### 3. Physical Verification
 - User is required to **press pull up button** to initiate OTA update
 - User will be able to **cancel the update prompt** by entering another page
-- Once the button is pressed, the user will be unable to access the system page until the update is completed or failed
+- Once the button is pressed, the user will be unable to access the system page until the update is
+  completed or failed
+
 ### 4. OTA update
 - System connects to GitHub server to check for new version
 - System downloads bin file and flashes
 
-In the situation where the system page is unaccessible, the system should be able to provide feedback to the user. We opt to use the internal LED on ESP32, as this reduces the reliability on external components. The feedback should be direct and inexcessive, allowing the user to understand the current situation easily. Below are a list that take upmost priority for the LED feedback:
+In the situation where the system page is inaccessible, the system should be able to provide
+feedback to the user. We opt to use the internal LED on ESP32, as this reduces the reliability on
+external components. The feedback should be direct and excessive, allowing the user to understand
+the current situation easily. Below is a list that takes utmost priority for the LED feedback:
 
 - Initialisation of the device
-- Prompt for press of physical button
-- Prompt while update is ongoing
-- Prompt once update is completed/failed
+- Prompt for a press of the physical button
+- Prompt while an update is ongoing
+- Prompt once the update is completed/failed
 
 <figure style="text-align:center;">
-<img src="./diagram.png" width="500" title="Diagram of System">
+<img src="./images/diagram.png" width="500" title="Diagram of System">
 <figcaption style="text-align:center;">Diagram of System</figcaption>
 </figure>
 
-# Implementation & Testing
+# Implementation and Versions
 
 ## Implementation
 
-The implementation is done in multiple stages. 
+The implementation is done in multiple stages.
 
-**Stage 1:** We initially started with the function *doOTAUpdate()* itself, ensuring the system is able to successfully download the bin file and flash the new version without any errors. We ensured that the files downloaded are validated before attempting to flash in order to avoid bricking.
+**Stage 1:** We initially started with the function *doOTAUpdate()* itself, ensuring the system is
+able to successfully download the bin file and flash the new version without any errors. We ensured
+that the files downloaded are validated before attempting to flash in order to avoid bricking the
+device.
 
-**Stage 2:** Once the core feature is completed, we focused on the physical side of the system, implementing the pull up button and as well as setting up the LED feedbacks. As previously mentioned, the LED signals are made to be simple and direct to allow ease of use for the users. The LED will continuously flash to prompt the user when they are required to press the pull up button, and blink once something has been completed.
+**Stage 2:** Once the core feature is completed, we focused on the physical side of the system,
+implementing the pull-up button and as well as setting up the LED feedbacks. As mentioned
+previously, the LED signals are made to be simple and direct to allow ease of use for the users. The
+LED will continuously flash to prompt the user when they are required to press the pull up button,
+and blink once when the update is completed.
 
-**Stage 3:** We implemented the system page, which we encountered relative difficulty to allow the ESP32 to host an access point while remained connected to the internet. In the end, we succeeded producing the system page, which contains a home page with details regarding the device, as well as a WiFi page that allows the ESP to connect to other networks. The user will be able to initialise the OTA update on the home page if there is a new version available.
+In **Stage 1** and **Stage 2**, all implementations were done in `MyOTAThing.ino`, which slowly
+became cluttered and hard to maintain over time. Therefore, code are refactored and grouped into
+different files according to their functionality.
 
-**Stage 4:** The final part is to provide a secure connection between the device and the server host. At first, we used the original cloud server provided in the exercise. However, we eventually convert to download from GitHub over HTTPS to provide a more secure connection. The implementation proved difficult as *httpClient* has been depreciated, along with the lack of documentation of Arduino libraries. A large amount of trial and error to figure out how to properly download from GitHub server and unpack the file. 
+- `Misc.h` and `Misc.ino` are responsible for controlling the LED, the pull-up button, and getting
+  the MAC address.
+- `WebServer.h` and `WebServer.ino` are responsible for handling the web server and serving the web
+  pages.
+- `MyOTAThing.h` and `MyOTAThing.ino` are the main files than contain the `setup()` and `loop()`
+  method. It combines the functions defined in `Misc.ino` and `WebServer.ino` into `doOTAUpdate()`,
+  which makes the code more readable and easier to debug.
 
-## Testing
+**Stage 3:** We implemented the system page, which we encountered relative difficulty to allow the
+ESP32 to host an access point while remaining connected to the internet. In the end, we succeeded in
+producing the system page, which contains a home page with details regarding the device, as well as
+a WiFi page that allows the ESP to connect to other networks. The user will be able to initialise
+the OTA update on the homepage if there is a new version available.
 
-We have implemented debugging infrastructure to allow easier testing for the code. The variables can be changed easily to reduce clutter on the monitor prompt and allow the problems to be assessed faster.
+**Stage 4:** The final part is to download the firmware file directly from GitHub over HTTPS and
+providing the ability to connect to hidden WiFi networks. At first, we used the original cloud
+server provided in the exercise. However, we eventually convert to download from GitHub over HTTPS
+to provide a more secure connection. The implementation proved difficult as the `getStream()` method
+in `HTTPClient` has been depreciated, along with the lack of documentation of Arduino libraries. A
+large amount of trial and error to figure out how to properly download from GitHub server and unpack
+the file.
 
-*setupDBG:* prints prompts related to initial setup
+## Versions
+**Version 1:** This is the default version number used for the firmware uploaded from Arduino IDE,
+it is not included inside the `BinFiles` folder.
 
-*netDBG:* prints prompts related to system page management
+|          | Version 2    | Version 3 | Version 4 |
+|----------|--------------|-----------|-----------|
+| Features | <ul><li>HTTP OTA update over com3505.gate.ac.uk</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li></ul> | <ul><li>HTTP OTA update over com3505.gate.ac.uk</li><li>Reduced workload by performing firmware update only when requested by the user</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li><li>Starts a WiFi access point and WebServer, which allows the user to configure which WiFi network to join</li><li>Clean and straightforward web interface design</li></ul> | <ul><li>HTTPS OTA update over www.github.com</li><li>Reduced workload by performing firmware update only when requested by the user</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li><li>Starts a WiFi access point and WebServer, which allows the user to configure which WiFi network to join</li><li>Able to join hidden WiFi networks</li><li>Clean and straightforward web interface design</li></ul> |
+| Disadvantages | <ul><li>HTTP, less secure</li><li>Directly performs firmware update (requires confirmation) once it is connected to the internet and found a newer version </li><li>Unable to configure the WiFi network</li></ul> | <ul><li>HTTP, less secure</li><li>Unable to join hidden WiFi networks</li></ul> |  |
 
-*monitDBG:* prints prompts related to OTA update
+# Debugging
 
-*loopDBG:* prints prompt to show that the loop continues to run
+We have implemented a debugging infrastructure that makes use of macros for easier code debugging.
+The variables can be changed from `true` to `false` to enable or disable the function respectively.
 
-As the system is fairly small, we tested the system manually, ensuring that each feature functioned correctly. This included running the entire process from start to finish, followed by trying to reproduce the errors to ensure the error will be catched by the system.
+`setupDBG`: For printing prompts related to the initial setup process.
+
+`netDBG`: For printing prompts related to `WebServer` management.
+
+`loopDBG`: For printing prompt in the `loop` method.
+
+`otaDBG`: For printing prompts in the `doOTAUpdate` method.
+
+# Testing
+As the system is fairly small and only equipped with limited functionalities, the system was tested
+manually to ensure that each feature functioned correctly. This included running the entire process
+from start to finish, followed by trying to reproduce the errors to ensure the error will be catched
+by the system.
 

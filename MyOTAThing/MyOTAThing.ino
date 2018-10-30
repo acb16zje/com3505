@@ -17,6 +17,7 @@ void setup() {
   df(setupDBG, "Firmware is at version %d\n", currentVersion);
 
   startWebServer();
+  blink(3,500);
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
@@ -27,7 +28,8 @@ void loop() {
     blink(1, 100);
 
     // User confirmation
-    if (buttonState == LOW) {
+    if (buttonState == LOW  && (millis() - t) > debounce) {
+      t = millis();
       dln(loopDBG, "\n");
       doOTAUpdate();
       delay(1000);
@@ -48,15 +50,15 @@ void doOTAUpdate() {             // the main OTA logic
   respCode = doCloudGet(&http, gitID, "version");
   if (respCode == 200) // check response code (-ve on failure)
     highestAvailableVersion = atoi(http.getString().c_str());
-  else
+  else {
     df(otaDBG, "Couldn't get version! rtn code: %d\n", respCode);
+    dln(otaDBG, "Cannot update\n\n");
+    setup();
+  }
   http.end(); // free resources
 
   // do we know the latest version, and does the firmware need updating?
-  if (respCode != 200) {
-    dln(otaDBG, "Cannot update\n\n");
-    setup();
-  } else if (currentVersion >= highestAvailableVersion) {
+  if (currentVersion >= highestAvailableVersion) {
     dln(otaDBG, "Firmware is up to date\n\n");
     start_ota = false;
     return;

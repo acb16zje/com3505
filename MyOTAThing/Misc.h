@@ -12,5 +12,7 @@ void ledOn();
 void ledOff();
 void blink(int = 1, int = 300);
 const int pushButton = 14;
+const int debounce = 500;                     // Prevent button input bug
+int t = 0;
 
 #endif

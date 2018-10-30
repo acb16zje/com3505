@@ -148,9 +148,6 @@ void hndlWifichz() {
       key = webServer.arg(i);
   }
 
-  dln(true, ssid);
-  dln(true, key);
-
   if (ssid == "") {
     message = "<h2>Ooops, no SSID...?</h2>\n<p>Looks like a bug</p>";
   } else {

@@ -109,7 +109,8 @@ void doOTAUpdate() {             // the main OTA logic
       ledOn(); // Start the LED when it is flashing
 
       // Start writing to the flash
-      size_t written = Update.writeStream(http.getStream());
+      // http.getStream() will not work for HTTPS
+      size_t written = Update.writeStream(*http.getStreamPtr());
 
       ledOff(); // Turn off LED when finished flashing
 
@@ -156,11 +157,17 @@ void doOTAUpdate() {             // the main OTA logic
 // Helper for downloading from cloud firmware server via HTTP GET
 int doCloudGet(HTTPClient *http, String gitID, String fileName) {
   // build up URL from components; for example:
-  // http://com3505.gate.ac.uk/repos/com3505-labs-2018-adalovelace/BinFiles/2.bin
-  String baseUrl =
-    "http://com3505.gate.ac.uk/repos/";
+  //http://com3505.gate.ac.uk/repos/com3505-labs-2018-adalovelace/BinFiles/2.bin
+  // String baseUrl =
+  //   "http://com3505.gate.ac.uk/repos/";
+  // String url =
+  //   baseUrl + "com3505-labs-2018-" + gitID + "/BinFiles/" + fileName;
+
+  // Fetch from GitHub directly
+  String baseUrl = "https://" + token + "@raw.githubusercontent.com/";
   String url =
-    baseUrl + "com3505-labs-2018-" + gitID + "/BinFiles/" + fileName;
+    baseUrl + "UniSheffieldInternetOfThings/com3505-labs-2018-" +
+    gitID + "/master/BinFiles/" + fileName;
 
   // make GET request and return the response code
   http->begin(url);

@@ -36,8 +36,6 @@ In the situation where the system page is unaccessible, the system should be abl
 <figcaption style="text-align:center;">Diagram of System</figcaption>
 </figure>
 
-
-
 # Implementation & Testing
 
 ## Implementation
@@ -48,7 +46,9 @@ The implementation is done in multiple stages.
 
 **Stage 2:** Once the core feature is completed, we focused on the physical side of the system, implementing the pull up button and as well as setting up the LED feedbacks. As previously mentioned, the LED signals are made to be simple and direct to allow ease of use for the users. The LED will continuously flash to prompt the user when they are required to press the pull up button, and blink once something has been completed.
 
-**Stage 3:** Lastly, we implemented the system page, which we encountered relative difficulty to allow the ESP32 to host an access point while remained connected to the internet. In the end, we succeeded producing the system page, which contains a home page with details regarding the device, as well as a WiFi page that allows the ESP to connect to other networks. The user will be able to initialise the OTA update on the home page if there is a new version available.
+**Stage 3:** We implemented the system page, which we encountered relative difficulty to allow the ESP32 to host an access point while remained connected to the internet. In the end, we succeeded producing the system page, which contains a home page with details regarding the device, as well as a WiFi page that allows the ESP to connect to other networks. The user will be able to initialise the OTA update on the home page if there is a new version available.
+
+**Stage 4:** The final part is to provide a secure connection between the device and the server host. At first, we used the original cloud server provided in the exercise. However, we eventually convert to download from GitHub over HTTPS to provide a more secure connection. The implementation proved difficult as *httpClient* has been depreciated, along with the lack of documentation of Arduino libraries. A large amount of trial and error to figure out how to properly download from GitHub server and unpack the file. 
 
 ## Testing
 

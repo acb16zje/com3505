@@ -42,10 +42,10 @@ the current situation easily. Below is a list that takes utmost priority for the
 - Prompt while an update is ongoing
 - Prompt once the update is completed/failed
 
-<figure style="text-align:center;">
-<img src="./images/diagram.png" width="500" title="Diagram of System">
-<figcaption style="text-align:center;">Diagram of System</figcaption>
-</figure>
+<p align="center">
+  <img src="./images/diagram.png" width="500" title="Diagram of System">
+  <p align="center">Diagram of System</p>
+</p>
 
 # Implementation and Versions
 

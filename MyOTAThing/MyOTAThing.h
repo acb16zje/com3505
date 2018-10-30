@@ -5,24 +5,28 @@
 // the WiFi and HTTP server libraries ///////////////////////////////////////
 #include <HTTPClient.h>             // ESP32 library for making HTTP requests
 #include <Update.h>                 // OTA update library
+#include <WiFi.h>                   // WiFi
 
 // debugging infrastructure; setting different DBGs true triggers prints ////
 #define dbg(b, s) if(b) Serial.print(s)
 #define dln(b, s) if(b) Serial.println(s)
 #define df(b, s, f) if(b) Serial.printf(s, f)
-#define setupDBG        true
-#define netDBG          true
-#define monitDBG        true
-
-void setup();
-void loop();
+#define setupDBG        true        // For setup phase
+#define netDBG          true        // For networking things
+#define monitDBG        true        // For debugging variables or others
+#define loopDBG         true        // For debugging in the loop()
 
 // OTA stuff ////////////////////////////////////////////////////////////////
-int currentVersion = 1;                       // used to check for updates
+HTTPClient http;                              // manage the HTTP request process
+
 const String gitID = "Juneezee";              // team's git ID
 const String token = "0e880b21f37190fcd95ad385fcb8deade7209c90"; // Personal access token
 const int minSize = 100000;                   // 100k bytes
 const int maxSize = 1000000;                  // 1 mega bytes
+
+int currentVersion = 1;                       // used to check for updates
+int highestAvailableVersion = -1;             // version of latest firmware on server
+int respCode;                                 // the response code from the request (e.g. 404, 200, ...)
 
 // Certificate for GitHub.com
 const char* root_ca = \
@@ -50,12 +54,9 @@ const char* root_ca = \
 "+OkuE6N36B9K\n" \
 "-----END CERTIFICATE-----\n";
 
+void setup();
+void loop();
 int doCloudGet(HTTPClient *, String, String); // helper for downloading 'ware
 void doOTAUpdate();                           // main OTA logic
 
-int loopIteration = 0;
-
-HTTPClient http; // manage the HTTP request process
-int respCode;    // the response code from the request (e.g. 404, 200, ...)
-int highestAvailableVersion = -1;  // version of latest firmware on server
 #endif

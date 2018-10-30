@@ -33,7 +33,8 @@ void loop() {
       delay(1000);
     }
   }
-  ledOff(); //ensures led turns off in the occasion user leaves /ota
+
+  ledOff(); // ensures LED is turned off when user leaves /ota
   webServer.handleClient();
 }
 
@@ -41,13 +42,14 @@ void loop() {
 void doOTAUpdate() {             // the main OTA logic
   // materials for doing an HTTP GET on github from the BinFiles/ dir
 
-  // do a GET to read the version file from the cloud
+  // Do a GET to read the version file from the cloud
+  // This step is already performed in WebServer.ino, double check only
   dln(monitDBG, "Checking for firmware updates...");
   respCode = doCloudGet(&http, gitID, "version");
   if (respCode == 200) // check response code (-ve on failure)
     highestAvailableVersion = atoi(http.getString().c_str());
   else
-    Serial.printf("Couldn't get version! rtn code: %d\n", respCode);
+    df(monitDBG, "Couldn't get version! rtn code: %d\n", respCode);
   http.end(); // free resources
 
   // do we know the latest version, and does the firmware need updating?
@@ -81,8 +83,8 @@ void doOTAUpdate() {             // the main OTA logic
 
   Serial.println("Retrieving update file...");
 
-  // Get the response code of the HTTP
-  int binRespCode = doCloudGet(
+  // Get the response code of the bin file
+  respCode = doCloudGet(
     &http, gitID, String(highestAvailableVersion) + ".bin"
   );
 
@@ -90,8 +92,8 @@ void doOTAUpdate() {             // the main OTA logic
   int fileSize = http.getSize();
 
   // Perform the update
-  if (binRespCode == 200 && fileSize >= minSize && fileSize <= maxSize) {
-    Serial.printf("Received bin file of size %d bytes.\n", fileSize);
+  if (respCode == 200 && fileSize >= minSize && fileSize <= maxSize) {
+    df(monitDBG, "Received bin file of size %d bytes.\n", fileSize);
 
     bool canBegin = Update.begin(fileSize);
 

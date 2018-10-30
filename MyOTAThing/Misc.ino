@@ -3,19 +3,6 @@
 // Misc utilities
 /////////////////////////////////////////////////////////////////////////////
 
-// Get on the network
-void startWiFi() {
-  WiFi.disconnect(true);
-  WiFi.begin("uos-other", "shefotherkey05");
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    dln(setupDBG, "Connecting to WiFi...");
-  }
-
-  dln(setupDBG, "Connected to WiFi.");
-}
-
 // Get the ESP's MAC address
 void getMAC(char *buf) { // the MAC is 6 bytes, so needs careful conversion...
   uint64_t mac = ESP.getEfuseMac(); // ...to string (high 2, low 4):

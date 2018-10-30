@@ -12,7 +12,7 @@ void startWebServer() {
   WiFi.softAP(apSSID.c_str(), apPass.c_str());
 
   routes();
-  WiFi.begin("uos-other", "shefotherkey05"); // Connect to uos-other by default
+  WiFi.begin();                             // for when credentials are already stored by board
 }
 
 void routes() {
@@ -37,7 +37,8 @@ void hndlNotFound() {
 }
 
 void hndlRoot() {         // UI for checking connectivity etc.
-  dln(netDBG, "serving page at /");
+  dln(netDBG, "Serving page at /");
+  start_ota = false;
 
   String s = "<table>";
 
@@ -79,8 +80,9 @@ void hndlRoot() {         // UI for checking connectivity etc.
 
   s += "<tr><td>Current Version</td><td>";
   s += String(currentVersion);
-  s += "</td></tr><tr><td>Newest Version</td><td>";
+  s += "</td></tr><tr><td>Latest Version</td><td>";
 
+  // do a GET to read the version file from the cloud
   respCode = doCloudGet(&http, gitID, "version");
   if (respCode == 200) {
     highestAvailableVersion = atoi(http.getString().c_str());
@@ -109,11 +111,11 @@ void hndlRoot() {         // UI for checking connectivity etc.
   GET_HTML(htmlPage, templatePage, repls);
 
   webServer.send(200, "text/html", htmlPage);
-  start_ota = false;
 }
 
 void hndlWifi() {
-  dln(netDBG, "serving page at /wifi");
+  dln(netDBG, "Serving page at /wifi");
+  start_ota = false;
 
   String form = ""; // a form for choosing an access point and entering key
   apListForm(form);
@@ -126,7 +128,6 @@ void hndlWifi() {
   GET_HTML(htmlPage, templatePage, repls);
 
   webServer.send(200, "text/html", htmlPage);
-  start_ota = false;
 }
 
 void hndlWifichz() {
@@ -137,14 +138,20 @@ void hndlWifichz() {
 
   String ssid = "";
   String key = "";
-  for(uint8_t i = 0; i < webServer.args(); i++ ) {
-    if(webServer.argName(i) == "ssid")
+  for (uint8_t i = 0; i < webServer.args(); i++ ) {
+    if (webServer.argName(i) == "ssid")
       ssid = webServer.arg(i);
-    else if(webServer.argName(i) == "key")
+    else if (webServer.argName(i) == "hidden" && ssid == "")
+      // hidden network is always the last option
+      ssid = webServer.arg(i);
+    else if (webServer.argName(i) == "key")
       key = webServer.arg(i);
   }
 
-  if(ssid == "") {
+  dln(true, ssid);
+  dln(true, key);
+
+  if (ssid == "") {
     message = "<h2>Ooops, no SSID...?</h2>\n<p>Looks like a bug</p>";
   } else {
     char ssidchars[ssid.length()+1];
@@ -172,7 +179,7 @@ void hndlOTA() {
   String message;
 
   if (currentVersion >= highestAvailableVersion) {
-    message = "<p>There are no updates available.</p>";
+    message = "<p>No updates available.</p>";
   } else {
     message = "<p>Press button to start update or click ";
     message += "<a href='/'>here</a> to cancel.</p>";
@@ -180,6 +187,7 @@ void hndlOTA() {
   }
 
   replacement_t repls[] = { // the elements to replace in the template
+    { 1, apSSID.c_str() },
     { 3, title.c_str() },
     { 4, message.c_str() },
   };
@@ -193,11 +201,11 @@ void hndlOTA() {
 void apListForm(String& f) { // utility to create a form for choosing AP
   const char *checked = " checked";
   int n = WiFi.scanNetworks();
-  dbg(netDBG, "scan done: ");
+  dbg(netDBG, "Scan done: ");
 
   if(n == 0) {
-    dln(netDBG, "no networks found");
-    f += "No wifi access points found :-( ";
+    dln(netDBG, "No networks found.");
+    f += "No WiFi access points found";
     f += "<a href='/'>Back</a><br/><a href='/wifi'>Try again?</a></p>\n";
   } else {
     dbg(netDBG, n); dln(netDBG, " networks found");
@@ -214,10 +222,31 @@ void apListForm(String& f) { // utility to create a form for choosing AP
       f.concat("</td><td>(");
       f.concat(WiFi.RSSI(i));
       f.concat(" dBm)</td>");
-      f.concat("</tr>\n");
+      f.concat("</tr>");
       checked = "";
+
+      // Allow connection to hidden network
+      if (i == n - 1) {
+        f.concat("<tr><td>");
+        f.concat("<input type='radio' name='ssid' value='' id='hidRadio'>");
+        f.concat("</td><td>");
+        f.concat("<input type='text' name='hidden' id='hidText' disabled>");
+        f.concat("(Hidden Network)</td><td></td></tr>");
+      }
     }
-    f += "</table><br/>Pass key: <input type='textarea' name='key'><br/><br/> ";
+
+    f += "</table><br/>Password: <input type='text' name='key'><br/><br/> ";
     f += "<input type='submit' value='Submit'></form>";
   }
 }
+
+// Ex07 model solution
+void getHtml( String& html, const char *boiler[], int boilerLen,
+  replacement_t repls[], int replsLen)  {
+  for(int i = 0, j = 0; i < boilerLen; i++) {
+    if(j < replsLen && repls[j].position == i)
+      html.concat(repls[j++].replacement);
+    else
+      html.concat(boiler[i]);
+  }
+};

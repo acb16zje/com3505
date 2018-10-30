@@ -11,7 +11,8 @@ ESPWebServer webServer(80);
 String apSSID = "Gakki - ";
 String apPass = "gakkismile";
 
-bool start_ota = false;
+bool start_ota = false;  // For determining whether to start the update
+bool is_reset  = false;  // Is it a firmware upgrade or reset?
 
 const char *templatePage[] = {
   "<html><head>"
@@ -39,7 +40,10 @@ const char *templatePage[] = {
   "</ul></nav>",                                                        // 2
   "",                                                                   // 3
   "",                                                                   // 4
-  "</body></html>"
+  "</body><script>document.addEventListener('click', function() {"
+  "if (document.getElementById('hidRadio').checked) {"
+  "document.getElementById('hidText').disabled = false} else {"
+  "document.getElementById('hidText').disabled = true}})</script></html>"
 };
 
 // Ex07.h model solution

@@ -175,3 +175,25 @@ manually to ensure that each feature functioned correctly. This included running
 from start to finish, followed by trying to reproduce the errors to ensure the error will be catched
 by the system.
 
+## OTA Update Test Cases
+
+|                    Test Case                    |                         Expected Output                        | Results |
+|:-----------------------------------------------:|:--------------------------------------------------------------:|:-------:|
+| System unable to get version                    | Monitor prints "Couldn't get version! rtn code:"               |   Pass  |
+| System is up to date                            | Monitor prints "Firmware is up to date"                        |   Pass  |
+| System is able to download the firmware file    | Monitor prints "Received bin file of size %d bytes."           |   Pass  |
+| System failed to download the firmware file     | Monitor prints "An error occured when retrieving the bin file" |   Pass  |
+| System is able to write firmware file           | Monitor prints "Update completed successfully. OTA finished."  |   Pass  |
+| System is unable to write the file successfully | Monitor prints "Written only: %d / %d . Retry?"                |   Pass  |
+| System encounters error during OTA              | Monitor prints "Error occurred. Error #: %d"                   |   Pass  |
+| Device has not enough memory to perform update  | Monitor prints "Not enough memory space to perform the update" |   Pass  |
+
+## Webserver Test Cases
+
+|                           Test Case                          |                            Expected Output                            | Results |
+|:------------------------------------------------------------:|:---------------------------------------------------------------------:|:-------:|
+| Webserver cannot find link                                   | Monitor prints "URI Not found"                                        |   Pass  |
+| Entering /ota while not connected to internet                | /ota prints "No Internet Connection"                                  |   Pass  |
+| Entering /home while not connected to internet               | Update button does not appear                                         |   Pass  |
+| Entering /wifi with no network found                         | /wifi prints "No WiFi access points found"                            |   Pass  |
+| Entering the wrong password when connecting to a new network | Access Point resumes function with /home showing no network connected |   Pass  |

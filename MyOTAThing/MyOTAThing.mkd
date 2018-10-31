@@ -1,36 +1,83 @@
 Exercise 10: OTA update via GitHub
 ===
 
-The objective of this assignment is to design an Over-the-Air (OTA) update system for updating the
-ESP32 firmware to the latest version. The OTA system should be secure, preventing any exploits to
-interrupt the OTA update progress or gain control of the device itself. The OTA system should also be
-easy to use, allowing the user to update the device without much hassle.
+The objective of this assignment is to design an Over-the-Air (OTA) update system that checks and
+downloads new firmware for the ESP32 from the cloud server.
 
 # Design
+## System Specification
+|                                                                                             Criteria                                                                                             | Importance |
+|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------:|
+| **Robustness:** The ESP32 device should be bootable even if the system update has failed.                                                                                                        |  Essential |
+| **Completeness:** The firmware should be updated to the latest version when the update has successfully completed.                                                                               |  Essential |
+| **Security:** Download the firmware file over HTTPS. The firmware update process requires a confirmation step. The firmware should only be updated when the user has pressed the pull-up button. |  Essential |
+| **Network:** The ESP32 should be able to scan and connect to any WiFi networks (hidden networks included), provided that the password entered is correct.                                        |  Essential |
 
-Our design will include a 2-step confirmation process that requires the user to do to allow the
-update. Below is a pseudocode of the system:
+## Flowchart and Program Workflow
+Below is the flowchart and its description of the program. The design below is the final design of
+the program. Any design changes made during the implementation process are mentioned in
+[here](#designchanges).
 
 ### 1. Setting Up
-- Connect to the Internet
-- Initialize Access Point
-- Host System Page
+1. Start the WiFi access point
+2. Start the web server
+3. Connect to the WiFi network
+    1. If a WiFi network was connected before (credentials stored on board), connect to it
+    2. Else wait for the user to connect to a WiFi network
+4. Handle the web server client requests
 
-### 2. System Page Interaction
-- User connects to Access Point
-- User is able to view details regarding the device
-- User is able to click **UPDATE** if there is a *higher version available*
-- User does not see **UPDATE** button if there is not update available
+### 2. Web Page Interaction
+1. User connects to Access Point
+2. User is able to view details regarding the device
+3. User is able to click **UPDATE** if there is a *higher version available*
+4. User does not see **UPDATE** button if there is not update available
 
 ### 3. Physical Verification
-- User is required to **press pull up button** to initiate OTA update
-- User will be able to **cancel the update prompt** by entering another page
-- Once the button is pressed, the user will be unable to access the system page until the update is
-  completed or failed
+1. User is required to **press pull up button** to confirm the OTA update
+2. User will be able to **cancel the update prompt** by entering another page
+3. Once the button is pressed and the update process has started, the user will be unable to access
+   the web pages until the update is completed or failed
 
 ### 4. OTA update
-- System connects to GitHub server to check for new version
-- System downloads bin file and flashes
+1. System performs a HTTPS GET request to the GitHub server to check for new version.
+2. System downloads bin file directly from GitHub and perform the update. The pseudocode for the
+   update process is written below:
+
+```c++
+doOTAUpdate() {
+  respCode = HTTPS GET the URL of the version file
+
+  if respCode == 200
+    store the latest version number as highestAvailableVersion
+  else
+    print error messages
+    run setup() again
+
+  if currentVersionNumber >= highestAvailableVersion
+    return
+
+  respCode = HTTPS get the firmware bin file
+  fileSize = get the file size using http.getSize()
+
+  if respCode == 200 and the fileSize is above 100KB and under 1MB
+    if Update.canBegin(fileSize)
+      turn on the LED
+
+      starting flashing the firmware using Update.writeStream()
+
+      if Update.end()
+        blink the LED
+
+          if Update.isFinished()
+            set the currentVersion to highestAvailableVersion
+          else
+            print error messages
+      else
+        print error messages
+  else
+    print error message
+}
+```
 
 In the situation where the system page is inaccessible, the system should be able to provide
 feedback to the user. We opt to use the internal LED on ESP32, as this reduces the reliability on
@@ -43,26 +90,34 @@ the current situation easily. Below is a list that takes utmost priority for the
 - Prompt once the update is completed/failed
 
 <p align="center">
-  <img src="./images/diagram.png" width="500" title="Diagram of System">
+  <img src="./images/diagram.png" width="500">
   <p align="center">Diagram of System</p>
 </p>
+
+# Design Changes During Implementation <a name="designchanges"></a>
+1. Initially, the ability to join hidden WiFi networks was not included in the design stage. It was
+   later realized that ESP32 should be not be preconfigured to join the `uos-other` network in the
+   code, and it should be able to join other hidden networks as well to improve network flexibility.
+2. The idea of downloading the firmware directly from GitHub over HTTPS was considered at first. It
+   was added because security is one of the essential criteria of the system, and GitHub server
+   requires a personal access token to be provided in order to download the bin files from the
+   private repository.
 
 # Implementation and Versions
 
 ## Implementation
+**Stage 1:** The implementation initially started in the method *doOTAUpdate()* to ensure the system
+is able to check for new version, download the bin file and flash the new version without any
+errors. Certain precaution methods such as checking the file size of the bin file and whether the
+ESP32 has enough space to update to the new version are taken to avoid causing the device to
+malfunction accidentally.
 
-The implementation is done in multiple stages.
-
-**Stage 1:** We initially started with the function *doOTAUpdate()* itself, ensuring the system is
-able to successfully download the bin file and flash the new version without any errors. We ensured
-that the files downloaded are validated before attempting to flash in order to avoid bricking the
-device.
-
-**Stage 2:** Once the core feature is completed, we focused on the physical side of the system,
-implementing the pull-up button and as well as setting up the LED feedbacks. As mentioned
-previously, the LED signals are made to be simple and direct to allow ease of use for the users. The
-LED will continuously flash to prompt the user when they are required to press the pull up button,
-and blink once when the update is completed.
+**Stage 2:** Once the core feature is completed, it is then focused on the physical side of the
+system. To improve the security of the firmware update process, a confirmation via pull-up button
+was implemented as well as setting up the LED feedbacks to alert the users about the update. As
+mentioned previously, the LED signals are made to be simple and direct to allow ease of use for the
+users. The LED will continuously flash to prompt the user when they are required to press the pull
+up button, and blink once when the update is completed.
 
 In **Stage 1** and **Stage 2**, all implementations were done in `MyOTAThing.ino`, which slowly
 became cluttered and hard to maintain over time. Therefore, code are refactored and grouped into
@@ -76,19 +131,22 @@ different files according to their functionality.
   method. It combines the functions defined in `Misc.ino` and `WebServer.ino` into `doOTAUpdate()`,
   which makes the code more readable and easier to debug.
 
-**Stage 3:** We implemented the system page, which we encountered relative difficulty to allow the
-ESP32 to host an access point while remaining connected to the internet. In the end, we succeeded in
-producing the system page, which contains a home page with details regarding the device, as well as
-a WiFi page that allows the ESP to connect to other networks. The user will be able to initialise
-the OTA update on the homepage if there is a new version available.
+**Stage 3:** A web server is implmented for displaying the status of the ESP32, and allowing the
+user to connect the ESP32 with WiFi networks. The status page contains the current and latest
+version number of the ESP32. A **GREEN UPDATE** button which redirect to `/ota` will be shown to
+indicate that the latest version is available to download. If the ESP32 already has the latest
+version, visiting the `/ota` page will not allow the system to be updated again.
 
 **Stage 4:** The final part is to download the firmware file directly from GitHub over HTTPS and
-providing the ability to connect to hidden WiFi networks. At first, we used the original cloud
-server provided in the exercise. However, we eventually convert to download from GitHub over HTTPS
-to provide a more secure connection. The implementation proved difficult as the `getStream()` method
-in `HTTPClient` has been depreciated, along with the lack of documentation of Arduino libraries. A
-large amount of trial and error to figure out how to properly download from GitHub server and unpack
-the file.
+providing the ability to connect the hidden WiFi networks. At first, the original cloud server
+provided (com3505.gate.ac.uk) was used. However, we eventually convert to download from GitHub over
+HTTPS to provide a more secure connection. The implementation was difficult and complicated as the
+`getStream()` method in `HTTPClient` does not support HTTPS, and this is not explicitly stated in
+the source code comments of the ESP32. After a large amount of trials and errors, it was discovered
+that the correct method to use was `getStreamPtr()`, and certain adjustments were needed as the
+return type of `getStream()` and `getStreamPtr()` is different. Lastly, the implementation for
+joining hidden networks is relatively easy. It is only required to provide another radio option for
+the user to input the SSID of the hidden network.
 
 ## Versions
 **Version 1:** This is the default version number used for the firmware uploaded from Arduino IDE,
@@ -97,10 +155,9 @@ it is not included inside the `BinFiles` folder.
 |          | Version 2    | Version 3 | Version 4 |
 |----------|--------------|-----------|-----------|
 | Features | <ul><li>HTTP OTA update over com3505.gate.ac.uk</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li></ul> | <ul><li>HTTP OTA update over com3505.gate.ac.uk</li><li>Reduced workload by performing firmware update only when requested by the user</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li><li>Starts a WiFi access point and WebServer, which allows the user to configure which WiFi network to join</li><li>Clean and straightforward web interface design</li></ul> | <ul><li>HTTPS OTA update over www.github.com</li><li>Reduced workload by performing firmware update only when requested by the user</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li><li>Starts a WiFi access point and WebServer, which allows the user to configure which WiFi network to join</li><li>Able to join hidden WiFi networks</li><li>Clean and straightforward web interface design</li></ul> |
-| Disadvantages | <ul><li>HTTP, less secure</li><li>Directly performs firmware update (requires confirmation) once it is connected to the internet and found a newer version </li><li>Unable to configure the WiFi network</li></ul> | <ul><li>HTTP, less secure</li><li>Unable to join hidden WiFi networks</li></ul> |  |
+| Disadvantages | <ul><li>HTTP, less secure</li><li>Directly performs firmware update (requires confirmation) once it is connected to the internet and found a newer version </li><li>Unable to configure the WiFi network</li></ul> | <ul><li>HTTP, less secure</li><li>Unable to join hidden WiFi networks</li></ul> | <li>Requires manual WiFi configuration at the very first startup</li> |
 
 # Debugging
-
 We have implemented a debugging infrastructure that makes use of macros for easier code debugging.
 The variables can be changed from `true` to `false` to enable or disable the function respectively.
 

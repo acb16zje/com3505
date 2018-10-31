@@ -14,9 +14,14 @@ downloads new firmware for the ESP32 from the cloud server.
 | **Network:** The ESP32 should be able to scan and connect to any WiFi networks (hidden networks included), provided that the password entered is correct.                                        |  Essential |
 
 ## Flowchart and Program Workflow
-Below is the flowchart and its description of the program. The design below is the final design of
+Below is the flowchart and the explanation of the program. The design below is the final design of
 the program. Any design changes made during the implementation process are mentioned in
-[here](#designchanges).
+[here](#design-changes-during-implementation).
+
+<p align="center">
+  <img src="./images/flowchart.png">
+  <p align="center">Flowchart of OTA Update</p>
+</p>
 
 ### 1. Setting Up
 1. Start the WiFi access point
@@ -94,7 +99,7 @@ the current situation easily. Below is a list that takes utmost priority for the
   <p align="center">Diagram of System</p>
 </p>
 
-# Design Changes During Implementation <a name="designchanges"></a>
+# Design Changes During Implementation
 1. Initially, the ability to join hidden WiFi networks was not included in the design stage. It was
    later realized that ESP32 should be not be preconfigured to join the `uos-other` network in the
    code, and it should be able to join other hidden networks as well to improve network flexibility.

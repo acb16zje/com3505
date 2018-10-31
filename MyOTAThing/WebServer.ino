@@ -131,7 +131,7 @@ void hndlWifi() {
 }
 
 void hndlWifichz() {
-  dln(netDBG, "serving page at /wifichz");
+  dln(netDBG, "Serving page at /wifichz");
 
   String title = "<h2>Joining WiFi network...</h2>";
   String message = "<p>Check <a href='/'>WiFi status</a>.</p>";
@@ -170,12 +170,15 @@ void hndlWifichz() {
 }
 
 void hndlOTA() {
-  dln(netDBG, "serving page at /ota");
+  dln(netDBG, "Serving page at /ota");
 
   String title = "<h2>OTA Update</h2>";
   String message;
 
-  if (currentVersion >= highestAvailableVersion) {
+  respCode = doCloudGet(&http, gitID, "version");
+  if (respCode != 200) {
+    message = "<p>No internet connection.</p>";
+  } else if (currentVersion >= highestAvailableVersion) {
     message = "<p>No updates available.</p>";
   } else {
     message = "<p>Press button to start update or click ";

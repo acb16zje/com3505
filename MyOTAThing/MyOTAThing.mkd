@@ -130,11 +130,11 @@ different files according to their functionality.
 
 - `Misc.h` and `Misc.ino` are responsible for controlling the LED, the pull-up button, and getting
   the MAC address.
-- `WebServer.h` and `WebServer.ino` are responsible for handling the web server and serving the web
-  pages.
-- `MyOTAThing.h` and `MyOTAThing.ino` are the main files than contain the `setup()` and `loop()`
-  method. It combines the functions defined in `Misc.ino` and `WebServer.ino` into `doOTAUpdate()`,
-  which makes the code more readable and easier to debug.
+- `WebServer.h` and `WebServer.ino` are responsible for handling the web server, serving the web
+  pages, and connecting to WiFi.
+- `MyOTAThing.h` and `MyOTAThing.ino` are the main files that control the OTA update process. It
+  combines the functions defined in `Misc.ino` and `WebServer.ino` into `doOTAUpdate()`, which makes
+  the code more readable and easier to debug.
 
 **Stage 3:** A web server is implmented for displaying the status of the ESP32, and allowing the
 user to connect the ESP32 with WiFi networks. The status page contains the current and latest

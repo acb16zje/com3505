@@ -9,6 +9,9 @@ void startWebServer() {
   apSSID.concat(MAC_ADDRESS);
 
   WiFi.mode(WIFI_AP_STA);
+
+  // apSSID = Gakki - YOUR MAC ADDRESS
+  // apPass = gakkismile
   WiFi.softAP(apSSID.c_str(), apPass.c_str());
 
   routes();

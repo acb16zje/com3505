@@ -1,4 +1,3 @@
-// MyOTAThing.h
 #ifndef MY_OTA_H
 #define MY_OTA_H
 

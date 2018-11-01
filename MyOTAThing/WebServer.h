@@ -1,4 +1,3 @@
-// WebServer.h
 #ifndef WEB_H
 #define WEB_H
 
@@ -33,13 +32,14 @@ const char *templatePage[] = {
   "none; color: #12a138; background-color: #fff; text-align: center;"
   "cursor: pointer; white-space: nowrap;} .update:hover {background-color:"
   "#12a138; color: #fff;}"
-  "</style></head><body>"
+  "</style></head><body>",
   "<nav><ul class='menu'>"
   "<li><a href='/'>Status</a></li>"
   "<li><a href='/wifi'>WiFi</a></li>"
-  "</ul></nav>",                                                        // 2
-  "",                                                                   // 3
+  "<li style='float:right'><a href='/logout'>Logout</a></li>"
+  "</ul></nav>",                                                        // 3
   "",                                                                   // 4
+  "",                                                                   // 5
   "</body><script>document.addEventListener('click', function() {"
   "if (document.getElementById('hidRadio').checked) {"
   "document.getElementById('hidText').disabled = false} else {"

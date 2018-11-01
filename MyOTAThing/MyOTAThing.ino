@@ -3,6 +3,7 @@
 // COM3505 lab assessment: Over-The-Air update
 /////////////////////////////////////////////////////////////////////////////
 
+#include "Auth.h"                    // Login page handler
 #include "Misc.h"                    // WiFi, MAC, LED...
 #include "WebServer.h"               // WebServer header file
 #include "MyOTAThing.h"
@@ -102,7 +103,7 @@ void doOTAUpdate() {             // the main OTA logic
   );
 
   }
-  
+
   // The size of the bin file
   int fileSize = http.getSize();
 
@@ -141,7 +142,7 @@ void doOTAUpdate() {             // the main OTA logic
         if (Update.isFinished()) {
           dln(otaDBG, "Update completed successfully.");
 
-          if (startReset) { 
+          if (startReset) {
             currentVersion = 1;
           } else {
             currentVersion = highestAvailableVersion;

@@ -21,13 +21,17 @@ void startWebServer() {
 void routes() {
   // register routes to handle different paths
   webServer.onNotFound(hndlNotFound);       // 404s...
+  webServer.on("/login", hndlLogin);        // Login page
+  webServer.on("/logout", hndlLogout);      // Logout page
   webServer.on("/", hndlRoot);              // root (status page)
   webServer.on("/generate_204", hndlRoot);  // Android captive portal support
   webServer.on("/L2", hndlRoot);            // ...iOS captive portal...
   webServer.on("/wifi", hndlWifi);          // page for choosing an AP
   webServer.on("/wifichz", hndlWifichz);    // landing page for AP form submit
   webServer.on("/ota", hndlOTA);            // OTA firmware upgrade
-  webServer.on("/reset",hndlReset);         // Factory Reset
+  webServer.on("/reset", hndlReset);        // Factory Reset
+
+  setupAuth();                              // Authentication header setup
 
   webServer.begin();
   dln(setupDBG, "HTTP server started");
@@ -40,7 +44,67 @@ void hndlNotFound() {
   webServer.send(200, "text/plain", "URI Not Found");
 }
 
+// Login page
+void hndlLogin() {
+  String message;
+
+  if (webServer.hasHeader("Cookie")) {
+    String cookie = webServer.header("Cookie");
+    dbg(netDBG, "Found cookie: ");
+    dln(netDBG, cookie);
+  }
+
+  if (webServer.hasArg("username") && webServer.hasArg("password")) {
+    if (webServer.arg("username") == loginID &&  webServer.arg("password") == loginPass) {
+      webServer.sendHeader("Location", "/");
+      webServer.sendHeader("Cache-Control", "no-cache");
+      webServer.sendHeader("Set-Cookie", "ESPSESSIONID=1");
+      webServer.send(301);
+
+      dln(netDBG, "Log in Successful");
+      return;
+    }
+
+    message = "Invalid username or password.";
+    dln(netDBG, "Log in Failed");
+  }
+
+  String s = "<form action='/login' method='POST'><table>";
+  s += "<tr><td class='right'>Username:</td>";
+  s += "<td><input type='text' name='username'></td></tr>";
+  s += "<tr><td class='right'>Password:</td>";
+  s += "<td><input type='password' name='password'></td></tr>";
+  s += "</table><input type='submit' name='Submit' value='Submit'></form>" + message;
+
+  replacement_t repls[] = { // the elements to replace in the boilerplate
+    { 1, apSSID.c_str() },
+    { 3, "" },
+    { 4, "<h2>ESP32 Login</h2>\n" },
+    { 5, s.c_str() },
+  };
+  String htmlPage = ""; // a String to hold the resultant page
+  GET_HTML(htmlPage, templatePage, repls);
+
+  webServer.send(200, "text/html", htmlPage);
+}
+
+void hndlLogout() {              // Logout page
+  Serial.println("Logged out");
+  webServer.sendHeader("Location", "/login");
+  webServer.sendHeader("Cache-Control", "no-cache");
+  webServer.sendHeader("Set-Cookie", "ESPSESSIONID=0");
+  webServer.send(301);
+  return;
+}
+
 void hndlRoot() {         // UI for checking connectivity etc.
+  if (!isAuthenticated()) {
+    webServer.sendHeader("Location", "/login");
+    webServer.sendHeader("Cache-Control", "no-cache");
+    webServer.send(301);
+    return;
+  }
+
   dln(netDBG, "Serving page at /");
   startOTA = false;
   startReset = false;
@@ -108,8 +172,8 @@ void hndlRoot() {         // UI for checking connectivity etc.
 
   replacement_t repls[] = { // the elements to replace in the boilerplate
     { 1, apSSID.c_str() },
-    { 3, "<h2>Status</h2>\n" },
-    { 4, s.c_str() },
+    { 4, "<h2>Status</h2>\n" },
+    { 5, s.c_str() },
   };
 
   String htmlPage = ""; // a String to hold the resultant page
@@ -119,6 +183,13 @@ void hndlRoot() {         // UI for checking connectivity etc.
 }
 
 void hndlWifi() {
+  if (!isAuthenticated()) {
+    webServer.sendHeader("Location", "/login");
+    webServer.sendHeader("Cache-Control", "no-cache");
+    webServer.send(301);
+    return;
+  }
+
   dln(netDBG, "Serving page at /wifi");
   startOTA = false;
   startReset = false;
@@ -127,8 +198,8 @@ void hndlWifi() {
   apListForm(form);
   replacement_t repls[] = { // the elements to replace in the boilerplate
     { 1, apSSID.c_str() },
-    { 3, "<h2>Network configuration</h2>\n" },
-    { 4, form.c_str() },
+    { 4, "<h2>Network configuration</h2>\n" },
+    { 5, form.c_str() },
   };
   String htmlPage = ""; // a String to hold the resultant page
   GET_HTML(htmlPage, templatePage, repls);
@@ -137,6 +208,13 @@ void hndlWifi() {
 }
 
 void hndlWifichz() {
+  if (!isAuthenticated()) {
+    webServer.sendHeader("Location", "/login");
+    webServer.sendHeader("Cache-Control", "no-cache");
+    webServer.send(301);
+    return;
+  }
+
   dln(netDBG, "Serving page at /wifichz");
 
   startReset = false;
@@ -168,8 +246,8 @@ void hndlWifichz() {
 
   replacement_t repls[] = { // the elements to replace in the template
     { 1, apSSID.c_str() },
-    { 3, title.c_str() },
-    { 4, message.c_str() },
+    { 4, title.c_str() },
+    { 5, message.c_str() },
   };
   String htmlPage = "";     // a String to hold the resultant page
   GET_HTML(htmlPage, templatePage, repls);
@@ -177,7 +255,14 @@ void hndlWifichz() {
   webServer.send(200, "text/html", htmlPage);
 }
 
-void hndlOTA() {
+void hndlOTA() {                // Update to latest version
+  if (!isAuthenticated()) {
+    webServer.sendHeader("Location", "/login");
+    webServer.sendHeader("Cache-Control", "no-cache");
+    webServer.send(301);
+    return;
+  }
+
   dln(netDBG, "Serving page at /ota");
 
   String title = "<h2>OTA Update</h2>";
@@ -198,8 +283,8 @@ void hndlOTA() {
 
   replacement_t repls[] = { // the elements to replace in the template
     { 1, apSSID.c_str() },
-    { 3, title.c_str() },
-    { 4, message.c_str() },
+    { 4, title.c_str() },
+    { 5, message.c_str() },
   };
 
   String htmlPage = "";     // a String to hold the resultant page
@@ -208,7 +293,14 @@ void hndlOTA() {
   webServer.send(200, "text/html", htmlPage);
 }
 
-void hndlReset() {
+void hndlReset() {              // Downgrade to version 1
+  if (!isAuthenticated()) {
+    webServer.sendHeader("Location", "/login");
+    webServer.sendHeader("Cache-Control", "no-cache");
+    webServer.send(301);
+    return;
+  }
+
   dln(netDBG, "Serving page at /reset");
 
   String title = "<h2>Factory Reset</h2>";
@@ -224,6 +316,8 @@ void hndlReset() {
     startReset = true;
     startOTA = true;
   }
+
+  http.end();
 
   replacement_t repls[] = { // the elements to replace in the template
     { 1, apSSID.c_str() },

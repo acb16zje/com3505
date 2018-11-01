@@ -5,7 +5,6 @@
 // the WiFi and HTTP server libraries ///////////////////////////////////////
 #include <HTTPClient.h>             // ESP32 library for making HTTP requests
 #include <Update.h>                 // OTA update library
-#include <WiFi.h>                   // WiFi
 
 // debugging infrastructure; setting different DBGs true triggers prints ////
 #define dbg(b, s) if(b) Serial.print(s)
@@ -15,6 +14,7 @@
 #define netDBG        true        // For networking things
 #define otaDBG        true        // For debugging in OTA update
 #define loopDBG       true        // For debugging in the loop()
+#define isGUI         false       // WebServer UI for the device?
 
 // OTA stuff ////////////////////////////////////////////////////////////////
 HTTPClient http;                              // manage the HTTP request process
@@ -56,7 +56,8 @@ const char* root_ca = \
 
 void setup();
 void loop();
-int doCloudGet(HTTPClient *, String, String); // helper for downloading 'ware
 void doOTAUpdate();                           // main OTA logic
+int doCloudGet(HTTPClient *, String, String); // helper for downloading 'ware
+void userConfirmation();
 
 #endif

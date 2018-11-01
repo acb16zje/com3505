@@ -41,7 +41,7 @@ void hndlNotFound() {
 
 void hndlRoot() {         // UI for checking connectivity etc.
   dln(netDBG, "Serving page at /");
-  start_ota = false;
+  startOTA = false;
 
   String s = "<table>";
 
@@ -118,7 +118,7 @@ void hndlRoot() {         // UI for checking connectivity etc.
 
 void hndlWifi() {
   dln(netDBG, "Serving page at /wifi");
-  start_ota = false;
+  startOTA = false;
 
   String form = ""; // a form for choosing an access point and entering key
   apListForm(form);
@@ -187,7 +187,7 @@ void hndlOTA() {
     message = "<p>Press button to start update or click ";
     message += "<a href='/'>here</a> to cancel.</p>";
     message += "<p>The device will restart when the update has completed.</p>";
-    start_ota = true;
+    startOTA = true;
   }
 
   replacement_t repls[] = { // the elements to replace in the template

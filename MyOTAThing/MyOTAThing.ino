@@ -16,28 +16,32 @@ void setup() {
   df(setupDBG, "\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);
   df(setupDBG, "Firmware is at version %d\n", currentVersion);
 
-  startWebServer();
+  // Boot up indication light
   blink(3,500);
+
+  if (isGUI) {
+    startWebServer();
+  } else {
+    startWiFi();
+    doOTAUpdate();
+  }
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
 void loop() {
-  // Update the firmware when OTA page is visted
-  if (start_ota) {
-    int buttonState = digitalRead(pushButton);
-    blink(1, 100);
+  if (isGUI) {
+    // Update the firmware when OTA page is visted
+    if (startOTA)
+      userConfirmation();
 
-    // Press pull-up button to start update
-    if (buttonState == LOW  && (millis() - t) > debounce) {
-      t = millis();
-      dln(loopDBG, "\n");
-      doOTAUpdate();
-      delay(1000);
-    }
+    ledOff(); // ensures LED is turned off when user leaves /ota
+    webServer.handleClient();
+  } else {
+    // Check for updates every 15 seconds
+    dln(loopDBG, "\n");
+    doOTAUpdate();
+    delay(15000);
   }
-
-  ledOff(); // ensures LED is turned off when user leaves /ota
-  webServer.handleClient();
 }
 
 // OTA over-the-air update stuff ///////////////////////////////////////////
@@ -60,16 +64,25 @@ void doOTAUpdate() {             // the main OTA logic
   // do we know the latest version, and does the firmware need updating?
   if (currentVersion >= highestAvailableVersion) {
     dln(otaDBG, "Firmware is up to date\n\n");
-    start_ota = false;
+    startOTA = false;
     return;
   }
 
   // Newer firmware available
-  Serial.printf("Upgrade firmware from version %d to version %d\n",
-    currentVersion, highestAvailableVersion
-  );
+  if (isGUI) {
+    df(otaDBG, "Upgrading firmware from version %d ", currentVersion);
+    df(otaDBG, "to version %d...\n", highestAvailableVersion);
+  } else {
+    df(otaDBG, "Upgrade firmware from version %d ", currentVersion);
+    df(otaDBG, "to version %d?\n", highestAvailableVersion);
+  }
 
   ledOff();
+
+  // User confirmation stage, for Version 1 only
+  if (!isGUI) {
+    userConfirmation();
+  }
 
   // Do a GET for the .bin
   dln(otaDBG, "Retrieving update file...");
@@ -136,7 +149,7 @@ void doOTAUpdate() {             // the main OTA logic
     blink();
   }
 
-  start_ota = false; // Allow the user to update again
+  startOTA = false; // Allow the user to update again
 }
 
 // Helper for downloading from cloud firmware server via HTTP GET
@@ -158,4 +171,24 @@ int doCloudGet(HTTPClient *http, String gitID, String fileName) {
   http->begin(url);
   http->addHeader("User-Agent", "ESP32");
   return http->GET();
+}
+
+void userConfirmation() {
+  int buttonState = digitalRead(pushButton);
+  blink(1, 100);
+
+  if (isGUI) {
+    // Press pull-up button to start update
+    if (buttonState == LOW  && (millis() - t) > debounce) {
+      t = millis();
+      dln(loopDBG, "\n");
+      doOTAUpdate();
+      delay(1000);
+    }
+  } else {
+    while (buttonState == HIGH && (millis() - t) > debounce) {
+      t = millis();
+      userConfirmation();
+    }
+  }
 }

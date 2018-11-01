@@ -11,8 +11,7 @@ ESPWebServer webServer(80);
 String apSSID = "Gakki - ";
 String apPass = "gakkismile";
 
-bool start_ota = false;  // For determining whether to start the update
-bool is_reset  = false;  // Is it a firmware upgrade or reset?
+bool startOTA = false;  // For determining whether to start the update
 
 const char *templatePage[] = {
   "<html><head>"

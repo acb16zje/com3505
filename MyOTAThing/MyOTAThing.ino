@@ -27,7 +27,7 @@ void loop() {
     int buttonState = digitalRead(pushButton);
     blink(1, 100);
 
-    // User confirmation
+    // Press pull-up button to start update
     if (buttonState == LOW  && (millis() - t) > debounce) {
       t = millis();
       dln(loopDBG, "\n");
@@ -119,7 +119,7 @@ void doOTAUpdate() {             // the main OTA logic
 
           currentVersion = highestAvailableVersion;
 
-          // ESP.restart(); // Restarting the device will loop the update
+          ESP.restart(); // Restart the device
         } else {
           dln(otaDBG, "Update failed. Unknown error occurred.");
         }

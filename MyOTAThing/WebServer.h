@@ -46,6 +46,15 @@ const char *templatePage[] = {
   "document.getElementById('hidText').disabled = true}})</script></html>"
 };
 
+void startWebServer();
+void routes();
+void hndlNotFound();
+void hndlRoot();
+void hndlWifi();
+void hndlWifichz();
+void hndlOTA();
+void apListForm(String& f);
+
 // Ex07.h model solution
 typedef struct { int position; const char *replacement; } replacement_t;
 

@@ -183,6 +183,7 @@ void hndlOTA() {
   } else {
     message = "<p>Press button to start update or click ";
     message += "<a href='/'>here</a> to cancel.</p>";
+    message += "<p>The device will restart when the update has completed.</p>";
     start_ota = true;
   }
 

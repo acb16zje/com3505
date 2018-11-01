@@ -73,8 +73,8 @@ void hndlLogin() {
   s += "<tr><td class='right'>Username:</td>";
   s += "<td><input type='text' name='username'></td></tr>";
   s += "<tr><td class='right'>Password:</td>";
-  s += "<td><input type='password' name='password'></td></tr>";
-  s += "</table><input type='submit' name='Submit' value='Submit'></form>" + message;
+  s += "<td><input type='password' name='password'></td></tr></table>";
+  s += "<br><br><input type='submit' name='Submit' value='Submit'></form>" + message;
 
   replacement_t repls[] = { // the elements to replace in the boilerplate
     { 1, apSSID.c_str() },
@@ -149,6 +149,7 @@ void hndlRoot() {         // UI for checking connectivity etc.
 
   s += "<tr><td>Current Version</td><td>";
   s += String(currentVersion);
+  s += " <a href='/reset' class='reset'>Reset</a></td></tr>";
   s += "</td></tr><tr><td>Latest Version</td><td>";
 
   // do a GET to read the version file from the cloud

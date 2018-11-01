@@ -27,6 +27,7 @@ void routes() {
   webServer.on("/wifi", hndlWifi);          // page for choosing an AP
   webServer.on("/wifichz", hndlWifichz);    // landing page for AP form submit
   webServer.on("/ota", hndlOTA);            // OTA firmware upgrade
+  webServer.on("/reset",hndlReset);         // Factory Reset
 
   webServer.begin();
   dln(setupDBG, "HTTP server started");
@@ -42,6 +43,7 @@ void hndlNotFound() {
 void hndlRoot() {         // UI for checking connectivity etc.
   dln(netDBG, "Serving page at /");
   startOTA = false;
+  startReset = false;
 
   String s = "<table>";
 
@@ -119,6 +121,7 @@ void hndlRoot() {         // UI for checking connectivity etc.
 void hndlWifi() {
   dln(netDBG, "Serving page at /wifi");
   startOTA = false;
+  startReset = false;
 
   String form = ""; // a form for choosing an access point and entering key
   apListForm(form);
@@ -136,6 +139,8 @@ void hndlWifi() {
 void hndlWifichz() {
   dln(netDBG, "Serving page at /wifichz");
 
+  startReset = false;
+  startOTA = false;
   String title = "<h2>Joining WiFi network...</h2>";
   String message = "<p>Check <a href='/'>WiFi status</a>.</p>";
 
@@ -177,6 +182,7 @@ void hndlOTA() {
 
   String title = "<h2>OTA Update</h2>";
   String message;
+  startReset = false;
 
   respCode = doCloudGet(&http, gitID, "version");
   if (respCode != 200) {
@@ -187,6 +193,35 @@ void hndlOTA() {
     message = "<p>Press button to start update or click ";
     message += "<a href='/'>here</a> to cancel.</p>";
     message += "<p>The device will restart when the update has completed.</p>";
+    startOTA = true;
+  }
+
+  replacement_t repls[] = { // the elements to replace in the template
+    { 1, apSSID.c_str() },
+    { 3, title.c_str() },
+    { 4, message.c_str() },
+  };
+
+  String htmlPage = "";     // a String to hold the resultant page
+  GET_HTML(htmlPage, templatePage, repls);
+
+  webServer.send(200, "text/html", htmlPage);
+}
+
+void hndlReset() {
+  dln(netDBG, "Serving page at /reset");
+
+  String title = "<h2>Factory Reset</h2>";
+  String message;
+
+  respCode = doCloudGet(&http, gitID, "1.bin");
+  if (respCode != 200) {
+    message = "<p>No internet connection.</p>";
+  } else {
+    message = "<p>Press button to reset or click ";
+    message += "<a href='/'>here</a> to cancel.</p>";
+    message += "<p>The device will restart when the reset has been completed.</p>";
+    startReset = true;
     startOTA = true;
   }
 

@@ -62,7 +62,7 @@ void doOTAUpdate() {             // the main OTA logic
   http.end(); // free resources
 
   // do we know the latest version, and does the firmware need updating?
-  if (currentVersion >= highestAvailableVersion) {
+  if (currentVersion >= highestAvailableVersion && !startReset) {
     dln(otaDBG, "Firmware is up to date\n\n");
     startOTA = false;
     return;
@@ -72,6 +72,9 @@ void doOTAUpdate() {             // the main OTA logic
   if (isGUI) {
     df(otaDBG, "Upgrading firmware from version %d ", currentVersion);
     df(otaDBG, "to version %d...\n", highestAvailableVersion);
+  } else if (startReset) {
+    df(otaDBG, "Resetting firmware from version %d ", currentVersion);
+    dln(otaDBG, "to version 1...\n");
   } else {
     df(otaDBG, "Upgrade firmware from version %d ", currentVersion);
     df(otaDBG, "to version %d?\n", highestAvailableVersion);
@@ -88,10 +91,18 @@ void doOTAUpdate() {             // the main OTA logic
   dln(otaDBG, "Retrieving update file...");
 
   // Get the response code of the bin file
-  respCode = doCloudGet(
+
+  if (startReset) {
+    respCode = doCloudGet(
+    &http, gitID, "1.bin"
+  );
+  } else {
+    respCode = doCloudGet(
     &http, gitID, String(highestAvailableVersion) + ".bin"
   );
 
+  }
+  
   // The size of the bin file
   int fileSize = http.getSize();
 
@@ -130,7 +141,11 @@ void doOTAUpdate() {             // the main OTA logic
         if (Update.isFinished()) {
           dln(otaDBG, "Update completed successfully.");
 
-          currentVersion = highestAvailableVersion;
+          if (startReset) { 
+            currentVersion = 1;
+          } else {
+            currentVersion = highestAvailableVersion;
+          }
 
           ESP.restart(); // Restart the device
         } else {
@@ -186,9 +201,9 @@ void userConfirmation() {
       delay(1000);
     }
   } else {
-    while (buttonState == HIGH && (millis() - t) > debounce) {
-      t = millis();
-      userConfirmation();
+    while (buttonState == HIGH) {
+      buttonState = digitalRead(pushButton);
+      blink(1, 100);
     }
   }
 }

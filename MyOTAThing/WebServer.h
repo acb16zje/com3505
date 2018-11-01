@@ -12,6 +12,7 @@ String apSSID = "Gakki - ";
 String apPass = "gakkismile";
 
 bool startOTA = false;  // For determining whether to start the update
+bool startReset = false; // For determining whether to start factory reset
 
 const char *templatePage[] = {
   "<html><head>"

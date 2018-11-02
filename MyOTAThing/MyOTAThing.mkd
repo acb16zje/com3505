@@ -14,13 +14,41 @@ downloads new firmware for the ESP32 from the cloud server.
 | **Network:** The ESP32 should be able to scan and connect to any WiFi networks (hidden networks included), provided that the password entered is correct.                                        |  Essential |
 
 ## Flowchart and Program Workflow
-Below is the flowchart and the explanation of the program. The design below is the final design of
-the program. Any design changes made during the implementation process are mentioned in
-[here](#design-changes-during-implementation).
+### Version 1
+---
+The flowchart below is the **Version 1** of the system, where it is designed to pass the automated
+test suite. The system will be updated to the latest version (**Version 5**) once it is connected to
+the internet, and the user press the pull-up button to confirm the process.
 
 <p align="center">
-  <img src="./images/flowchart.png">
-  <p align="center">Flowchart of OTA Update</p>
+  <img src="./images/flowchart1.png">
+  <p align="center">Flowchart of OTA Update (Version 1)</p>
+</p>
+
+### 1. Setting Up
+1. Connect to the WiFi network (automatically connect to `uos-other`)
+    1. Wait for the connection to complete
+2. Handle the web server client requests
+
+### 2. Physical Verification
+1. User is required to **press pull up button** to confirm the OTA update
+2. Once the button is pressed and the update process has started, no output will be printed to the
+   Serial Monitor.
+
+### 3. OTA update
+1. The system automatically checks for new version when it is plugged in, and there is an internet
+   connection.
+
+### Version 5
+---
+The flowchart below is the final version of the OTA system. The design below is the final design of
+the program, where it enables the interaction with web server to provides additional features such
+as authentication, WiFi connection, and firmware reset. Any design changes made during the
+implementation process are mentioned in [here](#design-changes-during-implementation).
+
+<p align="center">
+  <img src="./images/flowchart5.png">
+  <p align="center">Flowchart of OTA Update (Version 5)</p>
 </p>
 
 ### 1. Setting Up
@@ -107,6 +135,10 @@ the current situation easily. Below is a list that takes utmost priority for the
    was added because security is one of the essential criteria of the system, and GitHub server
    requires a personal access token to be provided in order to download the bin files from the
    private repository.
+3. To make the implemented system compatible automated test suite, **Version 5** was created to
+   include a switchable behaviour for the web server. **Version 1** and **Version 5** have the exact
+   same code. The only differences are the `currentVersion` variable and the web server
+   functionality is disabled in **Version 1** and enabled in **Version 5**.
 
 # Implementation and Versions
 
@@ -126,7 +158,7 @@ up button, and blink once when the update is completed.
 
 In **Stage 1** and **Stage 2**, all implementations were done in `MyOTAThing.ino`, which slowly
 became cluttered and hard to maintain over time. Therefore, code are refactored and grouped into
-different files according to their functionality.
+different files according to their functionality in **Stage 3** and later.
 
 - `Misc.h` and `Misc.ino` are responsible for controlling the LED, the pull-up button, and getting
   the MAC address.
@@ -153,21 +185,37 @@ return type of `getStream()` and `getStreamPtr()` is different. Lastly, the impl
 joining hidden networks is relatively easy. It is only required to provide another radio option for
 the user to input the SSID of the hidden network.
 
-**Stage 5:** As we discovered that the automated checking system does not support web server, we reverted our factory version to `Stage 2` to allow easier the automated checking system to function as intended. The system will update to the newest version containing web server support. In this stage, we also implemented a login system on the web server to increase the security of the system. The user will be required to enter a default account information before they are allowed access to the device information and OTA update functions. Below is the default account's details:
+**Stage 5:** It is discovered that the automated test suite does not support web server
+interactions. Therefore, the *version 1* that is flashed to the ESP32 device has to be modified. As
+mentioned previously in [here](#design-changes-during-implementation), a switchable behaviour of web
+server functionality was added. **Version 1** works exactly like the **Version 2**, but the code is
+difference, where the system will update to the newest version once it is plugged in and connected
+to the internet. Moreover, an authentication system was also implemented on the web server to
+improve the security of the OTA update process, the respective files for handling the methods are
+`Auth.h` and `Auth.ino` The user will be required to enter a default account information before they
+are allowed access to the device information and OTA update functions. Below is the default
+account's details:
 
 <center>
-<p style="font-size:12pt;"><b>Username: esp32</b></p>
-<p style="font-size:12pt"><b>Password: admin</b></p> 
+  <p style="font-size:12pt;"><b>Username: esp32</b></p>
+  <p style="font-size:12pt"><b>Password: admin</b></p>
 </center>
+
+To repeat the process of firmware update, a firmware reset function was implemented to reset the
+firmware back to **Version 1**. This functionality works the same as the OTA update process, except
+that it downloads and flashes `1.bin` to the device. After that, the ESP32 will be able to start the
+OTA update process again without having to re-flashes the device from the Arduino IDE, thus saving a
+lot of time.
 
 ## Versions
 **Version 1:** This is the default version number used for the firmware uploaded from Arduino IDE,
 it is not included inside the `BinFiles` folder.
 
-|               | Version 2                                                                                                                                                                                                          | Version 3                                                                                                                                                                                                                                                                                                                                                                                                   | Version 4                                                                                                                                                                                                                                                                                                                                                                                                                                          | Version 5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|  | Version 2 | Version 3 | Version 4 | Version 5 |
 |---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Features      | <ul><li>HTTP OTA update over com3505.gate.ac.uk</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li></ul>                                                                      | <ul><li>HTTP OTA update over com3505.gate.ac.uk</li><li>Reduced workload by performing firmware update only when requested by the user</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li><li>Starts a WiFi access point and WebServer, which allows the user to configure which WiFi network to join</li><li>Clean and straightforward web interface design</li></ul> | <ul><li>HTTPS OTA update over www.github.com</li><li>Reduced workload by performing firmware update only when requested by the user</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li><li>Starts a WiFi access point and WebServer, which allows the user to configure which WiFi network to join</li><li>Able to join hidden WiFi networks</li><li>Clean and straightforward web interface design</li></ul> | <ul><li>HTTPS OTA update over www.github.com</li><li>Reduced workload by performing firmware update only when requested by the user</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li><li>Starts a WiFi access point and WebServer, which allows the user to configure which WiFi network to join</li><li>Able to join hidden WiFi networks</li><li>Clean and straightforward web interface design</li><li>Login is required to enter web server</li></ul> |
-| Disadvantages | <ul><li>HTTP, less secure</li><li>Directly performs firmware update (requires confirmation) once it is connected to the internet and found a newer version </li><li>Unable to configure the WiFi network</li></ul> | <ul><li>HTTP, less secure</li><li>Unable to join hidden WiFi networks</li><li>No authentication for web server</li></ul>                                                                                                                                                                                                                                                                                    | <ul><li>Requires manual WiFi configuration at the very first startup</li><li>No authentication for web server</li></ul>                                                                                                                                                                                                                                                                                                                            | <li>Requires manual WiFi configuration at the very first startup</li>                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Features | <ul><li>HTTP OTA update over com3505.gate.ac.uk</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li></ul> | <ul><li>HTTP OTA update over com3505.gate.ac.uk</li><li>Reduced workload by performing firmware update only when requested by the user</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li><li>Starts a WiFi access point and WebServer, which allows the user to configure which WiFi network to join</li><li>Clean and straightforward web interface design</li></ul> | <ul><li>HTTPS OTA update over www.github.com</li><li>Reduced workload by performing firmware update only when requested by the user</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li><li>Starts a WiFi access point and WebServer, which allows the user to configure which WiFi network to join</li><li>Able to join hidden WiFi networks</li><li>Clean and straightforward web interface design</li></ul> | <ul><li>HTTPS OTA update over www.github.com</li><li>Reduced workload by performing firmware update only when requested by the user</li><li>Requires confirmation of firmware update through <code>PULLUP</code> button</li><li>Starts a WiFi access point and WebServer, which allows the user to configure which WiFi network to join</li><li>Able to join hidden WiFi networks</li><li>Clean and straightforward web interface design</li><li>Login is required to enter web server</li></ul> |
+| Disadvantages | <ul><li>HTTP, less secure</li><li>Directly performs firmware update (requires confirmation) once it is connected to the internet and found a newer version </li><li>Unable to configure the WiFi network</li></ul> | <ul><li>HTTP, less secure</li><li>Unable to join hidden WiFi networks</li><li>No authentication for web server</li></ul> | <ul><li>Requires manual WiFi configuration at the very first startup</li><li>No authentication for web server</li></ul> | <li>Requires manual WiFi configuration at the very first startup</li> |
+
 # Debugging
 We have implemented a debugging infrastructure that makes use of macros for easier code debugging.
 The variables can be changed from `true` to `false` to enable or disable the function respectively.

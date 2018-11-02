@@ -70,7 +70,7 @@ void doOTAUpdate() {             // the main OTA logic
   }
 
   // Newer firmware available
-  if (isGUI) {
+  if (isGUI && !startReset) {
     df(otaDBG, "Upgrading firmware from version %d ", currentVersion);
     df(otaDBG, "to version %d...\n", highestAvailableVersion);
   } else if (startReset) {
@@ -79,6 +79,7 @@ void doOTAUpdate() {             // the main OTA logic
   } else {
     df(otaDBG, "Upgrade firmware from version %d ", currentVersion);
     df(otaDBG, "to version %d?\n", highestAvailableVersion);
+    dln(otaDBG, "Press the pull-up button to confirm...");
   }
 
   ledOff();

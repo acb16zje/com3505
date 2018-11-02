@@ -16,6 +16,7 @@ void setup() {
   getMAC(MAC_ADDRESS);                        // store the MAC address
   df(setupDBG, "\nMyOTAThing setup...\nESP32 MAC = %s\n", MAC_ADDRESS);
   df(setupDBG, "Firmware is at version %d\n", currentVersion);
+  dln(setupDBG, "Fish and Chips (demonstration)");
 
   // Boot up indication light
   blink(3,500);

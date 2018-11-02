@@ -95,14 +95,9 @@ void doOTAUpdate() {             // the main OTA logic
   // Get the response code of the bin file
 
   if (startReset) {
-    respCode = doCloudGet(
-    &http, gitID, "1.bin"
-  );
+    respCode = doCloudGet(&http, gitID, "1.bin");
   } else {
-    respCode = doCloudGet(
-    &http, gitID, String(highestAvailableVersion) + ".bin"
-  );
-
+    respCode = doCloudGet(&http, gitID, String(highestAvailableVersion) + ".bin");
   }
 
   // The size of the bin file

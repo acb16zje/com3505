@@ -16,9 +16,10 @@ downloads new firmware for the ESP32 from the cloud server.
 ## Flowchart and Program Workflow
 ### Version 1
 ---
-The flowchart below is the **Version 1** of the system, where it is designed to pass the automated
-test suite. The system will be updated to the latest version (**Version 5**) once it is connected to
-the internet, and the user press the pull-up button to confirm the process.
+The flowchart below is the **Version 1** of the system, it is a modified and combined version of
+**Version 2** and **Version 5** designed to pass the automated test suite. The system will be
+updated to the latest version once it is connected to the internet, and the user needs press the
+pull-up button to confirm the process.
 
 <p align="center">
   <img src="./images/flowchart1.png">
@@ -63,7 +64,7 @@ implementation process are mentioned in [here](#design-changes-during-implementa
 1. User connects to Access Point
 2. User is able to view details regarding the device
 3. User is able to click **UPDATE** if there is a *higher version available*
-4. User does not see **UPDATE** button if there is not update available
+4. User does not see **UPDATE** button if there is no update available
 
 ### 3. Physical Verification
 1. User is required to **press pull up button** to confirm the OTA update
@@ -168,7 +169,7 @@ different files according to their functionality in **Stage 3** and later.
   combines the functions defined in `Misc.ino` and `WebServer.ino` into `doOTAUpdate()`, which makes
   the code more readable and easier to debug.
 
-**Stage 3:** A web server is implmented for displaying the status of the ESP32, and allowing the
+**Stage 3:** A web server is implemented for displaying the status of the ESP32, and allowing the
 user to connect the ESP32 with WiFi networks. The status page contains the current and latest
 version number of the ESP32. A **GREEN UPDATE** button which redirect to `/ota` will be shown to
 indicate that the latest version is available to download. If the ESP32 already has the latest
@@ -187,14 +188,15 @@ the user to input the SSID of the hidden network.
 
 **Stage 5:** It is discovered that the automated test suite does not support web server
 interactions. Therefore, the *version 1* that is flashed to the ESP32 device has to be modified. As
-mentioned previously in [here](#design-changes-during-implementation), a switchable behaviour of web
-server functionality was added. **Version 1** works exactly like the **Version 2**, but the code is
-difference, where the system will update to the newest version once it is plugged in and connected
-to the internet. Moreover, an authentication system was also implemented on the web server to
-improve the security of the OTA update process, the respective files for handling the methods are
-`Auth.h` and `Auth.ino` The user will be required to enter a default account information before they
-are allowed access to the device information and OTA update functions. Below is the default
-account's details:
+mentioned previously in [here](#design-changes-during-implementation), a switchable behaviour `isGUI
+= true` and `isGUI = false` are added for **Version 1** and **Version 5** respectively. **Version
+1** works exactly like the **Version 2**, where the system will update to the newest version once it
+is plugged in and connected to the internet. **Version 5** makes use of the web server to provide
+more flexibility and better user experience for the OTA update. Moreover, an authentication system
+was also implemented on the web server to improve the security of the OTA update process, the
+respective files for handling the methods are `Auth.h` and `Auth.ino` The user will be required to
+enter a default account information before they are allowed access to the device information and OTA
+update functions. Below is the default account's details:
 
 <center>
   <p style="font-size:12pt;"><b>Username: esp32</b></p>
@@ -208,8 +210,9 @@ OTA update process again without having to re-flashes the device from the Arduin
 lot of time.
 
 ## Versions
-**Version 1:** This is the default version number used for the firmware uploaded from Arduino IDE,
-it is not included inside the `BinFiles` folder.
+**Version 1:** This is the modified version of **Version 5** used to pass the automated test suite.
+It has the exact same code with **Version 5**, except that `isGUI` is `false`, which makes it has
+the same functionality as **Version 2**
 
 |  | Version 2 | Version 3 | Version 4 | Version 5 |
 |---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -231,35 +234,47 @@ The variables can be changed from `true` to `false` to enable or disable the fun
 # Testing
 As the system is fairly small and only equipped with limited functionalities, the system was tested
 manually to ensure that each feature functioned correctly. This included running the entire process
-from start to finish, followed by trying to reproduce the errors to ensure the error will be catched
+from start to finish, followed by trying to reproduce the errors to ensure the error will be handled
 by the system.
 
 ## OTA Update Test Cases
 
-|                    Test Case                    |                         Expected Output                        | Results |
-|:-----------------------------------------------:|:--------------------------------------------------------------:|:-------:|
-| System unable to get version                    | Monitor prints "Couldn't get version! rtn code:"               |   Pass  |
-| System is up to date                            | Monitor prints "Firmware is up to date"                        |   Pass  |
-| System is able to download the firmware file    | Monitor prints "Received bin file of size %d bytes."           |   Pass  |
-| System failed to download the firmware file     | Monitor prints "An error occured when retrieving the bin file" |   Pass  |
-| System is able to write firmware file           | Monitor prints "Update completed successfully. OTA finished."  |   Pass  |
-| System is unable to write the file successfully | Monitor prints "Written only: %d / %d . Retry?"                |   Pass  |
-| System encounters error during OTA update        | Monitor prints "Error occurred. Error #: %d"                   |   Pass  |
-| Device has not enough memory to perform update  | Monitor prints "Not enough memory space to perform the update" |   Pass  |
+|                    Test Case                    |                         Expected Output                         | Results |
+|:-----------------------------------------------:|:---------------------------------------------------------------:|:-------:|
+|           System unable to get version          |        Monitor prints "Couldn't get version! rtn code:"         |   Pass  |
+|               System is up to date              |             Monitor prints "Firmware is up to date"             |   Pass  |
+|   System is able to download the firmware file  |      Monitor prints "Received bin file of size %d bytes."       |   Pass  |
+|   System failed to download the firmware file   | Monitor prints "An error occurred when retrieving the bin file" |   Pass  |
+|      System is able to write firmware file      |  Monitor prints "Update completed successfully. OTA finished."  |   Pass  |
+| System is unable to write the file successfully |         Monitor prints "Written only: %d / %d . Retry?"         |   Pass  |
+|    System encounters error during OTA update    |          Monitor prints "Error occurred. Error #: %d"           |   Pass  |
+|  Device has not enough memory to perform update | Monitor prints "Not enough memory space to perform the update"  |   Pass  |
 
 ## Webserver Test Cases
 
-|                           Test Case                          |                            Expected Output                            | Results |
-|:------------------------------------------------------------:|:---------------------------------------------------------------------:|:-------:|
-| Webserver cannot find link                                   | Monitor prints "URI Not found"                                        |   Pass  |
-| Entering /ota with updates available                | /ota prompts user to press pull-up button to start update or return to cancel update request |   Pass  |
-| Entering /ota while not connected to internet                | /ota prints "No Internet Connection"                                  |   Pass  |
-| Entering /ota while connected to internet while system is at newest version | /ota prints "No updates available."|   Pass  |
-| Entering /home with updates available               | Update button is shown next to the latest version number |   Pass  |
-| Entering /home while not connected to internet               | Update button does not appear and prints "No Internet Connection" |   Pass  |
-| Entering /wifi with no network found                         | /wifi prints "No WiFi access points found"                            |   Pass  |
-| Entering the wrong password when connecting to a new network | Access Point resumes function with /home showing no network connected |   Pass  |
-| Wrong Username/Password on Login                                      | Login page prompts "Invalid Username and Password"                    |   Pass  |
-| Visiting any pages without logging in | User is redirected back to login page | Pass |
-| Entering /reset while not connected to internet              | /reset prints "No Internet Connection"                                |   Pass  |
-| Entering /reset in a non factory version              | /reset prompts user to press pull-up button to start factory reset or return to cancel reset request |   Pass  |
+|                                   Test Case                                   |                                             Expected Output                                            | Results |
+|:-----------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|:-------:|
+|                           Webserver cannot find link                          |                                     Monitor prints "URI Not found"                                     |   Pass  |
+|                     Entering `/ota` with updates available                    |     `/ota` prompts user to press pull-up button to start update or return to cancel update request     |   Pass  |
+|                Entering `/ota` while not connected to internet                |                                 `/ota` prints "No Internet Connection"                                 |   Pass  |
+| Entering `/ota` while connected to internet while system is at newest version |                                  `/ota` prints "No updates available."                                 |   Pass  |
+|                    Entering `/home` with updates available                    |                        Update button is shown next to the latest version number                        |   Pass  |
+|                Entering `/home` while not connected to internet               |                    Update button does not appear and prints "No Internet Connection"                   |   Pass  |
+|                     Entering `/wifi` with no network found                    |                              `/wifi` prints "No WiFi access points found"                              |   Pass  |
+|          Entering the wrong password when connecting to a new network         |                 Access Point resumes function with `/home` showing no network connected                |   Pass  |
+|                        Wrong Username/Password on Login                       |                           Login page prompts "Invalid Username and Password"                           |   Pass  |
+|                     Visiting any pages without logging in                     |                                   User is redirected back to `/login`                                  |   Pass  |
+|               Entering `/reset` while not connected to internet               |                                `/reset` prints "No Internet Connection"                                |   Pass  |
+|                   Entering `/reset` in a non factory version                  | `/reset` prompts user to press pull-up button to start factory reset or return to cancel reset request |   Pass  |
+
+# Conclusions
+Functionalities that have been implemented into this OTA update system:
+
+1. Check the latest version and download the bin file directly from GitHub over HTTPS (**Security**)
+2. Pull-up button required for the confirmation of the firmware update (**Security**)
+3. Web server that display the status of the device and enable the ability to update or reset the
+   firmware remotely (**Flexibility**)
+4. Authentication required to access the web server pages (**Security**)
+5. The ability to reset the firmware back to version 1 and upgrade to latest version again for
+   testing purposes (**Repeatable**)
+6. Able to join both visible and hidden WiFi networks using the web server (**Networking**)

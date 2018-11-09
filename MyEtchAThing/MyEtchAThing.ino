@@ -68,17 +68,26 @@ void loop(void) {
   use event.acceleration.y/y and penx/y to figure out where to 
   tft.drawPixel(penx, peny, HX8357_WHITE);
   */
+  if (penx + event.acceleration.y > 0 && penx + event.acceleration.y < 319) {
+    penx += event.acceleration.y;
+    Serial.printf("Add X: %d \n", penx);
+  }
+  
+  if (peny + event.acceleration.x > 0 && peny + event.acceleration.x < 479 ) {
+    peny += event.acceleration.x;
+    Serial.printf("Add Y: %d \n", peny);
+  }
+
+  tft.drawPixel(penx, peny, HX8357_WHITE);
   
   // display events (acceleration is measured in m/s^2) */
-  /*
-  Serial.print("X: "); Serial.print(event.acceleration.x); Serial.print("  ");
-  Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
-  Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");
-  Serial.println("m/s^2 ");
-  */
-
+  // Serial.print("X: "); Serial.print(event.acceleration.x); Serial.print("  ");
+  // Serial.print("Y: "); Serial.print(event.acceleration.y); Serial.print("  ");
+  // Serial.print("Z: "); Serial.print(event.acceleration.z); Serial.print("  ");
+  // Serial.println("m/s^2 ");
+  
   /* delay before the next sample */
-  delay(20);
+  delay(200);
 }
 
 // power management chip API /////////////////////////////////////////////////

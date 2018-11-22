@@ -40,6 +40,12 @@ your own machines you'll need to copy them manually.)
 As before you should keep checking in and pushing to your repository as you
 iterate through design, development, testing and documentation phases.
 
+**Note** that there's an intermittent bug with some of our sketches that
+causes the IOExpander to lock up after flashing new binaries. The workaround
+is to cut power (both USB and battery) for a hard reset. If you find yourself
+hitting this frequently, it will be easier to work without the battery
+attached.
+
 
 # Build and Development Notes
 

@@ -28,7 +28,9 @@ sensors, and this and that. These will be handed out in the lecture on Friday.
   touch screen; change `TestScreen::activate(true);` to `false` to change this
   behaviour.
 - a `ProjectExamples` directory, with several sketches that show how libraries
-  work for those projects using external hardware
+  work for those projects using external hardware (`BigDemo`, for example,
+  includes the predictive text library; press the white arrow on screen to
+  move between functions)
 - a `libraries` directory, that contains modified libraries for on-board
   modules that use the IOExpander (including the LMIC one we used for
   `LoRaWANThing`), and libraries supporting the additional hardware we've
@@ -138,7 +140,10 @@ available processing power!
 
 ## Predictive text UI
 
-See the `Predictor` examples in the template sketches.
+See the `Predictor` examples in the `BigDemo` sketch, which is derived from
+the `predictor/` library (which was originally written by Mark Hepple -- thanks
+Mark!). Currently the UI is very basic -- can you improve it? How many words
+can you support on the ESP without running out of memory?
 
 
 ## Musical instrument

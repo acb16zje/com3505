@@ -1,0 +1,19 @@
+#ifndef MOTOR_H
+#define MOTOR_H
+
+#include <Adafruit_MotorShield.h>
+
+// Motor
+Adafruit_MotorShield AFMS = Adafruit_MotorShield();
+Adafruit_DCMotor *L_MOTOR = AFMS.getMotor(4);
+Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(3);
+
+// Methods
+void setupMotor();
+int stop(String message);
+int forward(String message);
+int backward(String message);
+int left(String message);
+int right(String message);
+
+#endif

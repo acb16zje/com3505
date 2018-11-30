@@ -1,12 +1,16 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 
+#include <aREST.h>
 #include <Adafruit_MotorShield.h>
 
 // Motor
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *L_MOTOR = AFMS.getMotor(4);
 Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(3);
+
+// aRest
+aREST rest = aREST();
 
 // Methods
 void setupMotor();

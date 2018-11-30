@@ -17,6 +17,7 @@
 #include <driver/i2s.h>         // ESP I²S bus
 #include <SD.h>                 // the SD card
 #include <Adafruit_VS1053.h>    // the audio chip
+#include <WiFi.h>
 
 #ifdef UNPHONE_RCSWITCH
 #include <RCSwitch.h>
@@ -33,14 +34,14 @@ extern bool UNPHONE_DBG;     // debug switch
 extern byte BM_I2Cadd;          // the chip lives here on I²C
 extern byte BM_Watchdog;        // charge termination/timer control register
 extern byte BM_OpCon;           // misc operation control register
-extern byte BM_Status;          // system status register 
-extern byte BM_Version;         // vender / part / revision status register 
+extern byte BM_Status;          // system status register
+extern byte BM_Version;         // vender / part / revision status register
 bool checkPowerSwitch();        // returns status of USB power (true = on)
 void setShipping(bool value);   // tells power management chip to shut down
 void setRegister(byte address, byte reg, byte value);   //
 byte getRegister(byte address, byte reg);               // I²C...
 void write8(byte address, byte reg, byte value);        // ...helpers
-byte read8(byte address, byte reg);                     // 
+byte read8(byte address, byte reg);                     //
 
 // the accelerometer /////////////////////////////////////////////////////////
 extern Adafruit_LSM303_Accel_Unified accel;

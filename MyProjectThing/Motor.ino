@@ -5,7 +5,7 @@
 
 #include "MyProjectThing.h"
 
-void setupMotor()
+void setupMotor() {
   AFMS.begin(); // Initialise motor shield
 
   // Functions

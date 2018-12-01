@@ -26,6 +26,9 @@ void setup() {
     delay(3000);
   }
   IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
+
+  setupMotor();
+  startWebServer();
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////

@@ -9,5 +9,7 @@ void startWebServer() {
   // apSSID = Gakki-bot
   // apPass = gakkismile
   WiFi.softAP(apSSID.c_str(), apPass.c_str());
-}
 
+  server.begin();
+  Serial.println(WiFi.softAPIP());
+}

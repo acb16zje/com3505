@@ -3,8 +3,6 @@
 // Motor control
 /////////////////////////////////////////////////////////////////////////////
 
-#include "MyProjectThing.h"
-
 void setupMotor() {
   AFMS.begin(); // Initialise motor shield
 

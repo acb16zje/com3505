@@ -6,8 +6,8 @@
 
 // Motor
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *L_MOTOR = AFMS.getMotor(4);
-Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(3);
+Adafruit_DCMotor *L_MOTOR = AFMS.getMotor(3);
+Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(4);
 
 // aRest
 aREST rest = aREST();

@@ -1,7 +1,13 @@
 #ifndef MY_PRJ_H
 #define MY_PRJ_H
 
-#include <Wire.h>
+// Libraries required
+#include <WiFi.h>
+#include <aREST.h>
+#include <Adafruit_MotorShield.h>
+#include <WebServer.h>
+#include <HTTPClient.h>             // ESP32 library for making HTTP requests
+#include <Update.h>                 // OTA update library
 
 #define dbg(b, s) if(b) Serial.print(s)
 #define dln(b, s) if(b) Serial.println(s)

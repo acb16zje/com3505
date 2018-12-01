@@ -27,33 +27,37 @@ int stop(String command) {
 }
 
 int forward(String command) {
-  L_MOTOR->setSpeed(255);
+  L_MOTOR->setSpeed(100);
   L_MOTOR->run( FORWARD );
 
-  R_MOTOR->setSpeed(255);
+  R_MOTOR->setSpeed(100);
   R_MOTOR->run( FORWARD );
+  Serial.println("forward");
 }
 
 int backward(String command) {
-  L_MOTOR->setSpeed(150);
+  L_MOTOR->setSpeed(50);
   L_MOTOR->run( BACKWARD );
 
-  R_MOTOR->setSpeed(150);
+  R_MOTOR->setSpeed(50);
   R_MOTOR->run( BACKWARD );
+  Serial.println("backward");
 }
 
 int left(String command) {
-  L_MOTOR->setSpeed(100);
+  L_MOTOR->setSpeed(50);
   L_MOTOR->run( BACKWARD );
 
-  R_MOTOR->setSpeed(100);
+  R_MOTOR->setSpeed(50);
   R_MOTOR->run( FORWARD );
+  Serial.println("left");
 }
 
 int right(String command) {
-  L_MOTOR->setSpeed(100);
+  L_MOTOR->setSpeed(50);
   L_MOTOR->run( FORWARD );
 
-  R_MOTOR->setSpeed(100);
+  R_MOTOR->setSpeed(50);
   R_MOTOR->run( BACKWARD );
+  Serial.println("right");
 }

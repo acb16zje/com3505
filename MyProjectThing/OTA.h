@@ -1,10 +1,6 @@
 #ifndef OTA_H
 #define OTA_H
 
-// the WiFi and HTTP server libraries ///////////////////////////////////////
-#include <HTTPClient.h>             // ESP32 library for making HTTP requests
-#include <Update.h>                 // OTA update library
-
 // OTA stuff ////////////////////////////////////////////////////////////////
 HTTPClient http;                              // manage the HTTP request process
 

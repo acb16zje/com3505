@@ -4,9 +4,9 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "unphone.h"
-#include "Motor.h"
 #include "MyProjectThing.h"
-#include "WebServer.h"
+#include "Motor.h"
+#include "SDWebServer.h"
 
 // SETUP: initialisation entry point
 void setup() {
@@ -28,7 +28,7 @@ void setup() {
   IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
 
   setupMotor();
-  startWebServer();
+  startSDWebServer();
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
@@ -36,7 +36,7 @@ void loop() {
   checkPowerSwitch(); // shutdown if switch off
 
   // Handle REST calls
-  WiFiClient client = server.available();
+  client = wifiServer.available();
   if (!client) {
     return;
   }

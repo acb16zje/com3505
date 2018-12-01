@@ -17,7 +17,6 @@
 #include <driver/i2s.h>         // ESP I²S bus
 #include <SD.h>                 // the SD card
 #include <Adafruit_VS1053.h>    // the audio chip
-#include <WiFi.h>
 
 #ifdef UNPHONE_RCSWITCH
 #include <RCSwitch.h>

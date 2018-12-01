@@ -4,7 +4,7 @@
 // NOTE!!! DON'T edit this file, do your coding in MyOTAThing!
 /////////////////////////////////////////////////////////////////////////////
 
-/* 
+/*
 This is the model solution for OTA update. It also includes the main
 functionality up to Exercise 9 (starting an acces point and webserver,
 allowing the user to choose a network to join, getting on-line, etc.)

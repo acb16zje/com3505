@@ -35,7 +35,6 @@ void recoverI2C() {   // try to recover I2C bus in case it's locked up...
 
 // SETUP: initialisation entry point
 void setup() {
-  recoverI2C();
   Wire.setClock(100000); // higher rates trigger an IOExpander bug
   Serial.begin(115200);  // init the serial line
 
@@ -44,7 +43,6 @@ void setup() {
   IOExpander::begin();
 
   checkPowerSwitch(); // check if power switch is now off & if so shutdown
-  
 
   // set up the SD card
   IOExpander::digitalWrite(IOExpander::SD_CS, LOW);
@@ -53,7 +51,6 @@ void setup() {
     delay(3000);
   }
   IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
-  
   startMotor();
   startSDWebServer();
 }
@@ -63,13 +60,12 @@ void loop() {
   checkPowerSwitch(); // shutdown if switch off
 
   // Handle REST calls
-  // client = wifiServer.available();
-  // if (!client) {
-  //   return;
-  // }
-  // while(!client.available()){
-  //   delay(1);
-  // }
-  // rest.handle(client);
-  webServer.handleClient();
+  client = wifiServer.available();
+  if (!client) {
+    return;
+  }
+  while(!client.available()){
+    delay(1);
+  }
+  rest.handle(client);
 }

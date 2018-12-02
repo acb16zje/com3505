@@ -373,13 +373,14 @@ void startSDWebServer() {
   // apSSID = Gakki-bot
   // apPass = gakkismile
   WiFi.softAP(apSSID.c_str(), apPass.c_str());
+  wifiServer.begin();
 
-  webServer.on("/", HTTP_GET, printIndex);
-  webServer.onNotFound(handleNotFound);
+  // webServer.on("/", HTTP_GET, printIndex);
+  // webServer.onNotFound(handleNotFound);
 
-  webServer.begin();
-  Serial.println(WiFi.softAPIP());
-  DBG_OUTPUT_PORT.println("HTTP webServer started");
+  // webServer.begin();
+  // Serial.println(WiFi.softAPIP());
+  // DBG_OUTPUT_PORT.println("HTTP webServer started");
 
   if (SD.begin(SS)) {
     DBG_OUTPUT_PORT.println("SD Card initialized.");

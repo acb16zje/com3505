@@ -11,7 +11,7 @@ WebServer webServer(80);
 WiFiClient client;
 
 // SSID and Password of your WiFi AP
-String apSSID = "Gakki-bot";
+String apSSID = "Gakki-bot22";
 String apPass = "gakkismile";
 
 #endif

@@ -7,16 +7,12 @@
 #include <lmic.h>               // IBM LMIC (LoraMAC-in-C) library
 #include <hal/hal.h>            // hardware abstraction for LMIC on Arduino
 #include <SPI.h>                // the SPI bus
-#include <Adafruit_GFX.h>       // core graphics library
-#include <Adafruit_HX8357.h>    // tft display
-#include <Adafruit_STMPE610.h>  // touch screen
 #include <Wire.h>               // I²C comms on the Arduino
 #include <IOExpander.h>         // unPhone's IOExpander (controlled via I²C)
 #include <Adafruit_Sensor.h>    // base class etc. for sensor abstraction
 #include <Adafruit_LSM303_U.h>  // the accelerometer sensor
 #include <driver/i2s.h>         // ESP I²S bus
 #include <SD.h>                 // the SD card
-#include <Adafruit_VS1053.h>    // the audio chip
 
 #ifdef UNPHONE_RCSWITCH
 #include <RCSwitch.h>
@@ -44,30 +40,6 @@ byte read8(byte address, byte reg);                     //
 
 // the accelerometer /////////////////////////////////////////////////////////
 extern Adafruit_LSM303_Accel_Unified accel;
-
-// the LCD and touch screen //////////////////////////////////////////////////
-#define TFT_DC    33
-extern Adafruit_HX8357 tft;
-extern Adafruit_STMPE610 ts;
-// calibration data for converting raw touch data to the screen coordinates
-#define TS_MINX 3800
-#define TS_MAXX  100
-#define TS_MINY  100
-#define TS_MAXY 3750
-class TestScreen { // screens for the test routine
-public:
-  static void init();
-  static void activate(bool);
-  static bool on();
-  static void fail(char *);
-  static bool inSquares(TS_Point);
-  static void testSequence(bool);
-};
-extern bool testScreenActive;
-
-// the VS1053 music and synth chip ///////////////////////////////////////////
-#define VS1053_DREQ 36
-extern Adafruit_VS1053_FilePlayer musicPlayer;
 
 // the mic, and the I²S bus /////////////////////////////////////////////////
 #define MIC_DOUT 35

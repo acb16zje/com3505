@@ -84,23 +84,6 @@ byte read8(byte address, byte reg) {
 // the accelerometer (with a unique ID) /////////////////////////////////////
 Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(54321);
 
-// the LCD and touch screen /////////////////////////////////////////////////
-#define TFT_DC   33
-Adafruit_HX8357 tft =
-  Adafruit_HX8357(IOExpander::LCD_CS, TFT_DC, IOExpander::LCD_RESET);
-Adafruit_STMPE610 ts = Adafruit_STMPE610(IOExpander::TOUCH_CS);
-// calibration data for converting raw touch data to the screen coordinates
-#define TS_MINX 3800
-#define TS_MAXX 100
-#define TS_MINY 100
-#define TS_MAXY 3750
-
-// the VS1053 music and synth chip ///////////////////////////////////////////
-Adafruit_VS1053_FilePlayer musicPlayer = Adafruit_VS1053_FilePlayer(
-  IOExpander::MUSIC_RESET, IOExpander::MUSIC_CS, IOExpander::MUSIC_DCS,
-  VS1053_DREQ, IOExpander::SD_CS
-);
-
 // the mic, and the I²S bus /////////////////////////////////////////////////
 // I²S bus, used by the microphone, see e.g.:
 // http://esp-idf.readthedocs.io/en/latest/api/peripherals/i2s.html
@@ -267,17 +250,7 @@ void lmic_do_send(osjob_t* j) {
 void lmic_init() {
   // LMIC init
   Serial.println("doing os_init()...");
-  if(testScreenActive)
-    tft.println("LoRa Sending");
   os_init(); // if lora fails then will stop, allowing panic mess to be seen
-
-  if(testScreenActive) {
-    tft.fillScreen(HX8357_WHITE);
-    TestScreen::init();
-    tft.setCursor(65, 270);
-    tft.setTextColor(HX8357_MAGENTA);
-    tft.println("LoRa Sent");
-  }
 
   // reset the MAC state; session and pending data transfers will be discarded
   Serial.println("doing LMIC_reset()...");

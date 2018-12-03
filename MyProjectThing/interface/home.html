@@ -2,58 +2,60 @@
 <html>
 
 <head>
-	<meta charset=utf-8 />
-	<title>aREST.js Demo</title>
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/Foliotek/AjaxQ/master/ajaxq.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/marcoschwartz/aREST.js/master/aREST.js"></script>
-	<script type="text/javascript" src="script.js"></script>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Gakki-bot</title>
+
+  <link rel="stylesheet" href="spectre.css">
+  <link rel="stylesheet" href="spectre-icons.css">
+  <link rel="stylesheet" href="style.css">
+
+  <script src="jquery.js"></script>
+  <script src="ajaxq.js"></script>
+  <script src="aREST.js"></script>
+  <script src="script.js"></script>
 </head>
 
 <body>
+  <div class="container grid-sm">
+    <header class="navbar">
+      <div class="navbar-section">
+        <a href="" class="btn btn-link btn-lg">Status</a>
+        <a href="" class="btn btn-link btn-lg">Control</a>
+        <a href="" class="btn btn-link btn-lg">WiFi</a>
+      </div>
+    </header>
 
-	<div class='container'>
+    <h2 class="text-center">Control Panel</h2>
 
-		<h1>Robot</h1>
-
-		<div class='row'>
-
-			<div class="col-md-5"></div>
-			<div class="col-md-2">
-				<button id='forward' class='btn btn-primary btn-block' type="button">Forward</button>
-			</div>
-			<div class="col-md-5"></div>
-
-		</div>
-
-		<div class='row'>
-
-			<div class="col-md-4"></div>
-			<div class="col-md-2">
-				<button id='left' class='btn btn-primary btn-block' type="button">Left</button>
-			</div>
-
-			<div class="col-md-2">
-				<button id='right' class='btn btn-primary btn-block' type="button">Right</button>
-			</div>
-			<div class="col-md-4"></div>
-
-		</div>
-
-		<div class='row'>
-
-			<div class="col-md-5"></div>
-			<div class="col-md-2">
-				<button id='backward' class='btn btn-primary btn-block' type="button">Backward</button>
-			</div>
-			<div class="col-md-5"></div>
-
-		</div>
-
-	</div>
-
+    <table class="is-centered">
+      <tr>
+        <td></td>
+        <td>
+          <button id="forward" class="btn btn-action btn-xl"><i class="icon icon-upward"></i></button>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>
+          <button id="left" class="btn btn-action btn-xl"><i class="icon icon-back"></i></button>
+        </td>
+        <td></td>
+        <td>
+          <button id="right" class="btn btn-action btn-xl"><i class="icon icon-forward"></i></button>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <button id="backward" class="btn btn-action btn-xl"><i class="icon icon-downward"></i></button>
+        </td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
 </body>
 
 </html>

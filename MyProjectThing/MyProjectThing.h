@@ -6,8 +6,6 @@
 #include <aREST.h>
 #include <Adafruit_MotorShield.h>
 #include <WebServer.h>
-#include <HTTPClient.h>             // ESP32 library for making HTTP requests
-#include <Update.h>                 // OTA update library
 
 #define dbg(b, s) if(b) Serial.print(s)
 #define dln(b, s) if(b) Serial.println(s)
@@ -17,7 +15,6 @@
 #define netDBG        true        // For networking things
 #define otaDBG        true        // For debugging in OTA update
 #define loopDBG       true        // For debugging in the loop()
-#define isGUI         false       // WebServer UI for the device?
 
 // Methods
 void setup();

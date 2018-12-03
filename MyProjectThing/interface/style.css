@@ -1,12 +1,23 @@
-body {
-  font-size: 20px;
+.is-centered {
+  margin: 0 auto;
 }
 
-.row {
-  margin-top: 25px;
+.btn.btn-xl {
+  width: 4em;
+  height: 4em;
 }
 
-#slider {
-	margin-top: 7px;
-    vertical-align:middle;
+.navbar {
+  border-bottom: 1px solid #5755d9;
+  margin-bottom: 1em;
 }
+
+.navbar .navbar-section a {
+  font-weight: bold;
+}
+
+.navbar .navbar-section a:hover {
+  background-color: #5755d9;
+  color: white;
+}
+

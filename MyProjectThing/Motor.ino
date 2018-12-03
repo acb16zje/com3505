@@ -7,6 +7,8 @@ void startMotor() {
   AFMS.begin(); // Initialise motor shield
 
   // Functions
+  rest.function("setLeftSpeed", setLeftSpeed);
+  rest.function("setRightSpeed", setRightSpeed);
   rest.function("stop", stop);
   rest.function("forward", forward);
   rest.function("backward", backward);
@@ -18,46 +20,35 @@ void startMotor() {
   rest.set_name("Gakki-bot");
 }
 
-int stop(String command) {
-  L_MOTOR->setSpeed(0);
-  L_MOTOR->run( RELEASE );
-
-  R_MOTOR->setSpeed(0);
-  R_MOTOR->run( RELEASE );
+int setLeftSpeed(String param) {
+  L_MOTOR->setSpeed(atoi(param.c_str()));
 }
 
-int forward(String command) {
-  L_MOTOR->setSpeed(100);
-  L_MOTOR->run( FORWARD );
-
-  R_MOTOR->setSpeed(100);
-  R_MOTOR->run( FORWARD );
-  Serial.println("forward");
+int setRightSpeed(String param) {
+  R_MOTOR->setSpeed(atoi(param.c_str()));
 }
 
-int backward(String command) {
-  L_MOTOR->setSpeed(50);
-  L_MOTOR->run( BACKWARD );
-
-  R_MOTOR->setSpeed(50);
-  R_MOTOR->run( BACKWARD );
-  Serial.println("backward");
+int stop(String param) {
+  L_MOTOR->run(RELEASE);
+  R_MOTOR->run(RELEASE);
 }
 
-int left(String command) {
-  L_MOTOR->setSpeed(50);
-  L_MOTOR->run( BACKWARD );
-
-  R_MOTOR->setSpeed(50);
-  R_MOTOR->run( FORWARD );
-  Serial.println("left");
+int forward(String param) {
+  L_MOTOR->run(FORWARD);
+  R_MOTOR->run(FORWARD);
 }
 
-int right(String command) {
-  L_MOTOR->setSpeed(50);
-  L_MOTOR->run( FORWARD );
+int backward(String param) {
+  L_MOTOR->run(BACKWARD);
+  R_MOTOR->run(BACKWARD);
+}
 
-  R_MOTOR->setSpeed(50);
-  R_MOTOR->run( BACKWARD );
-  Serial.println("right");
+int left(String param) {
+  L_MOTOR->run(BACKWARD);
+  R_MOTOR->run(FORWARD);
+}
+
+int right(String param) {
+  L_MOTOR->run(FORWARD);
+  R_MOTOR->run(BACKWARD);
 }

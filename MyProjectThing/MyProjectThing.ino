@@ -5,33 +5,8 @@
 
 #include "unphone.h"
 #include "MyProjectThing.h"
-#include "OTA.h"
 #include "Motor.h"
 #include "SDWebServer.h"
-
-void recoverI2C() {   // try to recover I2C bus in case it's locked up...
-  pinMode(SCL, OUTPUT);
-  pinMode(SDA, OUTPUT);
-  digitalWrite(SDA, HIGH);
-
-  for(int i = 0; i < 10; i++) { // 9th cycle acts as NACK
-    digitalWrite(SCL, HIGH);
-    delayMicroseconds(5);
-    digitalWrite(SCL, LOW);
-    delayMicroseconds(5);
-  }
-
-  // a STOP signal (SDA from low to high while SCL is high)
-  digitalWrite(SDA, LOW);
-  delayMicroseconds(5);
-  digitalWrite(SCL, HIGH);
-  delayMicroseconds(2);
-  digitalWrite(SDA, HIGH);
-  delayMicroseconds(2);
-
-  // I2C bus should be free now... a short delay to help things settle
-  delay(200);
-}
 
 // SETUP: initialisation entry point
 void setup() {

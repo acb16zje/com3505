@@ -6,4 +6,19 @@ Wanderer
 
 Recall
 
-* Original HTML, CSS, and JS files are not saved inside the unPhone, we're going to flash them inside the unPhone
+* Original HTML, CSS, and JS files are not saved inside the unPhone, we're going to flash
+  them inside the unPhone
+
+# Hardware Problems
+1. **Problem 1**: LED light on the motor driver dims, and a very small beep sound is
+   emitted, motor will not move.
+   - **Cause**: The power switch of the battery case does not fully transmit the electricity
+     if it is not positioned right
+   - **Fix**: Press the power switch down, or slightly adjust it to the left or right
+   - **Further note**: It is unable to confirm that flashing BigDemo.ino will fix this issue.
+
+2. **Problem 2**: LED light does not dim, no beep sound emitted, motor will not move.
+   - **Cause**: This problem occurred during the attempt to fix **Problem 1**, after
+     flashing BigDemo.ino and the code. It is unable to determine whether it was a
+     hardware or a software issue.
+   - **Possible Fix**: Flashing BigDemo.ino and the code again.

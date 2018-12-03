@@ -1,0 +1,1 @@
+function Device(n){this.address=n,this.callFunction=function(n,t,i){$.ajaxq("queue",{url:"http://"+this.address+"/"+n+"?params="+t}).done(function(n){null!=i&&i(n)})}}

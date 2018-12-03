@@ -11,10 +11,12 @@ aREST rest = aREST();
 
 // Methods
 void setupMotor();
-int stop(String message);
-int forward(String message);
-int backward(String message);
-int left(String message);
-int right(String message);
+int setLeftSpeed(String param);
+int setRightSpeed(String param);
+int stop(String param);
+int forward(String param);
+int backward(String param);
+int left(String param);
+int right(String param);
 
 #endif

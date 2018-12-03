@@ -5,7 +5,7 @@
 WiFiServer wifiServer(80);
 
 // WebServer on port 80
-WebServer webServer(80);
+// WebServer webServer(80);
 
 // WiFiClient for REST calls
 WiFiClient client;

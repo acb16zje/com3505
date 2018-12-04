@@ -6,7 +6,7 @@
 #include "unphone.h"
 #include "MyProjectThing.h"
 #include "Motor.h"
-#include "SDWebServer.h"
+#include "aSyncWebServer.h"
 
 // SETUP: initialisation entry point
 void setup() {
@@ -27,7 +27,7 @@ void setup() {
   }
   IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
   startMotor();
-  startSDWebServer();
+  startWebServer();
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
@@ -35,12 +35,13 @@ void loop() {
   checkPowerSwitch(); // shutdown if switch off
 
   // Handle REST calls
-  client = wifiServer.available();
-  if (!client) {
-    return;
-  }
-  while(!client.available()){
-    delay(1);
-  }
-  rest.handle(client);
+  // client = wifiServer.available();
+  // if (!client) {
+  //   return;
+  // }
+  // while(!client.available()){
+  //   delay(1);
+  // }
+  // rest.handle(client);
+  // aSyncServer.handleClient();
 }

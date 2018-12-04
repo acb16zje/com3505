@@ -5,7 +5,8 @@
 #include <WiFi.h>
 #include <aREST.h>
 #include <Adafruit_MotorShield.h>
-#include <WebServer.h>
+#include <ESPAsyncWebServer.h>
+#include <SPIFFS.h>
 
 #define dbg(b, s) if(b) Serial.print(s)
 #define dln(b, s) if(b) Serial.println(s)

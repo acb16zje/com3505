@@ -6,6 +6,8 @@
 #include <Adafruit_MotorShield.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
+#include <HTTPClient.h>             // ESP32 library for making HTTP requests
+#include <Update.h>                 // OTA update library
 
 #define dbg(b, s) if(b) Serial.print(s)
 #define dln(b, s) if(b) Serial.println(s)

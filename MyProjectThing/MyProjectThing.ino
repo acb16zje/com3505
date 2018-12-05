@@ -7,6 +7,7 @@
 #include "MyProjectThing.h"
 #include "Motor.h"
 #include "aSyncWebServer.h"
+#include "OTA.h"
 
 // SETUP: initialisation entry point
 void setup() {
@@ -54,14 +55,6 @@ void loop() {
     right();
   }
 
-  // Handle REST calls
-  // client = wifiServer.available();
-
-  // if (!client) {
-  //   return;
-  // }
-  // while(!client.available()){
-  //   delay(1);
-  // }
-  // rest.handle(client);
+  if (startOTA)
+      doOTAUpdate();
 }

@@ -16,7 +16,7 @@
 #include "Ex08.h"
 #include "Ex09.h"
 
-int LABNUM = 9; // which lab exercise number are we doing?
+int LABNUM = 1; // which lab exercise number are we doing?
 
 // initialisation entry point
 void setup() {

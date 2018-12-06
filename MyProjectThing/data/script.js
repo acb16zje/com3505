@@ -1,30 +1,24 @@
 $(document).ready(function () {
 
-  // Device
-  var device = new Device("192.168.4.1");
-
-  let keyDict = {"ArrowLeft": false, "ArrowUp": false, "ArrowRight": false, "ArrowDown": false};
-  let leftSpeed = rightSpeed = 50;
-  let forwardTurnSpeed = 25;
+  let keyDict = { "ArrowLeft": false, "ArrowUp": false, "ArrowRight": false, "ArrowDown": false };
+  let baseSpeed = 40;
+  let leftSpeed = rightSpeed = baseSpeed;
+  let forwardTurnSpeed = baseSpeed / 2;
 
   // Keyboard listener
   $(document).keydown(function (e) {
     switch (e.key) {
       case "ArrowLeft":
         setKeyDict("ArrowLeft", true);
-        setKeyDict("ArrowRight", false);
         break;
       case "ArrowUp":
         setKeyDict("ArrowUp", true);
-        setKeyDict("ArrowDown", false);
         break;
       case "ArrowRight":
         setKeyDict("ArrowRight", true);
-        setKeyDict("ArrowLeft", false);
         break;
       case "ArrowDown":
         setKeyDict("ArrowDown", true);
-        setKeyDict("ArrowUp", false);
         break;
       default: return;
     }
@@ -40,11 +34,6 @@ $(document).ready(function () {
     }
     e.preventDefault();
   });
-
-  $(document).mouseup(() => {
-    keyDict.ArrowLeft = keyDict.ArrowUp = keyDict.ArrowRight = keyDict.ArrowDown = false;
-    moveRobot();
-  })
 
   // Mouse listener
   $('#left').mousedown(() => {
@@ -75,9 +64,17 @@ $(document).ready(function () {
     setKeyDict("ArrowDown", false);
   });
 
-  function setKeyDict(prop, val) {
-    if (keyDict[prop] != val) {
-      keyDict[prop] = val;
+  $('#speed').change(() => {
+    baseSpeed = parseInt($('#speed').val());
+  });
+
+  function setKeyDict(k, v) {
+    if (keyDict[k] != v) {
+      Object.entries(keyDict).forEach(
+        ([key, value]) => {
+          keyDict[key] = key == k ? v : false;
+        }
+      );
       moveRobot();
     }
   }
@@ -86,6 +83,7 @@ $(document).ready(function () {
     // Left
     if (keyDict.ArrowLeft) {
       $('#left').addClass('btn-primary');
+      callFunction('left');
     } else {
       $('#left').removeClass('btn-primary');
     }
@@ -93,6 +91,7 @@ $(document).ready(function () {
     // Forward
     if (keyDict.ArrowUp) {
       $('#forward').addClass('btn-primary');
+      callFunction('forward');
     } else {
       $('#forward').removeClass('btn-primary');
     }
@@ -100,6 +99,7 @@ $(document).ready(function () {
     // Right
     if (keyDict.ArrowRight) {
       $('#right').addClass('btn-primary');
+      callFunction('right');
     } else {
       $('#right').removeClass('btn-primary');
     }
@@ -107,45 +107,17 @@ $(document).ready(function () {
     // Backward
     if (keyDict.ArrowDown) {
       $('#backward').addClass('btn-primary');
+      callFunction('backward');
     } else {
       $('#backward').removeClass('btn-primary');
     }
 
     // Stop
     if (!keyDict.ArrowLeft && !keyDict.ArrowUp && !keyDict.ArrowRight && !keyDict.ArrowDown) {
-      device.callFunction('stop');
-    }
-
-    if (keyDict.ArrowUp || keyDict.ArrowDown) {
-      if (keyDict.ArrowLeft) {
-        leftSpeed = 50;
-        rightSpeed = 50 + forwardTurnSpeed;
-      } else if (keyDict.ArrowRight) {
-        leftSpeed = 50 + forwardTurnSpeed;
-        rightSpeed = 50;
-      } else {
-        leftSpeed = rightSpeed = 50;
-      }
-
-      device.callFunction("setLeftSpeed", leftSpeed);
-      device.callFunction("setRightSpeed", rightSpeed);
-
-      if (keyDict.ArrowUp) {
-        device.callFunction('forward');
-      } else if (keyDict.ArrowDown) {
-        device.callFunction('backward');
-      }
-    } else if (keyDict.ArrowLeft) {
-      leftSpeed = rightSpeed = 50;
-      device.callFunction("setLeftSpeed", leftSpeed);
-      device.callFunction("setRightSpeed", rightSpeed);
-      device.callFunction('left');
-    } else if (keyDict.ArrowRight) {
-      leftSpeed = rightSpeed = 50;
-      device.callFunction("setLeftSpeed", leftSpeed);
-      device.callFunction("setRightSpeed", rightSpeed);
-      device.callFunction('right');
+      callFunction('stop');
     }
   }
-});
 
+  // aREST function
+  function callFunction(n,a,l){$.ajax({type:"GET", url:"http://192.168.4.1/"+n+"?params="+a}).done(function(n){null!=l&&l(n)})}
+});

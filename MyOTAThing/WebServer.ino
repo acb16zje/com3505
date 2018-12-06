@@ -55,7 +55,7 @@ void hndlLogin() {
   }
 
   if (webServer.hasArg("username") && webServer.hasArg("password")) {
-    if (webServer.arg("username") == loginID &&  webServer.arg("password") == loginPass) {
+    if (webServer.arg("username") == loginID && webServer.arg("password") == loginPass) {
       webServer.sendHeader("Location", "/");
       webServer.sendHeader("Cache-Control", "no-cache");
       webServer.sendHeader("Set-Cookie", "ESPSESSIONID=1");

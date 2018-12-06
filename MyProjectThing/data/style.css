@@ -21,3 +21,19 @@
   color: white;
 }
 
+@media screen and (min-width: 600px) {
+  .columns {
+    flex-direction: row-reverse;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .columns {
+    display: block;
+  }
+
+  .columns .column {
+    margin-bottom: 1em;
+  }
+}
+

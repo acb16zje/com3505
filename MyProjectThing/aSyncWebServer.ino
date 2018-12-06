@@ -3,54 +3,62 @@
 // Generate all pages and handle all requests
 /////////////////////////////////////////////////////////////////////////////
 
-
 void startWebServer() {
-    if (!SPIFFS.begin()) {
-        Serial.println("An Error has occured while mounting SPIFFS");
-        return;
-    }
-    WiFi.mode(WIFI_AP_STA);
+  if (!SPIFFS.begin()) {
+    Serial.println("An Error has occured while mounting SPIFFS");
+    return;
+  }
 
-    WiFi.softAP(apSSID, apPass);
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(apSSID, apPass);
 
-    routes();
+  routes();
+  aSyncServer.begin();
 
-    aSyncServer.begin();
-
-    Serial.println(WiFi.softAPIP());
+  dln(netDBG, WiFi.softAPIP());
 }
 
-// String header() {
-//     File file = SPIFFS.open("/head.html");
-//     String content = "";
-
-//     while(file.available()) {
-//         content += char(file.read());
-//     }
-
-//     file.close();
-//     return content;
-// }
 void routes() {
-    aSyncServer.on("/", [](AsyncWebServerRequest *request) {
-        request->send(SPIFFS,"/home.html","text/html");
-    });
-    aSyncServer.on("/style.css", [](AsyncWebServerRequest *request) {
-        request->send(SPIFFS,"/style.css","text/css");
-    });
-    aSyncServer.on("/spectre.css", [](AsyncWebServerRequest *request) {
-        request->send(SPIFFS,"/spectre.css","text/css");
-    });
-    aSyncServer.on("/spectre-icons.css", [](AsyncWebServerRequest *request) {
-        request->send(SPIFFS,"/spectre-icons.css","text/css");
-    });
-    aSyncServer.on("/jquery.js", [](AsyncWebServerRequest *request) {
-        request->send(SPIFFS,"/jquery.js","text/javascript");
-    });
-    aSyncServer.on("/script.js", [](AsyncWebServerRequest *request) {
-        request->send(SPIFFS,"/script.js","text/javascript");
-    });
-    aSyncServer.on("/aREST.js", [](AsyncWebServerRequest *request) {
-        request->send(SPIFFS,"/aREST.js","text/javascript");
-    });    
+  aSyncServer.serveStatic("/spectre.css", SPIFFS, "/spectre.css");
+  aSyncServer.serveStatic("/style.css", SPIFFS, "/style.css");
+  aSyncServer.serveStatic("/jquery.js", SPIFFS, "/jquery.js");
+  aSyncServer.serveStatic("/script.js", SPIFFS, "/script.js");
+
+  aSyncServer.on("/", [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/index.html", "text/html");
+  });
+
+  // aSyncServer.on("/setLeftSpeed", HTTP_GET, [](AsyncWebServerRequest *request) {
+  //   // setLeftSpeed(request->arg("params"));
+  //   request->send(200);
+  // });
+  // aSyncServer.on("/setRightSpeed", HTTP_GET, [](AsyncWebServerRequest *request) {
+  //   // setRightSpeed(request->arg("params"));
+  //   request->send(200);
+  // });
+
+  aSyncServer.on("/stop", HTTP_GET, [](AsyncWebServerRequest *request){
+    isStop = true;
+    request->send(200);
+  });
+
+  aSyncServer.on("/forward", HTTP_GET, [](AsyncWebServerRequest *request){
+    isForward = true;
+    request->send(200);
+  });
+
+  aSyncServer.on("/backward", HTTP_GET, [](AsyncWebServerRequest *request){
+    isBackward = true;
+    request->send(200);
+  });
+
+  aSyncServer.on("/left", HTTP_GET, [](AsyncWebServerRequest *request){
+    isLeft = true;
+    request->send(200);
+  });
+
+  aSyncServer.on("/right", HTTP_GET, [](AsyncWebServerRequest *request){
+    isRight = true;
+    request->send(200);
+  });
 }

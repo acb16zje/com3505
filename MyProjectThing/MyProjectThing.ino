@@ -13,19 +13,18 @@ void setup() {
   Wire.setClock(100000); // higher rates trigger an IOExpander bug
   Serial.begin(115200);  // init the serial line
 
-  // fire up I²C, and the unPhone's IOExpander library
-  Wire.begin();
-  IOExpander::begin();
-
-  checkPowerSwitch(); // check if power switch is now off & if so shutdown
+  Wire.begin();          // start I²C
+  IOExpander::begin();   // start unPhone's IOExpander library
+  checkPowerSwitch();    // check if power switch is now off & if so shutdown
 
   // set up the SD card
-  IOExpander::digitalWrite(IOExpander::SD_CS, LOW);
-  if(!SD.begin(-1)) {
-    D("Card Mount Failed");
-    delay(3000);
-  }
-  IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
+  // IOExpander::digitalWrite(IOExpander::SD_CS, LOW);
+  // if(!SD.begin(-1)) {
+  //   D("Card Mount Failed");
+  //   delay(3000);
+  // }
+  // IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
+
   startMotor();
   startWebServer();
 }
@@ -33,9 +32,31 @@ void setup() {
 // LOOP: task entry point ///////////////////////////////////////////////////
 void loop() {
   checkPowerSwitch(); // shutdown if switch off
+  // forward();
+  // delay(5000);
+  // stop();
+  // delay(5000);
+
+  if (isStop) {
+    stop();
+    isStop = false;
+    isForward = false;
+    isBackward = false;
+    isLeft = false;
+    isRight = false;
+  } else if (isForward) {
+    forward();
+  } else if (isBackward) {
+    backward();
+  } else if (isLeft) {
+    left();
+  } else if (isRight) {
+    right();
+  }
 
   // Handle REST calls
   // client = wifiServer.available();
+
   // if (!client) {
   //   return;
   // }
@@ -43,5 +64,4 @@ void loop() {
   //   delay(1);
   // }
   // rest.handle(client);
-  // aSyncServer.handleClient();
 }

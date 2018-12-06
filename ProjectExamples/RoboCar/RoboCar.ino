@@ -6,8 +6,8 @@
 #include <Adafruit_MotorShield.h>
 
 // Create the motor shield object with the default I2C address
-Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
- 
+Adafruit_MotorShield AFMS = Adafruit_MotorShield();
+
 // And connect 2 DC motors to port M3 & M4 !
 Adafruit_DCMotor *L_MOTOR = AFMS.getMotor(4);
 Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(3);
@@ -15,7 +15,7 @@ Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(3);
 // Create aREST instance
 aREST rest = aREST();
 
-// The port to listen for incoming TCP connections 
+// The port to listen for incoming TCP connections
 #define LISTEN_PORT           80
 
 // Create an instance of the server
@@ -28,24 +28,24 @@ int right(String message);
 int left(String message);
 int backward(String message);
 
-void setup() {  
+void setup() {
   // Start Serial
   Serial.begin(115200);
 
   // Init motor shield
-  AFMS.begin();  
+  AFMS.begin();
 
-  // Functions          
+  // Functions
   rest.function("stop", stop);
   rest.function("forward", forward);
   rest.function("left", left);
   rest.function("right", right);
   rest.function("backward", backward);
-      
+
   // Give name and ID to device
   rest.set_id("1");
   rest.set_name("robot");
-  
+
   // Connect to WiFi
   WiFi.begin("PiAccessPoint","PIATilapia~2");
   while (WiFi.status() != WL_CONNECTED) {
@@ -54,14 +54,14 @@ void setup() {
   }
   Serial.println("");
   Serial.println("WiFi connected");
- 
+
   // Start the server
   server.begin();
   Serial.println("Server started");
-  
+
   // Print the IP address
   Serial.println(WiFi.localIP());
-  
+
 }
 
 void loop() {
@@ -79,7 +79,7 @@ void loop() {
 int stop(String command) {
   L_MOTOR->setSpeed(0);
   L_MOTOR->run( RELEASE );
- 
+
   R_MOTOR->setSpeed(0);
   R_MOTOR->run( RELEASE );
 }
@@ -87,7 +87,7 @@ int stop(String command) {
 int forward(String command) {
   L_MOTOR->setSpeed(255);
   L_MOTOR->run( FORWARD );
- 
+
   R_MOTOR->setSpeed(255);
   R_MOTOR->run( FORWARD );
 }
@@ -95,7 +95,7 @@ int forward(String command) {
 int left(String command) {
   L_MOTOR->setSpeed(100);
   L_MOTOR->run( BACKWARD );
- 
+
   R_MOTOR->setSpeed(100);
   R_MOTOR->run( FORWARD );
 }
@@ -103,7 +103,7 @@ int left(String command) {
 int right(String command) {
   L_MOTOR->setSpeed(100);
   L_MOTOR->run( FORWARD );
- 
+
   R_MOTOR->setSpeed(100);
   R_MOTOR->run( BACKWARD );
 }
@@ -111,7 +111,7 @@ int right(String command) {
 int backward(String command) {
   L_MOTOR->setSpeed(150);
   L_MOTOR->run( BACKWARD );
- 
+
   R_MOTOR->setSpeed(150);
   R_MOTOR->run( BACKWARD );
 }

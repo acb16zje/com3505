@@ -3,7 +3,6 @@
 
 // Libraries required
 #include <WiFi.h>
-#include <aREST.h>
 #include <Adafruit_MotorShield.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>

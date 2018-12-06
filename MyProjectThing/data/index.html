@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Gakki-bot</title>
+
+  <link rel="stylesheet" href="spectre.css">
+  <link rel="stylesheet" href="style.css">
+
+  <script src="jquery.js"></script>
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <div class="container grid-sm">
+    <header class="navbar">
+      <div class="navbar-section">
+        <a href="" class="btn btn-link btn-lg">Status</a>
+        <a href="" class="btn btn-link btn-lg">Control</a>
+        <a href="" class="btn btn-link btn-lg">WiFi</a>
+      </div>
+    </header>
+
+    <h2 class="text-center">Control Panel</h2>
+
+    <div class="columns">
+      <div class="column col-6 col-sm-10 is-centered">
+        <div class="form-group">
+          <h3 class="text-primary text-center">Speed</h3>
+          <input id="speed" class="slider tooltip" type="range" min="40" max="100" value="40" oninput="this.setAttribute('value', this.value);">
+        </div>
+      </div>
+
+      <div class="column col-6 col-sm-12 is-centered">
+        <h3 class="text-primary text-center">Directional pad</h3>
+
+        <table class="is-centered">
+          <tr>
+            <td></td>
+            <td>
+              <button id="forward" class="btn btn-action btn-xl"><i class="icon icon-upward"></i></button>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <button id="left" class="btn btn-action btn-xl"><i class="icon icon-back"></i></button>
+            </td>
+            <td></td>
+            <td>
+              <button id="right" class="btn btn-action btn-xl"><i class="icon icon-forward"></i></button>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <button id="backward" class="btn btn-action btn-xl"><i class="icon icon-downward"></i></button>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

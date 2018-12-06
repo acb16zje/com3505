@@ -1,5 +1,4 @@
 #import "OTA.h"
-#import "Misc.h"
 
 // OTA over-the-air update stuff ///////////////////////////////////////////
 void doOTAUpdate() {             // the main OTA logic
@@ -45,8 +44,10 @@ void doOTAUpdate() {             // the main OTA logic
 
   if (startReset) {
     respCode = doCloudGet(&http, gitID, "1.bin");
+    Serial.println(respCode);
   } else {
     respCode = doCloudGet(&http, gitID, String(highestAvailableVersion) + ".bin");
+    Serial.println(respCode);
   }
 
   // The size of the bin file
@@ -104,27 +105,22 @@ void doOTAUpdate() {             // the main OTA logic
     dln(otaDBG, "An error occurred when retrieving the bin file.");
   }
 
-  aSyncServer.onNotFound(onRequest);
-  aSyncServer.onFileUpload(onUpload);
-  aSyncServer.onRequestBody(onBody);
+  // aSyncServer.onNotFound(onRequest);
+  // aSyncServer.onFileUpload(onUpload);
+  // aSyncServer.onRequestBody(onBody);
 
   aSyncServer.begin();
 }
 
 // Helper for downloading from cloud firmware server via HTTP GET
 int doCloudGet(HTTPClient *http, String gitID, String fileName) {
-  // build up URL from components; for example:
-  //http://com3505.gate.ac.uk/repos/com3505-labs-2018-adalovelace/BinFiles/2.bin
-  // String baseUrl =
-  //   "http://com3505.gate.ac.uk/repos/";
-  // String url =
-  //   baseUrl + "com3505-labs-2018-" + gitID + "/BinFiles/" + fileName;
-
   // Fetch from GitHub directly
-  String baseUrl = "https://" + token + "@raw.githubusercontent.com/";
-  String url =
-    baseUrl + "UniSheffieldInternetOfThings/com3505-labs-2018-" +
-    gitID + "/master/BinFiles/" + fileName;
+  // String baseUrl = "https://" + token + "@raw.githubusercontent.com/";
+  // String url =
+  //   baseUrl + "UniSheffieldInternetOfThings/com3505-labs-2018-" +
+  //   gitID + "/master/MyProjectThing/bin/" + fileName;
+  String url = 
+  "https://0e880b21f37190fcd95ad385fcb8deade7209c90@raw.githubusercontent.com/UniSheffieldInternetOfThings/com3505-labs-2018-Juneezee/master/MyProjectThing/bin/1.bin";
 
   // make GET request and return the response code
   http->begin(url);

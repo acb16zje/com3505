@@ -5,7 +5,7 @@
 AsyncWebServer aSyncServer(80);
 
 // SSID and Password of your WiFi AP
-const char* apSSID = "Gakki-bot22";
+const char* apSSID = "Gakki-bot";
 const char* apPass = "gakkismile";
 
 const char* wifiSSID = "uos-other";
@@ -14,4 +14,6 @@ const char* wifiPass = "shefotherkey05";
 // const char* wifiSSID = "OnePlus 5";
 // const char* wifiPass = "12345678";
 
+void startWebServer();
+void routes();
 #endif

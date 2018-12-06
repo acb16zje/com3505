@@ -2,6 +2,7 @@
 // aSyncWebServer.ino
 // Generate all pages and handle all requests
 /////////////////////////////////////////////////////////////////////////////
+#import "OTA.h"
 
 void startWebServer() {
   if (!SPIFFS.begin()) {
@@ -9,8 +10,10 @@ void startWebServer() {
     return;
   }
 
-  WiFi.mode(WIFI_AP);
+  WiFi.mode(WIFI_AP_STA);
   WiFi.softAP(apSSID, apPass);
+
+  WiFi.begin(wifiSSID,wifiPass);
 
   routes();
   aSyncServer.begin();
@@ -25,7 +28,7 @@ void routes() {
   aSyncServer.serveStatic("/script.js", SPIFFS, "/script.js");
 
   aSyncServer.on("/", [](AsyncWebServerRequest *request) {
-    request->send(SPIFFS, "/index.html", "text/html");
+    request->send(SPIFFS, "/index.html", String(), false, statusTable);
   });
 
   aSyncServer.on("/control", [](AsyncWebServerRequest *request) {
@@ -42,6 +45,39 @@ void routes() {
       delay(1);
     }
     request->send(SPIFFS, "/wifi.html", String(), false, wifiList);
+  });
+
+  aSyncServer.on("/ota", [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/ota.html", String(), false, otaPrompt);
+  });
+
+  aSyncServer.on("/otaStart", [](AsyncWebServerRequest *request) {
+    bool shouldReboot = !Update.hasError();
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", shouldReboot?"OK":"FAIL");
+    response->addHeader("Connection", "close");
+    request->send(response);
+    doOTAUpdate();
+    // while (!Update.end()) {
+    //   delay(1);
+    // }
+      // request->redirect("/status");
+  });
+   
+  aSyncServer.on("/reset", [](AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/ota.html", String(), false, resetPrompt);
+  });
+
+  aSyncServer.on("/resetStart", [](AsyncWebServerRequest *request) {
+    bool shouldReboot = !Update.hasError();
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", shouldReboot?"OK":"FAIL");
+    response->addHeader("Connection", "close");
+    request->send(response);
+    // while (!Update.end()) {
+    //   delay(1);
+    // }
+    // request->redirect("/status");
+  }, [] (AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool f) {
+    doOTAUpdate();
   });
 
   // aSyncServer.on("/setLeftSpeed", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -207,3 +243,87 @@ void wifiChz(AsyncWebServerRequest *request) {
 
   Serial.println(message);
 }
+
+String statusTable(const String& var) {
+  String s = "<table>";
+  s += "<tr><td>SSID</td><td>";
+  s += WiFi.SSID();
+  s += "</td></tr>";
+   s += "<tr><td>Status</td><td>";
+  switch(WiFi.status()) {
+    case WL_IDLE_STATUS:
+      s += "WL_IDLE_STATUS"; break;
+    case WL_NO_SSID_AVAIL:
+      s += "WL_NO_SSID_AVAIL"; break;
+    case WL_SCAN_COMPLETED:
+      s += "WL_SCAN_COMPLETED"; break;
+    case WL_CONNECTED:
+      s += "WL_CONNECTED"; break;
+    case WL_CONNECT_FAILED:
+      s += "WL_CONNECT_FAILED"; break;
+    case WL_CONNECTION_LOST:
+      s += "WL_CONNECTION_LOST"; break;
+    case WL_DISCONNECTED:
+      s += "WL_DISCONNECTED"; break;
+    default:
+      s += "unknown";
+  }
+   s += "</td></tr><tr><td>Local IP</td><td>";
+  s += ip2str(WiFi.localIP());
+  s += "</td></tr>";
+   s += "<tr><td>Soft AP IP</td><td>";
+  s += ip2str(WiFi.softAPIP());
+  s += "</td></tr>";
+   s += "<tr><td>AP SSID name</td><td>";
+  s += apSSID;
+  s += "</td></tr>";
+   s += "<tr><td>Current Version</td><td>";
+  s += String(currentVersion);
+  s += " <a href='/reset' class='reset'>Reset</a></td></tr>";
+  s += "</td></tr><tr><td>Latest Version</td><td>";
+   // do a GET to read the version file from the cloud
+  respCode = doCloudGet(&http, gitID, "version");
+  if (respCode == 200) {
+    highestAvailableVersion = atoi(http.getString().c_str());
+     s += String(highestAvailableVersion);
+     if (currentVersion < highestAvailableVersion) {
+      s += " <a href='/ota' class='update'>Update</a>";
+    }
+  } else {
+    s += "No connection";
+  }
+  s += "</td></tr></table>";
+   http.end(); // Free resource
+   return s;
+}
+
+String otaPrompt(const String& var) {
+  String message = "";
+  respCode = doCloudGet(&http, gitID, "version");
+  if (respCode != 200) {
+    message = "<p>No internet connection.</p>";
+  } else if (currentVersion >= highestAvailableVersion) {
+    message = "<p>No updates available.</p>";
+  } else {
+    message = "<p>Press <a href='/otaStart'>here</a> to start</p>";
+    message += "<a href='/status'>here</a> to cancel.</p>";
+    message += "<p>The device will restart when the update has completed.</p>";
+  }
+  http.end();
+  return message;
+}
+
+String resetPrompt(const String& var) {
+  String message = "";
+  startReset = true;
+  respCode = doCloudGet(&http, gitID, "1.bin");
+  if (respCode != 200) {
+    message = "<p>No internet connection.</p>";
+  } else {
+    message = "<p>Press <a href='/resetStart'>here</a> to reset</p>";
+    message += "<a href='/status'>here</a> to cancel.</p>";
+    message += "<p>The device will restart when the reset has been completed.</p>";
+  }
+  http.end();
+  return message;
+} 

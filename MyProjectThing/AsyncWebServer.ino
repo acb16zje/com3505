@@ -16,6 +16,7 @@ void startWebServer() {
   WiFi.begin(wifiSSID,wifiPass);
 
   routes();
+
   aSyncServer.begin();
 
   dln(netDBG, WiFi.softAPIP());
@@ -28,18 +29,26 @@ void routes() {
   aSyncServer.serveStatic("/script.js", SPIFFS, "/script.js");
 
   aSyncServer.on("/", [](AsyncWebServerRequest *request) {
+    startOTA = false;
+    startReset = false;
     request->send(SPIFFS, "/index.html", String(), false, statusTable);
   });
 
   aSyncServer.on("/control", [](AsyncWebServerRequest *request) {
+    startOTA = false;
+    startReset = false;
     request->send(SPIFFS, "/control.html", "text/html");
   });
 
   aSyncServer.on("/wifi", [](AsyncWebServerRequest *request) {
+    startOTA = false;
+    startReset = false;
     request->send(SPIFFS, "/wifi.html", String(), false, wifiList);
   });
 
   aSyncServer.on("/wifichz", [](AsyncWebServerRequest *request) {
+    startOTA = false;
+    startReset = false;
     wifiChz(request);
     while (WiFi.status() != WL_CONNECTED) {
       delay(1);
@@ -48,28 +57,32 @@ void routes() {
   });
 
   aSyncServer.on("/ota", [](AsyncWebServerRequest *request) {
+    startOTA = false;
+    startReset = false;
     request->send(SPIFFS, "/ota.html", String(), false, otaPrompt);
   });
 
   aSyncServer.on("/otaStart", [](AsyncWebServerRequest *request) {
+    startOTA = true;
     bool shouldReboot = !Update.hasError();
     AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", shouldReboot?"OK":"FAIL");
     response->addHeader("Connection", "close");
     request->send(response);
-    doOTAUpdate();
   });
 
   aSyncServer.on("/reset", [](AsyncWebServerRequest *request) {
+    startOTA = false;
+    startReset = false;
     request->send(SPIFFS, "/ota.html", String(), false, resetPrompt);
   });
 
-  aSyncServer.on("/resetStart", [](AsyncWebServerRequest *request) {
+  aSyncServer.on("/resetStart", HTTP_GET, [](AsyncWebServerRequest *request) {
+    startOTA = true;
+    startReset = true;
     bool shouldReboot = !Update.hasError();
     AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", shouldReboot?"OK":"FAIL");
     response->addHeader("Connection", "close");
     request->send(response);
-  }, [] (AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool f) {
-    doOTAUpdate();
   });
 
   aSyncServer.on("/setSpeed", HTTP_GET, [](AsyncWebServerRequest *request) {

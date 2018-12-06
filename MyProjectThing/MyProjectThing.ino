@@ -7,6 +7,7 @@
 #include "MyProjectThing.h"
 #include "AsyncWebServer.h"
 #include "Motor.h"
+#include "OTA.h"
 
 
 // SETUP: initialisation entry point
@@ -51,7 +52,7 @@ void loop() {
     right();
   }
 
-  // if (startOTA) {
-  //   doOTAUpdate();
-  // }
+  if (startOTA) {
+    doOTAUpdate();
+  }
 }

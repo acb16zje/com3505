@@ -44,10 +44,8 @@ void doOTAUpdate() {             // the main OTA logic
 
   if (startReset) {
     respCode = doCloudGet(&http, gitID, "1.bin");
-    Serial.println(respCode);
   } else {
     respCode = doCloudGet(&http, gitID, String(highestAvailableVersion) + ".bin");
-    Serial.println(respCode);
   }
 
   // The size of the bin file

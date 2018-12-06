@@ -21,7 +21,6 @@ void doOTAUpdate() {             // the main OTA logic
   // do we know the latest version, and does the firmware need updating?
   if (currentVersion >= highestAvailableVersion && !startReset) {
     dln(otaDBG, "Firmware is up to date\n\n");
-    startOTA = false;
     return;
   }
 
@@ -113,7 +112,11 @@ void doOTAUpdate() {             // the main OTA logic
     blink();
   }
 
-  startOTA = false; // Allow the user to update again
+  aSyncServer.onNotFound(onRequest);
+  aSyncServer.onFileUpload(onUpload);
+  aSyncServer.onRequestBody(onBody);
+
+  aSyncServer.begin();
 }
 
 // Helper for downloading from cloud firmware server via HTTP GET

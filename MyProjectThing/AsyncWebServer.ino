@@ -57,12 +57,8 @@ void routes() {
     response->addHeader("Connection", "close");
     request->send(response);
     doOTAUpdate();
-    // while (!Update.end()) {
-    //   delay(1);
-    // }
-      // request->redirect("/status");
   });
-   
+
   aSyncServer.on("/reset", [](AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/ota.html", String(), false, resetPrompt);
   });
@@ -72,22 +68,14 @@ void routes() {
     AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", shouldReboot?"OK":"FAIL");
     response->addHeader("Connection", "close");
     request->send(response);
-    // while (!Update.end()) {
-    //   delay(1);
-    // }
-    // request->redirect("/status");
   }, [] (AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool f) {
     doOTAUpdate();
   });
 
-  // aSyncServer.on("/setLeftSpeed", HTTP_GET, [](AsyncWebServerRequest *request) {
-  //   // setLeftSpeed(request->arg("params"));
-  //   request->send(200);
-  // });
-  // aSyncServer.on("/setRightSpeed", HTTP_GET, [](AsyncWebServerRequest *request) {
-  //   // setRightSpeed(request->arg("params"));
-  //   request->send(200);
-  // });
+  aSyncServer.on("/setSpeed", HTTP_GET, [](AsyncWebServerRequest *request) {
+    speed = atoi(request->arg("params").c_str());
+    request->send(200);
+  });
 
   aSyncServer.on("/stop", HTTP_GET, [](AsyncWebServerRequest *request){
     isStop = true;
@@ -326,4 +314,4 @@ String resetPrompt(const String& var) {
   }
   http.end();
   return message;
-} 
+}

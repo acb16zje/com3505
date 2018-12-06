@@ -7,45 +7,37 @@ void startMotor() {
   AFMS.begin(); // Initialise motor shield
 }
 
-int setLeftSpeed(String param) {
-  L_MOTOR->setSpeed(atoi(param.c_str()));
-}
-
-int setRightSpeed(String param) {
-  R_MOTOR->setSpeed(atoi(param.c_str()));
-}
-
-int stop() {
+void stop() {
   L_MOTOR->setSpeed(0);
   R_MOTOR->setSpeed(0);
   L_MOTOR->run(RELEASE);
   R_MOTOR->run(RELEASE);
 }
 
-int forward() {
-  L_MOTOR->setSpeed(40);
-  R_MOTOR->setSpeed(40);
+void forward() {
+  L_MOTOR->setSpeed(speed);
+  R_MOTOR->setSpeed(speed);
   L_MOTOR->run(FORWARD);
   R_MOTOR->run(FORWARD);
 }
 
-int backward() {
-  L_MOTOR->setSpeed(40);
-  R_MOTOR->setSpeed(40);
+void backward() {
+  L_MOTOR->setSpeed(speed);
+  R_MOTOR->setSpeed(speed);
   L_MOTOR->run(BACKWARD);
   R_MOTOR->run(BACKWARD);
 }
 
-int left() {
-  L_MOTOR->setSpeed(40);
-  R_MOTOR->setSpeed(40);
+void left() {
+    L_MOTOR->setSpeed(speed);
+  R_MOTOR->setSpeed(speed);
   L_MOTOR->run(BACKWARD);
   R_MOTOR->run(FORWARD);
 }
 
-int right() {
-  L_MOTOR->setSpeed(40);
-  R_MOTOR->setSpeed(40);
+void right() {
+  L_MOTOR->setSpeed(speed);
+  R_MOTOR->setSpeed(speed);
   L_MOTOR->run(FORWARD);
   R_MOTOR->run(BACKWARD);
 }

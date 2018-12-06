@@ -6,6 +6,7 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *L_MOTOR = AFMS.getMotor(3);
 Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(4);
 
+uint8_t speed = 40; // Default minimum speed
 bool isStop = false;
 bool isForward = false;
 bool isBackward = false;
@@ -14,12 +15,12 @@ bool isRight = false;
 
 // Methods
 void startMotor();
-int setLeftSpeed(String param);
-int setRightSpeed(String param);
-int stop();
-int forward();
-int backward();
-int left();
-int right();
+void setLeftSpeed(String param);
+void setRightSpeed(String param);
+void stop();
+void forward();
+void backward();
+void left();
+void right();
 
 #endif

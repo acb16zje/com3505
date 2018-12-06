@@ -1,12 +1,11 @@
 $(document).ready(function () {
 
   let keyDict = { "ArrowLeft": false, "ArrowUp": false, "ArrowRight": false, "ArrowDown": false };
-  let baseSpeed = 40;
-  let leftSpeed = rightSpeed = baseSpeed;
-  let forwardTurnSpeed = baseSpeed / 2;
+  let speed = 40;
+  let isMobile = 'ontouchstart' in document.documentElement;
 
   // Keyboard listener
-  $(document).keydown(function (e) {
+  $(document).keydown((e) => {
     switch (e.key) {
       case "ArrowLeft":
         setKeyDict("ArrowLeft", true);
@@ -25,7 +24,7 @@ $(document).ready(function () {
     e.preventDefault();
   });
 
-  $(document).keyup(function (e) {
+  $(document).keyup((e) => {
     switch (e.key) {
       case "ArrowLeft": case "ArrowUp": case "ArrowRight": case "ArrowDown":
         setKeyDict(e.key, false);
@@ -35,37 +34,68 @@ $(document).ready(function () {
     e.preventDefault();
   });
 
-  // Mouse listener
-  $('#left').mousedown(() => {
-    setKeyDict("ArrowLeft", true);
-  });
-  $('#left').mouseup(() => {
-    setKeyDict("ArrowLeft", false);
-  });
+  if (isMobile) {
+    // Mobile touch listener
+    $('#left').on('touchstart', () => {
+      setKeyDict("ArrowLeft", true);
+    });
+    $('#left').on('touchend', () => {
+      setKeyDict("ArrowLeft", false);
+    });
 
-  $('#forward').mousedown(() => {
-    setKeyDict("ArrowUp", true);
-  });
-  $('#forward').mouseup(() => {
-    setKeyDict("ArrowUp", false);
-  });
+    $('#forward').on('touchstart', () => {
+      setKeyDict("ArrowUp", true);
+    });
+    $('#forward').on('touchend', () => {
+      setKeyDict("ArrowUp", false);
+    });
 
-  $('#right').mousedown(() => {
-    setKeyDict("ArrowRight", true);
-  });
-  $('#right').mouseup(() => {
-    setKeyDict("ArrowRight", false);
-  });
+    $('#right').on('touchstart', () => {
+      setKeyDict("ArrowRight", true);
+    });
+    $('#right').on('touchend', () => {
+      setKeyDict("ArrowRight", false);
+    });
 
-  $('#backward').mousedown(() => {
-    setKeyDict("ArrowDown", true);
-  });
-  $('#backward').mouseup(() => {
-    setKeyDict("ArrowDown", false);
-  });
+    $('#backward').on('touchstart', () => {
+      setKeyDict("ArrowDown", true);
+    });
+    $('#backward').on('touchend', () => {
+      setKeyDict("ArrowDown", false);
+    });
+  } else {
+    // Desktop mouse listener
+    $('#left').mousedown(() => {
+      setKeyDict("ArrowLeft", true);
+    });
+    $('#left').mouseup(() => {
+      setKeyDict("ArrowLeft", false);
+    });
+
+    $('#forward').mousedown(() => {
+      setKeyDict("ArrowUp", true);
+    });
+    $('#forward').mouseup(() => {
+      setKeyDict("ArrowUp", false);
+    });
+
+    $('#right').mousedown(() => {
+      setKeyDict("ArrowRight", true);
+    });
+    $('#right').mouseup(() => {
+      setKeyDict("ArrowRight", false);
+    });
+
+    $('#backward').mousedown(() => {
+      setKeyDict("ArrowDown", true);
+    });
+    $('#backward').mouseup(() => {
+      setKeyDict("ArrowDown", false);
+    });
+  }
 
   $('#speed').change(() => {
-    baseSpeed = parseInt($('#speed').val());
+    callFunction('setSpeed', $('#speed').val());
   });
 
   function setKeyDict(k, v) {

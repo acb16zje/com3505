@@ -13,13 +13,13 @@ bool isLeft = false;
 bool isRight = false;
 
 // Methods
-void setupMotor();
-// int setLeftSpeed(String param);
-// int setRightSpeed(String param);
-// int stop(String param);
-// int forward(String param);
-// int backward(String param);
-// int left(String param);
-// int right(String param);
+void startMotor();
+int setLeftSpeed(String param);
+int setRightSpeed(String param);
+int stop();
+int forward();
+int backward();
+int left();
+int right();
 
 #endif

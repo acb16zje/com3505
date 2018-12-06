@@ -1,13 +1,12 @@
-/////////////////////////////////////////////////////////////////////////////
+////////////////////////setup/////////////////////////////////////////////////////
 // MyProjectThing.ino
 // COM3505 lab assessment: Robocar
 /////////////////////////////////////////////////////////////////////////////
 
 #include "unphone.h"
 #include "MyProjectThing.h"
+#include "AsyncWebServer.h"
 #include "Motor.h"
-#include "aSyncWebServer.h"
-#include "OTA.h"
 
 // SETUP: initialisation entry point
 void setup() {
@@ -41,10 +40,6 @@ void loop() {
   if (isStop) {
     stop();
     isStop = false;
-    isForward = false;
-    isBackward = false;
-    isLeft = false;
-    isRight = false;
   } else if (isForward) {
     forward();
   } else if (isBackward) {
@@ -55,6 +50,7 @@ void loop() {
     right();
   }
 
-  if (startOTA)
-      doOTAUpdate();
+  // if (startOTA) {
+  //   doOTAUpdate();
+  // }
 }

@@ -21,6 +21,7 @@ void doOTAUpdate() {             // the main OTA logic
   // do we know the latest version, and does the firmware need updating?
   if (currentVersion >= highestAvailableVersion && !startReset) {
     dln(otaDBG, "Firmware is up to date\n\n");
+    startOTA = false;
     return;
   }
 
@@ -36,9 +37,6 @@ void doOTAUpdate() {             // the main OTA logic
     df(otaDBG, "to version %d?\n", highestAvailableVersion);
     dln(otaDBG, "Press the pull-up button to confirm...");
   }
-
-  ledOff();
-
 
   // Do a GET for the .bin
   dln(otaDBG, "Retrieving update file...");
@@ -63,13 +61,9 @@ void doOTAUpdate() {             // the main OTA logic
     if (canBegin) {
       dln(otaDBG, "Performing OTA... Please do not turn off the ESP32...");
 
-      ledOn(); // Start the LED when it is flashing
-
       // Start writing to the flash
       // http.getStream() will not work for HTTPS
       size_t written = Update.writeStream(*http.getStreamPtr());
-
-      ledOff(); // Turn off LED when finished flashing
 
       // Check if finished writing
       if (written == fileSize) {
@@ -84,7 +78,6 @@ void doOTAUpdate() {             // the main OTA logic
       // Final process
       if (Update.end()) {
         dln(otaDBG, "OTA finished.");
-        blink();
 
         if (Update.isFinished()) {
           dln(otaDBG, "Update completed successfully.");
@@ -109,7 +102,6 @@ void doOTAUpdate() {             // the main OTA logic
     }
   } else {
     dln(otaDBG, "An error occurred when retrieving the bin file.");
-    blink();
   }
 
   aSyncServer.onNotFound(onRequest);

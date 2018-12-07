@@ -18,9 +18,6 @@
 #define otaDBG        true          // For debugging in OTA update
 #define loopDBG       true          // For debugging in the loop()
 
-#define trigPin 14
-#define echoPin 21
-
 // Methods
 void setup();
 void loop();

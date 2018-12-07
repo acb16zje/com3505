@@ -8,6 +8,7 @@
 #include "AsyncWebServer.h"
 #include "Motor.h"
 #include "OTA.h"
+#include "UltrasonicSensor.h"
 
 // SETUP: initialisation entry point
 void setup() {
@@ -27,23 +28,16 @@ void setup() {
   // IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
 
   // startMotor();
+  startUltrasonicSensor();
   // startWebServer();
-  IOExpander::pinMode(trigPin, OUTPUT);
-  IOExpander::pinMode(echoPin, INPUT);
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
 void loop() {
   checkPowerSwitch(); // shutdown if switch off
 
-  IOExpander::digitalWrite(trigPin, LOW);
-  delay(100);
-  IOExpander::digitalWrite(trigPin, HIGH);
-  delay(100);
-  IOExpander::digitalWrite(trigPin, LOW);
-  int duration = pulseIn(echoPin, HIGH);
-  int distance = (duration / 2) / 29.1;
-  Serial.printf("Duration: %d        Distance: %d\n", duration, distance);
+  Serial.printf("Front Distance: %d              ", getFrontDistance());
+  Serial.printf("Back Distance: %d\n", getBackDistance());
 
   if (isStop) {
     stop();

@@ -1,4 +1,7 @@
-#import "OTA.h"
+// /////////////////////////////////////////////////////////////////////////////
+// OTA.ino
+// Perform OTA update, or firmware reset
+// /////////////////////////////////////////////////////////////////////////////
 
 // OTA over-the-air update stuff ///////////////////////////////////////////
 void doOTAUpdate() {             // the main OTA logic
@@ -117,7 +120,7 @@ int doCloudGet(HTTPClient *http, String gitID, String fileName) {
   // String url =
   //   baseUrl + "UniSheffieldInternetOfThings/com3505-labs-2018-" +
   //   gitID + "/master/MyProjectThing/bin/" + fileName;
-  String url = 
+  String url =
   "https://0e880b21f37190fcd95ad385fcb8deade7209c90@raw.githubusercontent.com/UniSheffieldInternetOfThings/com3505-labs-2018-Juneezee/master/MyProjectThing/bin/1.bin";
 
   // make GET request and return the response code

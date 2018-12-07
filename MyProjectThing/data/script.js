@@ -148,6 +148,16 @@ $(document).ready(function () {
     }
   }
 
+  // WiFi list page
+  $('#ap tr').click(function() {
+    $(this).find('th input[type=radio]').prop('checked', true);
+    document.getElementById('hidText').disabled = !document.getElementById('hidRadio').checked;
+  })
+
+  $('#hidRadio').click(() => {
+    document.getElementById('hidText').disabled = !document.getElementById('hidRadio').checked;
+  });
+
   // aREST function
   function callFunction(n,a,l){$.ajax({type:"GET", url:"http://192.168.4.1/"+n+"?params="+a}).done(function(n){null!=l&&l(n)})}
 });

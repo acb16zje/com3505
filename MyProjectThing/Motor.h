@@ -15,8 +15,6 @@ bool isRight = false;
 
 // Methods
 void startMotor();
-void setLeftSpeed(String param);
-void setRightSpeed(String param);
 void stop();
 void forward();
 void backward();

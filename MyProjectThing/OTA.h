@@ -9,7 +9,7 @@ const String token = "0e880b21f37190fcd95ad385fcb8deade7209c90"; // Personal acc
 const int minSize = 100000;                   // 100k bytes
 const int maxSize = 1000000;                  // 1 mega bytes
 
-short currentVersion = 1;                     // used to check for updates
+short currentVersion = 2;                     // used to check for updates
 uint8_t highestAvailableVersion = -1;         // version of latest firmware on server
 short respCode;                               // the response code from the request (e.g. 404, 200, ...)
 

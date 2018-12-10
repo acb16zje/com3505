@@ -39,8 +39,8 @@ void setup() {
 void loop() {
   checkPowerSwitch(); // shutdown if switch off
 
-  Serial.printf("Front Distance: %d              ", getFrontDistance());
-  Serial.printf("Back Distance: %d\n", getBackDistance());
+  // Serial.printf("Front Distance: %d              ", getFrontDistance());
+  // Serial.printf("Back Distance: %d\n", getBackDistance());
 
   if (isStop) {
     stop();
@@ -54,7 +54,7 @@ void loop() {
   } else if (isRight) {
     right();
   }
-  
+
   io.run();
   Serial.print("sending -> ");
   Serial.println(dist);

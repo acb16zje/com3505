@@ -66,6 +66,7 @@ void routes() {
 
     response->addHeader("Connection", "close");
     request->send(response);
+    aSyncServer.reset();
   });
 
   aSyncServer.on("/reset", [](AsyncWebServerRequest *request) {
@@ -84,6 +85,7 @@ void routes() {
 
     response->addHeader("Connection", "close");
     request->send(response);
+    aSyncServer.reset();
   });
 
   // Ajax

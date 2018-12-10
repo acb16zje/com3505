@@ -27,9 +27,12 @@ void setup() {
   // }
   // IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
 
-  // startMotor();
+  io.connect();
+  Serial.println(io.statusText());
+
+  startMotor();
   startUltrasonicSensor();
-  // startWebServer();
+  startWebServer();
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
@@ -51,7 +54,15 @@ void loop() {
   } else if (isRight) {
     right();
   }
+  
+  io.run();
+  Serial.print("sending -> ");
+  Serial.println(dist);
+  distance->save(dist);
 
+  dist++;
+
+  delay(10000);
   if (startOTA) {
     doOTAUpdate();
   }

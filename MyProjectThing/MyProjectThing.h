@@ -8,6 +8,7 @@
 #include <SPIFFS.h>
 #include <HTTPClient.h>             // ESP32 library for making HTTP requests
 #include <Update.h>                 // OTA update library
+#include <AdafruitIO_WiFi.h>        // Adafruit IO
 
 #define dbg(b, s) if(b) Serial.print(s)
 #define dln(b, s) if(b) Serial.println(s)
@@ -17,6 +18,17 @@
 #define netDBG        true          // For networking things
 #define otaDBG        true          // For debugging in OTA update
 #define loopDBG       true          // For debugging in the loop()
+
+#define IO_USERNAME  "njh97"
+#define IO_KEY       "ba9f3fd658054b7893333e3a89c2ab42"
+
+const char* WIFI_SSID = "gakki";
+const char* WIFI_PASS = "gakkismile";
+
+AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
+AdafruitIO_Feed *distance = io.feed("distance");
+
+int dist = 0;
 
 // Methods
 void setup();

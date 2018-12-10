@@ -27,17 +27,17 @@ void setup() {
   // }
   // IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
 
-  // startMotor();
+  startMotor();
   startUltrasonicSensor();
-  // startWebServer();
+  startWebServer();
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
 void loop() {
   checkPowerSwitch(); // shutdown if switch off
 
-  Serial.printf("Front Distance: %d              ", getFrontDistance());
-  Serial.printf("Back Distance: %d\n", getBackDistance());
+  // Serial.printf("Front Distance: %d              ", getFrontDistance());
+  // Serial.printf("Back Distance: %d\n", getBackDistance());
 
   if (isStop) {
     stop();

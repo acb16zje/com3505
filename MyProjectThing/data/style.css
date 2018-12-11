@@ -1,3 +1,7 @@
+body {
+  font-size: 1em;
+}
+
 .is-centered {
   margin: 0 auto;
 }
@@ -19,6 +23,15 @@
 .navbar .navbar-section a:hover {
   background-color: #5755d9;
   color: white;
+}
+
+.form-radio {
+  margin: 0;
+  padding-right: 0;
+}
+
+.form-radio .form-icon {
+  left: 0.3rem;
 }
 
 @media screen and (min-width: 600px) {

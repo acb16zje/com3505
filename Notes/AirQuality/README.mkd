@@ -33,7 +33,7 @@ For further reading about the voltage divider see
 https://learn.sparkfun.com/tutorials/voltage-dividers.
 
 The output voltages from these dividers go to the ESP32 -- it has multiple ADC
-channels -- we are using A0 and A4.
+channels -- we are using A0 and A8 (A8 is labled 9 on the Expander!).
 
 In our circuit, resistors R4 & R5 form a potential divider for the VOC sensor,
 reducing it's range from the 0-5V the sensor outputs to 0-3.3V. The ADC has a
@@ -76,7 +76,7 @@ help keep them all in the right places. I've used:
 
 - Black for Ground
 - Yellow for VBAT
-- Red for 3,3V
+- Red for 3.3V
 - Orange for 5V
 - Green for the MQ-135 signal
 - Blue for the AM2302 signal

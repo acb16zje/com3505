@@ -8,10 +8,12 @@ AsyncWebServer aSyncServer(80);
 const char* apSSID = "Gakki-bot22";
 const char* apPass = "gakkismile";
 
-const char* wifiSSID = "uos-other";
-const char* wifiPass = "shefotherkey05";
-
-// const char* wifiSSID = "OnePlus 5";
-// const char* wifiPass = "12345678";
+void startWebServer();
+void routes();
+String wifiList(const String&);
+void wifiJoin(AsyncWebServerRequest *);
+String statusTable(const String&);
+String otaPrompt(const String&);
+String resetPrompt(const String&);
 
 #endif

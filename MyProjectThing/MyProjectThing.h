@@ -13,10 +13,13 @@
 #define dln(b, s) if(b) Serial.println(s)
 #define df(b, s, f) if(b) Serial.printf(s, f)
 
-#define setupDBG      true        // For setup phase
-#define netDBG        true        // For networking things
-#define otaDBG        true        // For debugging in OTA update
-#define loopDBG       true        // For debugging in the loop()
+#define setupDBG      true          // For setup phase
+#define netDBG        true          // For networking things
+#define otaDBG        true          // For debugging in OTA update
+#define loopDBG       true          // For debugging in the loop()
+
+#define trigPin 25
+#define echoPin 34
 
 // Methods
 void setup();

@@ -12,9 +12,6 @@ Recall
 * SDWebServer too slow
 * AsyncWebServer fast
 
-# Software Problems
-1. **Problem 1**: If the robot is controlled using AsyncWebServer, only one motor will run.
-
 # Hardware Problems
 1. **Problem 1**: LED light on the motor driver dims, and a very small beep sound is
    emitted, motor will not move.

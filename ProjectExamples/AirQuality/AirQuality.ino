@@ -7,9 +7,9 @@
 #include <DHTesp.h>              // Library for temperature / humidity sensor
 DHTesp dht;
 
-const int GasPin = A0;
-const int DustLEDPin = 21;
-const int DustPin = A4;
+const int GasPin = 26;
+const int DustLEDPin = 32;
+const int DustPin = 15;
 const int dhtPin = 14;
 
 // the LCD
@@ -52,8 +52,9 @@ void loop() {
   tft.println("Gas Reading:");
   long valr = analogRead(GasPin);
   // the 3.3V range is divided into 4096 steps, giving 0.000806V per step
-  // and the original voltage is divided by at 18K/10K resistor divider (*1.8)
-  float volts = valr*0.000806*1.8;
+  // and the original voltage is divided by a 18K/10K resistor divider (1.8)
+  // so the 4096 steps corespond to 0.00145V per step of original 5V
+  float volts = valr*0.00145;
   tft.print(volts);
   tft.println("V");
   Serial.print(volts);

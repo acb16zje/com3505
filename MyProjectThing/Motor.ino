@@ -29,7 +29,7 @@ void backward() {
 }
 
 void left() {
-    L_MOTOR->setSpeed(speed);
+  L_MOTOR->setSpeed(speed);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(BACKWARD);
   R_MOTOR->run(FORWARD);

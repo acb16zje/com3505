@@ -22,13 +22,21 @@
 #define IO_USERNAME  "njh97"
 #define IO_KEY       "ba9f3fd658054b7893333e3a89c2ab42"
 
-const char* WIFI_SSID = "gakki";
-const char* WIFI_PASS = "gakkismile";
+const char* WIFI_SSID = "uos-other";
+const char* WIFI_PASS = "shefotherkey05";
 
 AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 AdafruitIO_Feed *distance = io.feed("distance");
 
-int dist = 0;
+float dist = 0;
+int period = 10000;
+
+int startTime;
+int timeMoved;
+
+int currentTime;
+int updatedTime;
+
 
 // Methods
 void setup();

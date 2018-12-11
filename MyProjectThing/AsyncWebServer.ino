@@ -11,7 +11,7 @@ void startWebServer() {
 
   WiFi.mode(WIFI_AP_STA);
   WiFi.softAP(apSSID, apPass);
-  WiFi.begin(); // for when credentials are already stored by board
+  // WiFi.begin(); // for when credentials are already stored by board
 
   routes();
   aSyncServer.begin();
@@ -146,9 +146,15 @@ String wifiList(const String& var) {
     f += "<a href='/'>Back</a><br/><a href='/wifi'>Try again?</a></p>\n";
   } else {
     dbg(netDBG, n); dln(netDBG, " networks found");
-    f += "<p>WiFi access points available:</p>"
-         "<form method='POST' action='wifiJoin'>"
+    if (WiFi.SSID() == "")  {
+      f += "<p>WiFi access points available:</p>";
+    } else {
+      f += "<p>Currently connected to <strong>" + WiFi.SSID() + "</strong>. ";
+      f += "WiFi access points available:</p>";
+    }
+    f += "<form method='POST' action='wifiJoin'>"
          "<table id='ap' class='table table-striped table-hover'>";
+
     for(short i = 0; i < n; ++i) {
       f.concat("<tr><th class='text-center'>");
       f.concat("<label class='form-radio'><input type='radio' name='ssid' value='");
@@ -293,4 +299,11 @@ String resetPrompt(const String& var) {
   }
   http.end();
   return message;
+}
+
+// Utility for printing IP addresses
+String ip2str(IPAddress address) {
+  return
+    String(address[0]) + "." + String(address[1]) + "." +
+    String(address[2]) + "." + String(address[3]);
 }

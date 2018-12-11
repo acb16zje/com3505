@@ -18,11 +18,13 @@ void startWebServer() {
 }
 
 void routes() {
+  // Assets
   aSyncServer.serveStatic("/spectre.css", SPIFFS, "/spectre.css");
   aSyncServer.serveStatic("/style.css", SPIFFS, "/style.css");
   aSyncServer.serveStatic("/jquery.js", SPIFFS, "/jquery.js");
   aSyncServer.serveStatic("/script.js", SPIFFS, "/script.js");
 
+  // Basic routes
   aSyncServer.on("/", [](AsyncWebServerRequest *request) {
     startOTA = false;
     startReset = false;
@@ -88,9 +90,15 @@ void routes() {
     aSyncServer.reset();
   });
 
-  // Ajax
+  // jQuery AJAX
   aSyncServer.on("/setSpeed", HTTP_GET, [](AsyncWebServerRequest *request) {
     speed = atoi(request->arg("params").c_str());
+    request->send(200);
+  });
+
+  aSyncServer.on("/setMode", HTTP_GET, [](AsyncWebServerRequest *request) {
+    isAuto = String(request->arg("params")) == "auto";
+    isStop = !isAuto;
     request->send(200);
   });
 

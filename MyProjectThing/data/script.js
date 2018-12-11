@@ -148,6 +148,18 @@ $(document).ready(function () {
     }
   }
 
+  // Control page
+  $('#mode input').on('change', function() {
+    let radioValue = $('input[name=mode]:checked', '#mode').val();
+    callFunction('setMode', radioValue);
+
+    $('#forward').prop('disabled', radioValue == "auto");
+    $('#backward').prop('disabled', radioValue == "auto");
+    $('#left').prop('disabled', radioValue == "auto");
+    $('#right').prop('disabled', radioValue == "auto");
+    $('#speed').prop('disabled', radioValue == "auto");
+  });
+
   // WiFi list page
   $('#ap tr').click(function() {
     $(this).find('th input[type=radio]').prop('checked', true);

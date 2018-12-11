@@ -29,6 +29,21 @@
 
     <div class="columns">
       <div class="column col-6 col-sm-10 is-centered">
+
+        <div class="columns" id="mode">
+          <div class="column col-12 is-centered">
+            <h3 class="text-primary text-center">Mode</h3>
+            <div class="form-group">
+              <label class="form-radio">
+                <input type="radio" name="mode" value="auto"><i class="form-icon"></i> Auto
+              </label>
+              <label class="form-radio">
+                <input type="radio" name="mode" value="manual" checked><i class="form-icon"></i> Manual
+              </label>
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
           <h3 class="text-primary text-center">Speed</h3>
           <input id="speed" class="slider tooltip" type="range" min="40" max="100" value="40" oninput="this.setAttribute('value', this.value);">

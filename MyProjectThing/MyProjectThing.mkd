@@ -11,12 +11,16 @@ Recall
 
 * SDWebServer too slow
 * AsyncWebServer fast
+* Data logging
+
+# Implementation
+
+# Challenges
 
 # Hardware Problems
 1. **Problem 1**: LED light on the motor driver dims, and a very small beep sound is
    emitted, motor will not move.
-   - **Cause**: The power switch of the battery case does not fully transmit the electricity
-     if it is not positioned right
+   - **Cause**: The power switch of the AA battery case is not sensitive.
    - **Fix**: Press the power switch down, or slightly adjust it to the left or right
    - **Further note**: It is unable to confirm that flashing BigDemo.ino will fix this issue.
 

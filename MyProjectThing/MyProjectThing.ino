@@ -6,9 +6,8 @@
 #include "unphone.h"
 #include "MyProjectThing.h"
 #include "AsyncWebServer.h"
-#include "Motor.h"
+#include "Movement.h"
 #include "OTA.h"
-#include "UltrasonicSensor.h"
 
 // SETUP: initialisation entry point
 void setup() {
@@ -27,8 +26,10 @@ void setup() {
   // }
   // IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
 
-  startMotor();
-  startUltrasonicSensor();
+  // io.connect();
+  // Serial.println(io.statusText());
+
+  startMovementControl();
   startWebServer();
 
   io.connect();
@@ -40,37 +41,39 @@ void setup() {
   distance->onMessage(handleMessage);
   distance->get();
 
-  // dist = (distance->lastValue()).value();
+  // // dist = (distance->lastValue()).value();
 
-  updatedTime = millis();
-  currentTime = millis();
+  // updatedTime = millis();
+  // currentTime = millis();
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
 void loop() {
   checkPowerSwitch(); // shutdown if switch off
 
-  Serial.printf("Front Distance: %d              ", getFrontDistance());
-  Serial.printf("Back Distance: %d\n", getBackDistance());
+  moveRoboCar();
 
-  if (isStop) {
-    stop();
-    isStop = false;
-    timeMoved = millis() - startTime;
-    dist += (float)((0.28f*speed - 3.5f)*(timeMoved/10000));
-  } else if (isForward) {
-    forward();
-    startTime = millis();
-  } else if (isBackward) {
-    backward();
-    startTime = millis();
-  } else if (isLeft) {
-    left();
-    startTime = millis();
-  } else if (isRight) {
-    right();
-    startTime = millis();
-  }
+  // Serial.printf("Front Distance: %d              ", getFrontDistance());
+  // Serial.printf("Back Distance: %d\n", getBackDistance());
+
+  // if (isStop) {
+  //   stop();
+  //   isStop = false;
+  //   timeMoved = millis() - startTime;
+  //   dist += (float)((0.28f*speed - 3.5f)*(timeMoved/10000));
+  // } else if (isForward) {
+  //   forward();
+  //   startTime = millis();
+  // } else if (isBackward) {
+  //   backward();
+  //   startTime = millis();
+  // } else if (isLeft) {
+  //   left();
+  //   startTime = millis();
+  // } else if (isRight) {
+  //   right();
+  //   startTime = millis();
+  // }
 
   io.run();
   Serial.print("sending -> ");
@@ -79,13 +82,13 @@ void loop() {
 
   currentTime = millis();
 
-  if  (currentTime - updatedTime >= period) {
-    updatedTime = currentTime;
-    io.run();
-    Serial.print("sending -> ");
-    Serial.println(dist);
-    distance->save(dist);
-  }
+  // if  (currentTime - updatedTime >= period) {
+  //   updatedTime = currentTime;
+  //   io.run();
+  //   Serial.print("sending -> ");
+  //   Serial.println(dist);
+  //   distance->save(dist);
+  // }
 
   if (startOTA) {
     doOTAUpdate();

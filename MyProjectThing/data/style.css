@@ -34,6 +34,19 @@ body {
   left: 0.3rem;
 }
 
+#mode {
+  height: 50%;
+}
+
+#mode .form-group {
+  text-align: center;
+}
+
+#mode .form-radio {
+  display: inline;
+  padding: 0 .4rem .1rem 1.4rem;
+}
+
 @media screen and (min-width: 600px) {
   .columns {
     flex-direction: row-reverse;

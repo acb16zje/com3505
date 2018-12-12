@@ -25,10 +25,6 @@ void setup() {
   //   delay(3000);
   // }
   // IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
-
-  // io.connect();
-  // Serial.println(io.statusText());
-
   startMovementControl();
   startWebServer();
 
@@ -43,8 +39,9 @@ void setup() {
 
   // // dist = (distance->lastValue()).value();
 
-  // updatedTime = millis();
-  // currentTime = millis();
+  startTime = 0;
+  updatedTime = millis();
+  currentTime = millis();
 }
 
 // LOOP: task entry point ///////////////////////////////////////////////////
@@ -53,8 +50,7 @@ void loop() {
 
   moveRoboCar();
 
-  // Serial.printf("Front Distance: %d              ", getFrontDistance());
-  // Serial.printf("Back Distance: %d\n", getBackDistance());
+  currentTime = millis();
 
   // if (isStop) {
   //   stop();

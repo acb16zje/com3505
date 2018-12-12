@@ -28,6 +28,8 @@ void routes() {
   aSyncServer.on("/", [](AsyncWebServerRequest *request) {
     startOTA = false;
     startReset = false;
+    isAuto = false;
+    isStop = true;
     request->send(SPIFFS, "/index.html", String(), false, statusTable);
   });
 
@@ -40,12 +42,16 @@ void routes() {
   aSyncServer.on("/wifi", [](AsyncWebServerRequest *request) {
     startOTA = false;
     startReset = false;
+    isAuto = false;
+    isStop = true;
     request->send(SPIFFS, "/wifi.html", String(), false, wifiList);
   });
 
   aSyncServer.on("/wifiJoin", [](AsyncWebServerRequest *request) {
     startOTA = false;
     startReset = false;
+    isAuto = false;
+    isStop = true;
     wifiJoin(request);
     while (WiFi.status() != WL_CONNECTED) {
       delay(1);
@@ -56,11 +62,15 @@ void routes() {
   aSyncServer.on("/ota", [](AsyncWebServerRequest *request) {
     startOTA = false;
     startReset = false;
+    isAuto = false;
+    isStop = true;
     request->send(SPIFFS, "/ota.html", String(), false, otaPrompt);
   });
 
   aSyncServer.on("/otaStart", [](AsyncWebServerRequest *request) {
     startOTA = true;
+    isAuto = false;
+    isStop = true;
     bool shouldReboot = !Update.hasError();
 
     AsyncWebServerResponse *response =
@@ -74,12 +84,16 @@ void routes() {
   aSyncServer.on("/reset", [](AsyncWebServerRequest *request) {
     startOTA = false;
     startReset = false;
+    isAuto = false;
+    isStop = true;
     request->send(SPIFFS, "/ota.html", String(), false, resetPrompt);
   });
 
   aSyncServer.on("/resetStart", HTTP_GET, [](AsyncWebServerRequest *request) {
     startOTA = true;
     startReset = true;
+    isAuto = false;
+    isStop = true;
     bool shouldReboot = !Update.hasError();
 
     AsyncWebServerResponse *response =
@@ -275,6 +289,10 @@ String statusTable(const String& var) {
   } else {
     s += "No connection";
   }
+
+  s += "</td></tr><tr><th>Distance Travelled (cm)";
+  s += "</th><td>";
+  s += String(dist);
   s += "</td></tr></table>";
   http.end(); // Free resource
   return s;

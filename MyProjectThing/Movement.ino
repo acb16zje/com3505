@@ -97,9 +97,19 @@ void moveRoboCar() {
       // }
     }
   } else {
+    if (startTime == 0 && (isForward || isBackward)) {
+      startTime = millis();
+      // Serial.printf("startTime: %d", startTime);
+    }
     if (isStop) {
       stop();
       isStop = false;
+      if (startTime != 0) {
+        timeMoved = millis() - startTime;
+        Serial.println(timeMoved);
+        dist += (float)((0.28f*speed - 3.5f)*(timeMoved/1000));
+        startTime = 0; // setting startTime to 0 determines no movement ongoing
+      }
     } else if (isForward) {
       forward();
     } else if (isBackward) {

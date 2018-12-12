@@ -19,8 +19,8 @@
 #define otaDBG        true          // For debugging in OTA update
 #define loopDBG       true          // For debugging in the loop()
 
-#define IO_USERNAME  "njh97"
-#define IO_KEY       "ba9f3fd658054b7893333e3a89c2ab42"
+const char* IO_USERNAME = "njh97";
+const char* IO_KEY      = "ba9f3fd658054b7893333e3a89c2ab42";
 
 const char* WIFI_SSID = "uos-other";
 const char* WIFI_PASS = "shefotherkey05";
@@ -36,7 +36,6 @@ int timeMoved;
 
 int currentTime;
 int updatedTime;
-
 
 // Methods
 void setup();

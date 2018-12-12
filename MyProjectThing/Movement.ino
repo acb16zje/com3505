@@ -82,19 +82,28 @@ void moveRoboCar() {
   // Robot moves randomly in autonomous mode
   // Makes use of ultrasonic sensors to prevent collision
   if (isAuto) {
-    short d = getFrontDistance();
+    short d;
+    if (isForward) {
+      d = getFrontDistance();
+    } else {
+      d = getBackDistance();
+    }
     df(loopDBG, "Distance: %d\n", d);
     if(d > 4) {
-      forward();
+      if (isForward) {
+        forward();
+      } else {
+        backward(); 
+      }
     } else {
-      // turnRight90();
+      turnRight90();
       stop();
 
-      // if (getFrontDistance() >= getBackDistance()) {
-      //   forward();
-      // } else {
-      //   backward();
-      // }
+      if (getFrontDistance() >= getBackDistance()) {
+        isForward = true;
+      } else {
+        isForward = false;
+      }
     }
   } else {
     if (startTime == 0 && (isForward || isBackward)) {

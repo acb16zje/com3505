@@ -6,19 +6,30 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *L_MOTOR = AFMS.getMotor(3);
 Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(4);
 
-#define frontTrigPin 26             // pin A0
+// Ultrasonic Sensors
+#define frontTrigPin 26            // pin A0
 #define frontEchoPin 4             // pin A5
-#define backTrigPin 21              // GPIO 25, the pin below TX
-#define backEchoPin 14               // pin 5
+#define backTrigPin 21             // GPIO 25, the pin below TX
+#define backEchoPin 14             // pin 5
 
-int stuckCounter = 0;
-uint8_t speed = 40; // Default minimum speed
+// Constants
+const uint8_t MAX_STUCK = 4;
+const short MAX_DISTANCE = 4;
+
+// Variables
+uint8_t stuckCounter = 0;
+uint8_t speed = 40;                // Default minimum speed
 bool isAuto = false;
+bool isRecall = false;
 bool isStop = false;
 bool isForward = false;
 bool isBackward = false;
 bool isLeft = false;
 bool isRight = false;
+
+// Virtual direction
+enum Direction {North, East, South, West};
+Direction currentDirection = North;
 
 // Methods
 void startMovementControl();

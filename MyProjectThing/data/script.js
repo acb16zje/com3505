@@ -149,7 +149,7 @@ $(document).ready(function () {
   }
 
   // Control page
-  $('#mode input').on('change', function() {
+  $('#mode input').change(() => {
     let radioValue = $('input[name=mode]:checked', '#mode').val();
     callFunction('setMode', radioValue);
 
@@ -158,11 +158,23 @@ $(document).ready(function () {
     $('#left').prop('disabled', radioValue == "auto");
     $('#right').prop('disabled', radioValue == "auto");
     $('#speed').prop('disabled', radioValue == "auto");
+
+    if (radioValue == "auto") {
+      $('#speedText').addClass("d-none");
+      $('#speed').addClass('d-none');
+      $('#recall').removeClass('d-none');
+    } else {
+      $('#speedText').removeClass("d-none");
+      $('#speed').removeClass('d-none');
+      $('#recall').addClass('d-none');
+    }
   });
+
+  $('#recall').click(() => callFunction('recall'));
 
   // WiFi list page
   $('#ap tr').click(function() {
-    $(this).find('th input[type=radio]').prop('checked', true);
+    $(this).find('td input[type=radio]').prop('checked', true);
     document.getElementById('hidText').disabled = !document.getElementById('hidRadio').checked;
   })
 

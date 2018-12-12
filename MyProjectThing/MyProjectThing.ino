@@ -19,19 +19,11 @@ void setup() {
   IOExpander::begin();   // start unPhone's IOExpander library
   checkPowerSwitch();    // check if power switch is now off & if so shutdown
 
-  // set up the SD card
-  // IOExpander::digitalWrite(IOExpander::SD_CS, LOW);
-  // if(!SD.begin(-1)) {
-  //   D("Card Mount Failed");
-  //   delay(3000);
-  // }
-  // IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
-
   startMovementControl();
   startWebServer();
 
   io.connect();
-  Serial.println(io.statusText());
+  dln(setupDBG, io.statusText());
 
   while(io.status() < AIO_CONNECTED) {
     delay(500);
@@ -48,7 +40,11 @@ void setup() {
 void loop() {
   checkPowerSwitch(); // shutdown if switch off
 
-  moveRoboCar();
+  if (isRecall) {
+    recall();
+  } else {
+    moveRoboCar();
+  }
 
   // Sends value to AdaFruit in 10 seconds intervals
   currentTime = millis();
@@ -56,31 +52,38 @@ void loop() {
   if (currentTime - updatedTime >= period) {
     updatedTime = currentTime;
     io.run();
-    Serial.print("sending -> ");
-    Serial.println(dist);
+    df(dataDBG, "Sending -> %f\n", dist);
     distance->save(dist);
   }
 
-  //Initialise OTA Update
+  // Initialise OTA Update
   if (startOTA) {
     doOTAUpdate();
   }
 
-  if (stuckCounter == 4) {
+  if (stuckCounter == MAX_STUCK) {
     sendIFTTT(&http);
   }
 }
 
 void handleMessage(AdafruitIO_Data *data) {
-  Serial.print("received <- ");
-  Serial.print(data -> value());
+  df(dataDBG, "Received -> %f\n", data->value());
   if (dist <= 0) {
     dist = atof(data->value());
   }
 }
 
+// Read battery voltage output
 void startBatteryCount() {
   pinMode(batteryPin,INPUT);
   analogReadResolution(12);  // 10 bit is 0-1023, 11 bit is 0-2047, 12 bit is 0-4095
   analogSetPinAttenuation(batteryPin, ADC_6db); // 0db is 0-1V, 2.5db is 0-1.5V, 6db is 0-2.2v, 11db is 0-3.3v
+}
+
+// Send IFTTT notification to phone when the robocar is stucked
+void sendIFTTT(HTTPClient *http) {
+  String url = "https://maker.ifttt.com/trigger/" + triggerName + "/with/key/" + apiKey;
+  http->begin(url);
+  http->addHeader("User-Agent", "ESP32");
+  http->GET();
 }

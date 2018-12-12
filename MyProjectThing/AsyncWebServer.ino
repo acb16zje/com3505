@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // AsyncWebServer.ino
-// Generate all pages and handle all requests
+// Handle web requests
 /////////////////////////////////////////////////////////////////////////////
 
 void startWebServer() {
@@ -9,9 +9,8 @@ void startWebServer() {
     return;
   }
 
-  WiFi.mode(WIFI_AP_STA);
+  WiFi.mode(WIFI_AP);
   WiFi.softAP(apSSID, apPass);
-  // WiFi.begin(); // for when credentials are already stored by board
 
   routes();
   aSyncServer.begin();
@@ -25,7 +24,7 @@ void routes() {
   aSyncServer.serveStatic("/script.js", SPIFFS, "/script.js").setCacheControl("max-age=600");
 
   // Basic routes
-  aSyncServer.on("/login", HTTP_ANY, [](AsyncWebServerRequest *request) {
+  aSyncServer.on("/login", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
       request->redirect("/");
     } else {
@@ -33,17 +32,40 @@ void routes() {
     }
   });
 
-  aSyncServer.on("/logout", HTTP_ANY, [](AsyncWebServerRequest *request) {
-    request->requestAuthentication();
-    request->send(200);
+  aSyncServer.on("/logout", [](AsyncWebServerRequest *request) {
+    const char html[] = {
+      "<!DOCTYPE html><html>"
+      "<head>"
+        "<meta charset='utf-8'>"
+        "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>"
+        "<title>Gakki-bot</title>"
+        "<link rel='stylesheet' href='spectre.css'>"
+        "<link rel='stylesheet' href='style.css'>"
+      "</head>"
+      "<body>"
+        "<div class='container grid-sm'>"
+          "<div class='columns'>"
+            "<div class='column col-7 col-md-8 col-sm-10 is-centered'>"
+              "<div class='hero hero-lg'>"
+                "<div class='hero-body'>"
+                  "<h1 class='text-primary text-center'>Gakki-bot</h1>"
+                  "<div class='text-center'>"
+                    "<a href='/login' class='btn btn-success btn-lg'>Sign in</a>"
+                  "</div>"
+                "</div>"
+              "</div>"
+            "</div>"
+          "</div>"
+        "</div>"
+      "</body></html>"
+    };
+
+    request->send(401, "text/html", String(html));
   });
 
   aSyncServer.on("/", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
-      startOTA = false;
-      startReset = false;
-      isAuto = false;
-      isStop = true;
+      resetBools();
       request->send(SPIFFS, "/index.html", String(), false, statusTable);
     } else {
       request->redirect("/login");
@@ -52,8 +74,7 @@ void routes() {
 
   aSyncServer.on("/control", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
-      startOTA = false;
-      startReset = false;
+      resetBools();
       request->send(SPIFFS, "/control.html", "text/html");
     } else {
       request->redirect("/login");
@@ -62,10 +83,7 @@ void routes() {
 
   aSyncServer.on("/wifi", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
-      startOTA = false;
-      startReset = false;
-      isAuto = false;
-      isStop = true;
+      resetBools();
       request->send(SPIFFS, "/wifi.html", String(), false, wifiList);
     } else {
       request->redirect("/login");
@@ -74,10 +92,7 @@ void routes() {
 
   aSyncServer.on("/wifiJoin", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
-      startOTA = false;
-      startReset = false;
-      isAuto = false;
-      isStop = true;
+      resetBools();
       wifiJoin(request);
       while (WiFi.status() != WL_CONNECTED) {
         delay(1);
@@ -90,10 +105,7 @@ void routes() {
 
   aSyncServer.on("/ota", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
-      startOTA = false;
-      startReset = false;
-      isAuto = false;
-      isStop = true;
+      resetBools();
       request->send(SPIFFS, "/ota.html", String(), false, otaPrompt);
     } else {
       request->redirect("/login");
@@ -102,9 +114,8 @@ void routes() {
 
   aSyncServer.on("/otaStart", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
+      resetBools();
       startOTA = true;
-      isAuto = false;
-      isStop = true;
       request->send(200, "text/plain", !Update.hasError()? "OK" : "FAIL");
       aSyncServer.reset();
     } else {
@@ -114,22 +125,18 @@ void routes() {
 
   aSyncServer.on("/reset", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
-      startOTA = false;
-      startReset = false;
-      isAuto = false;
-      isStop = true;
+      resetBools();
       request->send(SPIFFS, "/reset.html", String(), false, resetPrompt);
     } else {
       request->redirect("/login");
     }
   });
 
-  aSyncServer.on("/resetStart", HTTP_GET, [](AsyncWebServerRequest *request) {
+  aSyncServer.on("/resetStart", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
+      resetBools();
       startOTA = true;
       startReset = true;
-      isAuto = false;
-      isStop = true;
       request->send(200, "text/plain", !Update.hasError()? "OK" : "FAIL");
       aSyncServer.reset();
     } else {
@@ -218,6 +225,29 @@ void routes() {
       request->redirect("/login");
     }
   });
+
+  aSyncServer.on("/recall", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->authenticate(loginID, loginPass)) {
+      isRecall = isAuto;
+
+      if (isRecall) {
+        isForward = false;
+        isBackward = false;
+      }
+
+      request->send(200);
+    } else {
+      request->redirect("/login");
+    }
+  });
+}
+
+void resetBools() {
+  startOTA = false;
+  startReset = false;
+  isAuto = false;
+  isRecall = false;
+  isStop = true;
 }
 
 String wifiList(const String& var) {
@@ -242,12 +272,12 @@ String wifiList(const String& var) {
          "<table id='ap' class='table table-striped table-hover'>";
 
     for(short i = 0; i < n; ++i) {
-      f.concat("<tr><th class='text-center'>");
+      f.concat("<tr><td class='text-center'>");
       f.concat("<label class='form-radio'><input type='radio' name='ssid' value='");
       f.concat(WiFi.SSID(i));
       f.concat("'");
       f.concat(checked);
-      f.concat("><i class='form-icon'></i></label></th><td>");
+      f.concat("><i class='form-icon'></i></label></td><td>");
       f.concat(WiFi.SSID(i));
       f.concat("</td><td>(");
       f.concat(WiFi.RSSI(i));
@@ -274,13 +304,9 @@ String wifiList(const String& var) {
 }
 
 void wifiJoin(AsyncWebServerRequest *request) {
-  dln(netDBG, "Serving page at /wifiJoin");
+  String message = "";
 
-  String title = "<h2>Joining WiFi network...</h2>";
-  String message = "<p>Check <a href='/'>WiFi status</a>.</p>";
-
-  String ssid = "";
-  String key = "";
+  String ssid = "", key = "";
 
   for (uint8_t i = 0; i < request->params(); i++ ) {
     AsyncWebParameter* p = request->getParam(i);
@@ -327,7 +353,7 @@ String statusTable(const String& var) {
     case WL_DISCONNECTED:
       s += "WL_DISCONNECTED"; break;
     default:
-      s += "unknown";
+      s += "WL_UNKNOWN";
   }
   s += "</td></tr><tr><th>Local IP</th><td>";
   s += ip2str(WiFi.localIP()) + "</td></tr>";
@@ -352,17 +378,15 @@ String statusTable(const String& var) {
     s += "No connection";
   }
 
-  s += "</td></tr><tr><th>Distance Travelled (cm)";
-  s += "</th><td>";
+  s += "</td></tr><tr><th>Distance Travelled (cm)</th><td>";
   s += String(dist);
 
   aread = analogRead(batteryPin);    // get a reading from the adc pin connected to battery
   avolt = (aread/4095)*2.2*2;
 
-  s += "</td></tr><tr><th>Battery Voltage (V)";
-  s += "</th><td>";
-  s += String(avolt);
-  s += "</td></tr></table>";
+  s += "</td></tr><tr><th>Battery Voltage (V)</th><td>";
+  s += String(avolt) + "</td></tr></table>";
+
   http.end(); // Free resource
   return s;
 }
@@ -371,9 +395,9 @@ String otaPrompt(const String& var) {
   String message;
   respCode = doCloudGet(&http, gitID, "version");
   if (respCode != 200) {
-    message = "<p>No internet connection.</p>";
+    message = "<p class='text-center'>No internet connection.</p>";
   } else if (currentVersion >= highestAvailableVersion) {
-    message = "<p>No updates available.</p>";
+    message = "<p class='text-center'>No updates available.</p>";
   } else {
     message = "<h4 class='text-center'>Please confirm the update process</h4><br>"
               "<div class='columns'><div class='column col-12 text-center'>"
@@ -390,7 +414,7 @@ String resetPrompt(const String& var) {
   startReset = true;
   respCode = doCloudGet(&http, gitID, "1.bin");
   if (respCode != 200) {
-    message = "<p>No internet connection.</p>";
+    message = "<p class='text-center'>No internet connection.</p>";
   } else {
     message = "<h4 class='text-center'>Please confirm the reset process</h4><br>"
               "<div class='columns'><div class='column col-12 text-center'>"
@@ -404,18 +428,6 @@ String resetPrompt(const String& var) {
 
 // Utility for printing IP addresses
 String ip2str(IPAddress address) {
-  return
-    String(address[0]) + "." + String(address[1]) + "." +
-    String(address[2]) + "." + String(address[3]);
-}
-
-//Function to send trigger to IFTTT in the situation robocar is stuck
-void sendIFTTT(HTTPClient *http) {
-  String url = "https://maker.ifttt.com/trigger/";
-  url += triggerName;
-  url += "/with/key/";
-  url += apiKey;
-  http->begin(url);
-  http->addHeader("User-Agent", "ESP32");
-  Serial.println(http->GET());
+  return String(address[0]) + "." + String(address[1]) + "." +
+         String(address[2]) + "." + String(address[3]);
 }

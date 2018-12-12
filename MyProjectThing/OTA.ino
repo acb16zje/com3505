@@ -4,11 +4,9 @@
 // /////////////////////////////////////////////////////////////////////////////
 
 // OTA over-the-air update stuff ///////////////////////////////////////////
-void doOTAUpdate() {             // the main OTA logic
-  // materials for doing an HTTP GET on github from the BinFiles/ dir
-
+void doOTAUpdate() {
   // Do a GET to read the version file from the cloud
-  // This step is already performed in WebServer.ino, double check only
+  // This step is already performed in AsyncWebServer.ino, double checking here
   dln(otaDBG, "Checking for firmware updates...");
   respCode = doCloudGet(&http, gitID, "version");
   if (respCode == 200) // check response code (-ve on failure)
@@ -44,7 +42,6 @@ void doOTAUpdate() {             // the main OTA logic
   dln(otaDBG, "Retrieving update file...");
 
   // Get the response code of the bin file
-
   if (startReset) {
     respCode = doCloudGet(&http, gitID, "1.bin");
   } else {
@@ -84,12 +81,7 @@ void doOTAUpdate() {             // the main OTA logic
         if (Update.isFinished()) {
           dln(otaDBG, "Update completed successfully.");
 
-          if (startReset) {
-            currentVersion = 1;
-          } else {
-            currentVersion = highestAvailableVersion;
-          }
-
+          currentVersion = startReset ? 1 : highestAvailableVersion;
           ESP.restart(); // Restart the device
         } else {
           dln(otaDBG, "Update failed. Unknown error occurred.");
@@ -106,22 +98,15 @@ void doOTAUpdate() {             // the main OTA logic
     dln(otaDBG, "An error occurred when retrieving the bin file.");
   }
 
-  // aSyncServer.onNotFound(onRequest);
-  // aSyncServer.onFileUpload(onUpload);
-  // aSyncServer.onRequestBody(onBody);
-
   aSyncServer.begin();
 }
 
 // Helper for downloading from cloud firmware server via HTTP GET
 int doCloudGet(HTTPClient *http, String gitID, String fileName) {
   // Fetch from GitHub directly
-  String baseUrl = "https://" + token + "@raw.githubusercontent.com/";
-  String url =
-    baseUrl + "UniSheffieldInternetOfThings/com3505-labs-2018-" +
-    gitID + "/master/MyProjectThing/bin/" + fileName;
-  // String url =
-  // "https://0e880b21f37190fcd95ad385fcb8deade7209c90@raw.githubusercontent.com/UniSheffieldInternetOfThings/com3505-labs-2018-Juneezee/master/MyProjectThing/bin/1.bin";
+  String url = "https://" + token + "@raw.githubusercontent.com/" +
+               "UniSheffieldInternetOfThings/com3505-labs-2018-" + gitID +
+               "/master/MyProjectThing/bin/" + fileName;
 
   // make GET request and return the response code
   http->begin(url);

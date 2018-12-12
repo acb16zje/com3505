@@ -1,7 +1,21 @@
 Robocar Documentation
 ===
 
+# Objectives
+
+# Libraries Used
+* Adafruit_IO_Arduino: Please make sure you have the latest version from their [official GitHub repository](https://github.com/adafruit/Adafruit_IO_Arduino)
+
 # Design
+## First concept
+Basic aREST over WiFi
+
+## Second concept
+SD card and aSyncWebServer
+
+## Third concept
+SPIFFS and aSyncWebServer
+
 Wanderer
 
 Recall
@@ -14,18 +28,27 @@ Recall
 * Data logging
 
 # Implementation
+talk about how we calculate the distance, and how we got the formula
 
 # Challenges
 
 # Hardware Problems
+Below are a list of hardware problems identified during the implementation and testing stage of the
+project.
+
 1. **Problem 1**: LED light on the motor driver dims, and a very small beep sound is
    emitted, motor will not move.
    - **Cause**: The power switch of the AA battery case is not sensitive.
    - **Fix**: Press the power switch down, or slightly adjust it to the left or right
-   - **Further note**: It is unable to confirm that flashing BigDemo.ino will fix this issue.
+   - **Further note**: It is unable to confirm that flashing `BigDemo.ino` will fix this issue.
 
 2. **Problem 2**: LED light does not dim, no beep sound emitted, motor will not move.
    - **Cause**: This problem occurred during the attempt to fix **Problem 1**, after
      flashing BigDemo.ino and the code. It is unable to determine whether it was a
      hardware or a software issue.
-   - **Possible Fix**: Flashing BigDemo.ino and the code again.
+   - **Possible Fix**: Flashing `BigDemo.ino` and `MyProjectThing.ino` again.
+
+3. **Problem 3**: Left motor rotates slower than right motor
+   - **Possible cause**: The electricity transmitted to the left motor is lower, the problem is
+                         most obvious when the motor speed is low.
+   - **Mitigation**: The problem could be mitigated by increasing the speed of both motors.

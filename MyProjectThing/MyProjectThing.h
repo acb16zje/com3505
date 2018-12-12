@@ -10,10 +10,6 @@
 #include <Update.h>                 // OTA update library
 #include <AdafruitIO_WiFi.h>        // Adafruit IO
 
-#define batteryPin 25               // Pin to read battery voltage
-float aread;                        
-float avolt;
-
 #define dbg(b, s) if(b) Serial.print(s)
 #define dln(b, s) if(b) Serial.println(s)
 #define df(b, s, f) if(b) Serial.printf(s, f)
@@ -21,17 +17,15 @@ float avolt;
 #define setupDBG      true          // For setup phase
 #define netDBG        true          // For networking things
 #define otaDBG        true          // For debugging in OTA update
-#define loopDBG       true          // For debugging in the loop()
+#define dataDBG       true          // For Adafruit.io data logging debug
+#define moveDBG       false         // For robot movement
 
-const char* IO_USERNAME = "njh97";
-const char* IO_KEY      = "ba9f3fd658054b7893333e3a89c2ab42";
+// Battery voltage settings
+#define batteryPin 25               // Pin to read battery voltage
+float aread;
+float avolt;
 
-const char* WIFI_SSID = "uos-other";
-const char* WIFI_PASS = "shefotherkey05";
-
-AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
-AdafruitIO_Feed *distance = io.feed("distance");
-
+// Distance counter
 float dist = 0;
 int period = 10000;
 
@@ -41,8 +35,25 @@ int timeMoved;
 int currentTime;
 int updatedTime;
 
+// Adafruit.io data logging settings
+const char* IO_USERNAME = "njh97";
+const char* IO_KEY      = "ba9f3fd658054b7893333e3a89c2ab42";
+
+const char* WIFI_SSID = "uos-other";
+const char* WIFI_PASS = "shefotherkey05";
+
+AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
+AdafruitIO_Feed *distance = io.feed("distance");
+
+// IFTTT API
+const String apiKey = "cmbihOpHt3y0TzRrEKdFG2";
+const String triggerName = "unphone";
+
 // Methods
 void setup();
 void loop();
+void handleMessage(AdafruitIO_Data *);
+void startBatteryCount();
+void sendIFTTT(HTTPClient *http);
 
 #endif

@@ -81,47 +81,6 @@ byte read8(byte address, byte reg) {
   return value;
 }
 
-// the accelerometer (with a unique ID) /////////////////////////////////////
-Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(54321);
-
-// the mic, and the I²S bus /////////////////////////////////////////////////
-// I²S bus, used by the microphone, see e.g.:
-// http://esp-idf.readthedocs.io/en/latest/api/peripherals/i2s.html
-void i2s_config() {
-  // input
-  i2s_config_t i2s_in_config = {
-    mode: (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX),
-    sample_rate: 44100,
-    bits_per_sample: (i2s_bits_per_sample_t) 32,
-    channel_format: I2S_CHANNEL_FMT_RIGHT_LEFT,
-    communication_format: (i2s_comm_format_t)
-      (I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
-    intr_alloc_flags: ESP_INTR_FLAG_LEVEL1,
-    dma_buf_count: 14,
-    dma_buf_len: 64
-  };
-  i2s_pin_config_t i2s_in_pin_config = {
-    bck_io_num: MIC_BCLK,
-    ws_io_num: MIC_LRCL,
-    data_out_num: -1, //Not used
-    data_in_num: MIC_DOUT
-  };
-
-  pinMode(MIC_DOUT, INPUT);  // aka pin TX connected to Data OUT (DOUT)
-  pinMode(MIC_BCLK, OUTPUT); // aka RX to Bit Clock (BCLK) aka Clock
-  pinMode(MIC_LRCL, OUTPUT); // aka A5 to Left Right Clock (LRCL) /Word Select
-
-  i2s_driver_install((i2s_port_t)0, &i2s_in_config, 0, NULL);
-  i2s_set_pin((i2s_port_t)0, &i2s_in_pin_config);
-}
-uint32_t read_i2s() {
-  uint32_t sample_val[2] = {0, 0};
-  uint8_t bytes_read = i2s_pop_sample(
-    (i2s_port_t) 0, (char *) sample_val, portMAX_DELAY
-  );
-  return sample_val[0] << 5;
-}
-
 // the LoRa board and TTN LoRaWAN ///////////////////////////////////////////
 // LoRaWAN NwkSKey, network session key
 // this is the default Semtech key, which is used by the prototype TTN

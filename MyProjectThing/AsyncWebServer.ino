@@ -11,7 +11,7 @@ void startWebServer() {
 
   WiFi.mode(WIFI_AP_STA);
   WiFi.softAP(apSSID, apPass);
-  WiFi.begin(); // for when credentials are already stored by board
+  // WiFi.begin(); // for when credentials are already stored by board
 
   routes();
   aSyncServer.begin();

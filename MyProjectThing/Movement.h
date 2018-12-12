@@ -11,6 +11,7 @@ Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(4);
 #define backTrigPin 21              // GPIO 25, the pin below TX
 #define backEchoPin 14               // pin 5
 
+int stuckCounter = 0;
 uint8_t speed = 40; // Default minimum speed
 bool isAuto = false;
 bool isStop = false;

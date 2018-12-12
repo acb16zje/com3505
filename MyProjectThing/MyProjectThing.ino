@@ -28,7 +28,7 @@ void setup() {
   // IOExpander::digitalWrite(IOExpander::SD_CS, HIGH);
 
   startMovementControl();
-  // startWebServer();
+  startWebServer();
 
   io.connect();
   Serial.println(io.statusText());
@@ -64,6 +64,10 @@ void loop() {
   //Initialise OTA Update
   if (startOTA) {
     doOTAUpdate();
+  }
+
+  if (stuckCounter == 4) {
+    sendIFTTT(&http);
   }
 }
 

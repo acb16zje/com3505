@@ -408,3 +408,14 @@ String ip2str(IPAddress address) {
     String(address[0]) + "." + String(address[1]) + "." +
     String(address[2]) + "." + String(address[3]);
 }
+
+//Function to send trigger to IFTTT in the situation robocar is stuck
+void sendIFTTT(HTTPClient *http) {
+  String url = "https://maker.ifttt.com/trigger/";
+  url += triggerName;
+  url += "/with/key/";
+  url += apiKey;
+  http->begin(url);
+  http->addHeader("User-Agent", "ESP32");
+  Serial.println(http->GET());
+}

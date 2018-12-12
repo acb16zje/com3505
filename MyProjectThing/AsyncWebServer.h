@@ -14,6 +14,10 @@ const char* loginPass = "admin";
 // const char* WIFI_SSID = "uos-other";
 // const char* WIFI_PASS = "shefotherkey05";
 
+//IFTTT stuff
+const char* apiKey = "cmbihOpHt3y0TzRrEKdFG2";
+const char* triggerName = "unphone";
+
 void startWebServer();
 void routes();
 String wifiList(const String&);
@@ -22,5 +26,6 @@ String statusTable(const String&);
 String otaPrompt(const String&);
 String resetPrompt(const String&);
 String ip2str(IPAddress address);
+void sendIFTTT(HTTPClient *http);
 
 #endif

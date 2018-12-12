@@ -90,15 +90,16 @@ void moveRoboCar() {
     }
     df(loopDBG, "Distance: %d\n", d);
     if(d > 4) {
+      stuckCounter = 0;
       if (isForward) {
         forward();
       } else {
         backward();
       }
-    } else {
+    } else if (stuckCounter < 4) {
       turnRight90();
       stop();
-
+      stuckCounter++;
       if (getFrontDistance() >= getBackDistance()) {
         isForward = true;
       } else {

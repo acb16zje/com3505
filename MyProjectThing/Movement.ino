@@ -93,7 +93,7 @@ void moveRoboCar() {
       if (isForward) {
         forward();
       } else {
-        backward(); 
+        backward();
       }
     } else {
       turnRight90();
@@ -129,4 +129,8 @@ void moveRoboCar() {
       right();
     }
   }
+}
+
+void recall() {
+
 }

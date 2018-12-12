@@ -13,8 +13,8 @@ short currentVersion = 2;                     // used to check for updates
 uint8_t highestAvailableVersion = -1;         // version of latest firmware on server
 short respCode;                               // the response code from the request (e.g. 404, 200, ...)
 
-bool startOTA = false;                        // For determining whether to start the update
-bool startReset = false;
+bool startOTA = false;                        // OTA update to latest version
+bool startReset = false;                      // Reset to firmware version 1
 
 // Certificate for GitHub.com
 const char* root_ca = \

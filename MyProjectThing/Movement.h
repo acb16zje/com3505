@@ -28,5 +28,7 @@ void left();
 void right();
 short getFrontDistance();
 short getBackDistance();
+void moveRoboCar();
+void recall();
 
 #endif

@@ -37,8 +37,6 @@ void setup() {
   distance->onMessage(handleMessage);
   distance->get();
 
-  // // dist = (distance->lastValue()).value();
-
   startTime = 0;
   updatedTime = millis();
   currentTime = millis();
@@ -52,39 +50,13 @@ void loop() {
 
   currentTime = millis();
 
-  // if (isStop) {
-  //   stop();
-  //   isStop = false;
-  //   timeMoved = millis() - startTime;
-  //   dist += (float)((0.28f*speed - 3.5f)*(timeMoved/10000));
-  // } else if (isForward) {
-  //   forward();
-  //   startTime = millis();
-  // } else if (isBackward) {
-  //   backward();
-  //   startTime = millis();
-  // } else if (isLeft) {
-  //   left();
-  //   startTime = millis();
-  // } else if (isRight) {
-  //   right();
-  //   startTime = millis();
-  // }
-
-  io.run();
-  Serial.print("sending -> ");
-  Serial.println(dist);
-  distance->save(dist);
-
-  currentTime = millis();
-
-  // if  (currentTime - updatedTime >= period) {
-  //   updatedTime = currentTime;
-  //   io.run();
-  //   Serial.print("sending -> ");
-  //   Serial.println(dist);
-  //   distance->save(dist);
-  // }
+  if (currentTime - updatedTime >= period) {
+    updatedTime = currentTime;
+    io.run();
+    Serial.print("sending -> ");
+    Serial.println(dist);
+    distance->save(dist);
+  }
 
   if (startOTA) {
     doOTAUpdate();

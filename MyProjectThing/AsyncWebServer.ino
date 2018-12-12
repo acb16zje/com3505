@@ -11,7 +11,7 @@ void startWebServer() {
 
   WiFi.mode(WIFI_AP_STA);
   WiFi.softAP(apSSID, apPass);
-  // WiFi.begin(); // for when credentials are already stored by board
+  WiFi.begin(); // for when credentials are already stored by board
 
   routes();
   aSyncServer.begin();
@@ -19,142 +19,204 @@ void startWebServer() {
 
 void routes() {
   // Assets
-  aSyncServer.serveStatic("/spectre.css", SPIFFS, "/spectre.css");
-  aSyncServer.serveStatic("/style.css", SPIFFS, "/style.css");
-  aSyncServer.serveStatic("/jquery.js", SPIFFS, "/jquery.js");
-  aSyncServer.serveStatic("/script.js", SPIFFS, "/script.js");
+  aSyncServer.serveStatic("/spectre.css", SPIFFS, "/spectre.css").setCacheControl("max-age=600");
+  aSyncServer.serveStatic("/style.css", SPIFFS, "/style.css").setCacheControl("max-age=600");
+  aSyncServer.serveStatic("/jquery.js", SPIFFS, "/jquery.js").setCacheControl("max-age=600");
+  aSyncServer.serveStatic("/script.js", SPIFFS, "/script.js").setCacheControl("max-age=600");
 
   // Basic routes
+  aSyncServer.on("/login", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    if (request->authenticate(loginID, loginPass)) {
+      request->redirect("/");
+    } else {
+      return request->requestAuthentication();
+    }
+  });
+
+  aSyncServer.on("/logout", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    request->requestAuthentication();
+    request->send(200);
+  });
+
   aSyncServer.on("/", [](AsyncWebServerRequest *request) {
-    startOTA = false;
-    startReset = false;
-    isAuto = false;
-    isStop = true;
-    request->send(SPIFFS, "/index.html", String(), false, statusTable);
+    if (request->authenticate(loginID, loginPass)) {
+      startOTA = false;
+      startReset = false;
+      isAuto = false;
+      isStop = true;
+      request->send(SPIFFS, "/index.html", String(), false, statusTable);
+    } else {
+      request->redirect("/login");
+    }
   });
 
   aSyncServer.on("/control", [](AsyncWebServerRequest *request) {
-    startOTA = false;
-    startReset = false;
-    request->send(SPIFFS, "/control.html", "text/html");
+    if (request->authenticate(loginID, loginPass)) {
+      startOTA = false;
+      startReset = false;
+      request->send(SPIFFS, "/control.html", "text/html");
+    } else {
+      request->redirect("/login");
+    }
   });
 
   aSyncServer.on("/wifi", [](AsyncWebServerRequest *request) {
-    startOTA = false;
-    startReset = false;
-    isAuto = false;
-    isStop = true;
-    request->send(SPIFFS, "/wifi.html", String(), false, wifiList);
+    if (request->authenticate(loginID, loginPass)) {
+      startOTA = false;
+      startReset = false;
+      isAuto = false;
+      isStop = true;
+      request->send(SPIFFS, "/wifi.html", String(), false, wifiList);
+    } else {
+      request->redirect("/login");
+    }
   });
 
   aSyncServer.on("/wifiJoin", [](AsyncWebServerRequest *request) {
-    startOTA = false;
-    startReset = false;
-    isAuto = false;
-    isStop = true;
-    wifiJoin(request);
-    while (WiFi.status() != WL_CONNECTED) {
-      delay(1);
+    if (request->authenticate(loginID, loginPass)) {
+      startOTA = false;
+      startReset = false;
+      isAuto = false;
+      isStop = true;
+      wifiJoin(request);
+      while (WiFi.status() != WL_CONNECTED) {
+        delay(1);
+      }
+      request->send(SPIFFS, "/wifi.html", String(), false, wifiList);
+    } else {
+      request->redirect("/login");
     }
-    request->send(SPIFFS, "/wifi.html", String(), false, wifiList);
   });
 
   aSyncServer.on("/ota", [](AsyncWebServerRequest *request) {
-    startOTA = false;
-    startReset = false;
-    isAuto = false;
-    isStop = true;
-    request->send(SPIFFS, "/ota.html", String(), false, otaPrompt);
+    if (request->authenticate(loginID, loginPass)) {
+      startOTA = false;
+      startReset = false;
+      isAuto = false;
+      isStop = true;
+      request->send(SPIFFS, "/ota.html", String(), false, otaPrompt);
+    } else {
+      request->redirect("/login");
+    }
   });
 
   aSyncServer.on("/otaStart", [](AsyncWebServerRequest *request) {
-    startOTA = true;
-    isAuto = false;
-    isStop = true;
-    bool shouldReboot = !Update.hasError();
-
-    AsyncWebServerResponse *response =
-      request->beginResponse(200, "text/plain", shouldReboot? "OK" : "FAIL");
-
-    response->addHeader("Connection", "close");
-    request->send(response);
-    aSyncServer.reset();
+    if (request->authenticate(loginID, loginPass)) {
+      startOTA = true;
+      isAuto = false;
+      isStop = true;
+      request->send(200, "text/plain", !Update.hasError()? "OK" : "FAIL");
+      aSyncServer.reset();
+    } else {
+      request->redirect("/login");
+    }
   });
 
   aSyncServer.on("/reset", [](AsyncWebServerRequest *request) {
-    startOTA = false;
-    startReset = false;
-    isAuto = false;
-    isStop = true;
-    request->send(SPIFFS, "/ota.html", String(), false, resetPrompt);
+    if (request->authenticate(loginID, loginPass)) {
+      startOTA = false;
+      startReset = false;
+      isAuto = false;
+      isStop = true;
+      request->send(SPIFFS, "/reset.html", String(), false, resetPrompt);
+    } else {
+      request->redirect("/login");
+    }
   });
 
   aSyncServer.on("/resetStart", HTTP_GET, [](AsyncWebServerRequest *request) {
-    startOTA = true;
-    startReset = true;
-    isAuto = false;
-    isStop = true;
-    bool shouldReboot = !Update.hasError();
-
-    AsyncWebServerResponse *response =
-      request->beginResponse(200, "text/plain", shouldReboot? "OK" : "FAIL");
-
-    response->addHeader("Connection", "close");
-    request->send(response);
-    aSyncServer.reset();
+    if (request->authenticate(loginID, loginPass)) {
+      startOTA = true;
+      startReset = true;
+      isAuto = false;
+      isStop = true;
+      request->send(200, "text/plain", !Update.hasError()? "OK" : "FAIL");
+      aSyncServer.reset();
+    } else {
+      request->redirect("/login");
+    }
   });
 
   // jQuery AJAX
   aSyncServer.on("/setSpeed", HTTP_GET, [](AsyncWebServerRequest *request) {
-    speed = atoi(request->arg("params").c_str());
-    request->send(200);
+    if (request->authenticate(loginID, loginPass)) {
+      speed = atoi(request->arg("params").c_str());
+      request->send(200);
+    } else {
+      request->redirect("/login");
+    }
   });
 
   aSyncServer.on("/setMode", HTTP_GET, [](AsyncWebServerRequest *request) {
-    isAuto = String(request->arg("params")) == "auto";
-    isStop = !isAuto;
-    request->send(200);
+    if (request->authenticate(loginID, loginPass)) {
+      isAuto = String(request->arg("params")) == "auto";
+      isStop = !isAuto;
+      isForward = isAuto;
+      request->send(200);
+    } else {
+      request->redirect("/login");
+    }
   });
 
-  aSyncServer.on("/stop", HTTP_GET, [](AsyncWebServerRequest *request){
-    isStop = true;
-    isForward = false;
-    isBackward = false;
-    isLeft = false;
-    isRight = false;
-    request->send(200);
+  aSyncServer.on("/stop", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->authenticate(loginID, loginPass)) {
+      isStop = true;
+      isForward = false;
+      isBackward = false;
+      isLeft = false;
+      isRight = false;
+      request->send(200);
+    } else {
+      request->redirect("/login");
+    }
   });
 
-  aSyncServer.on("/forward", HTTP_GET, [](AsyncWebServerRequest *request){
-    isForward = true;
-    isBackward = false;
-    isLeft = false;
-    isRight = false;
-    request->send(200);
+  aSyncServer.on("/forward", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->authenticate(loginID, loginPass)) {
+      isForward = true;
+      isBackward = false;
+      isLeft = false;
+      isRight = false;
+      request->send(200);
+    } else {
+      request->redirect("/login");
+    }
   });
 
-  aSyncServer.on("/backward", HTTP_GET, [](AsyncWebServerRequest *request){
-    isForward = false;
-    isBackward = true;
-    isLeft = false;
-    isRight = false;
-    request->send(200);
+  aSyncServer.on("/backward", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->authenticate(loginID, loginPass)) {
+      isForward = false;
+      isBackward = true;
+      isLeft = false;
+      isRight = false;
+      request->send(200);
+    } else {
+      request->redirect("/login");
+    }
   });
 
-  aSyncServer.on("/left", HTTP_GET, [](AsyncWebServerRequest *request){
-    isForward = false;
-    isBackward = false;
-    isLeft = true;
-    isRight = false;
-    request->send(200);
+  aSyncServer.on("/left", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->authenticate(loginID, loginPass)) {
+      isForward = false;
+      isBackward = false;
+      isLeft = true;
+      isRight = false;
+      request->send(200);
+    } else {
+      request->redirect("/login");
+    }
   });
 
-  aSyncServer.on("/right", HTTP_GET, [](AsyncWebServerRequest *request){
-    isForward = false;
-    isBackward = false;
-    isLeft = false;
-    isRight = true;
-    request->send(200);
+  aSyncServer.on("/right", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->authenticate(loginID, loginPass)) {
+      isForward = false;
+      isBackward = false;
+      isLeft = false;
+      isRight = true;
+      request->send(200);
+    } else {
+      request->redirect("/login");
+    }
   });
 }
 
@@ -204,8 +266,8 @@ String wifiList(const String& var) {
     }
 
     f += "</table><br/>"
-         "<p class='text-center'>Password: <input type='text' name='key'></p>";
-    f += "<input type='submit' value='Submit' class='btn btn-lg p-centered'></form>";
+         "<p class='text-center'>Password: <input type='text' name='key'></p>"
+         "<input type='submit' value='Submit' class='btn btn-lg p-centered'></form>";
   }
 
   return f;
@@ -299,31 +361,35 @@ String statusTable(const String& var) {
 }
 
 String otaPrompt(const String& var) {
-  String message = "";
+  String message;
   respCode = doCloudGet(&http, gitID, "version");
   if (respCode != 200) {
     message = "<p>No internet connection.</p>";
   } else if (currentVersion >= highestAvailableVersion) {
     message = "<p>No updates available.</p>";
   } else {
-    message = "<p>Press <a href='/otaStart'>here</a> to start</p>";
-    message += "<a href='/status'>here</a> to cancel.</p>";
-    message += "<p>The device will restart when the update has completed.</p>";
+    message = "<h4 class='text-center'>Please confirm the update process</h4><br>"
+              "<div class='columns'><div class='column col-12 text-center'>"
+              "<a class='btn btn-lg' href='/'>Back</a>\n"
+              "<a class='btn btn-success btn-lg' href='/otaStart'>Update</a></div></div><br>"
+              "<p class='text-center'>The device will restart when the update is completed.</p>";
   }
   http.end();
   return message;
 }
 
 String resetPrompt(const String& var) {
-  String message = "";
+  String message;
   startReset = true;
   respCode = doCloudGet(&http, gitID, "1.bin");
   if (respCode != 200) {
     message = "<p>No internet connection.</p>";
   } else {
-    message = "<p>Press <a href='/resetStart'>here</a> to reset</p>";
-    message += "<a href='/status'>here</a> to cancel.</p>";
-    message += "<p>The device will restart when the reset has been completed.</p>";
+    message = "<h4 class='text-center'>Please confirm the reset process</h4><br>"
+              "<div class='columns'><div class='column col-12 text-center'>"
+              "<a class='btn btn-lg' href='/'>Back</a>\n"
+              "<a class='btn btn-error btn-lg' href='/resetStart'>Reset</a></div></div><br>"
+              "<p class='text-center'>The device will restart when the reset is completed.</p>";
   }
   http.end();
   return message;

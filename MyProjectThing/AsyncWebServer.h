@@ -5,8 +5,11 @@
 AsyncWebServer aSyncServer(80);
 
 // SSID and Password of your WiFi AP
-const char* apSSID = "Gakki-bot";
+const char* apSSID = "Gakki-bot22";
 const char* apPass = "gakkismile";
+
+const char* loginID = "esp32";
+const char* loginPass = "admin";
 
 // const char* WIFI_SSID = "uos-other";
 // const char* WIFI_PASS = "shefotherkey05";
@@ -18,5 +21,6 @@ void wifiJoin(AsyncWebServerRequest *);
 String statusTable(const String&);
 String otaPrompt(const String&);
 String resetPrompt(const String&);
+String ip2str(IPAddress address);
 
 #endif

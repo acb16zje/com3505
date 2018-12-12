@@ -116,12 +116,12 @@ void doOTAUpdate() {             // the main OTA logic
 // Helper for downloading from cloud firmware server via HTTP GET
 int doCloudGet(HTTPClient *http, String gitID, String fileName) {
   // Fetch from GitHub directly
-  // String baseUrl = "https://" + token + "@raw.githubusercontent.com/";
-  // String url =
-  //   baseUrl + "UniSheffieldInternetOfThings/com3505-labs-2018-" +
-  //   gitID + "/master/MyProjectThing/bin/" + fileName;
+  String baseUrl = "https://" + token + "@raw.githubusercontent.com/";
   String url =
-  "https://0e880b21f37190fcd95ad385fcb8deade7209c90@raw.githubusercontent.com/UniSheffieldInternetOfThings/com3505-labs-2018-Juneezee/master/MyProjectThing/bin/1.bin";
+    baseUrl + "UniSheffieldInternetOfThings/com3505-labs-2018-" +
+    gitID + "/master/MyProjectThing/bin/" + fileName;
+  // String url =
+  // "https://0e880b21f37190fcd95ad385fcb8deade7209c90@raw.githubusercontent.com/UniSheffieldInternetOfThings/com3505-labs-2018-Juneezee/master/MyProjectThing/bin/1.bin";
 
   // make GET request and return the response code
   http->begin(url);

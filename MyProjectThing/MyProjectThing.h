@@ -10,6 +10,10 @@
 #include <Update.h>                 // OTA update library
 #include <AdafruitIO_WiFi.h>        // Adafruit IO
 
+#define batteryPin 25               // Pin to read battery voltage
+float aread;                        
+float avolt;
+
 #define dbg(b, s) if(b) Serial.print(s)
 #define dln(b, s) if(b) Serial.println(s)
 #define df(b, s, f) if(b) Serial.printf(s, f)

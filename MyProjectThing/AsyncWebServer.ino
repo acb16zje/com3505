@@ -355,6 +355,13 @@ String statusTable(const String& var) {
   s += "</td></tr><tr><th>Distance Travelled (cm)";
   s += "</th><td>";
   s += String(dist);
+
+  aread = analogRead(batteryPin);    // get a reading from the adc pin connected to battery
+  avolt = (aread/4095)*2.2*2;
+
+  s += "</td></tr><tr><th>Battery Voltage (V)";
+  s += "</th><td>";
+  s += String(avolt);
   s += "</td></tr></table>";
   http.end(); // Free resource
   return s;

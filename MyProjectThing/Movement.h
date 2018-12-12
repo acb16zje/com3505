@@ -7,9 +7,9 @@ Adafruit_DCMotor *L_MOTOR = AFMS.getMotor(3);
 Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(4);
 
 #define frontTrigPin 26             // pin A0
-#define frontEchoPin 25             // pin A1
+#define frontEchoPin 4             // pin A5
 #define backTrigPin 21              // GPIO 25, the pin below TX
-#define backEchoPin 4               // pin A5
+#define backEchoPin 14               // pin 5
 
 uint8_t speed = 40; // Default minimum speed
 bool isAuto = false;

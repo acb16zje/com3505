@@ -380,8 +380,8 @@ String statusTable(const String& var) {
     s += "No connection";
   }
 
-  s += "</td></tr><tr><th>Distance Travelled (cm)</th><td>";
-  s += String(dist);
+  s += "</td></tr><tr><th>Total Distance Moved (cm)</th><td>";
+  s += String(distanceMoved);
 
   aread = analogRead(batteryPin);    // get a reading from the adc pin connected to battery
   avolt = (aread/4095)*2.2*2;

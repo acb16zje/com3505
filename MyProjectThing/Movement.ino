@@ -54,6 +54,22 @@ void turnRight90() {
   L_MOTOR->run(FORWARD);
   R_MOTOR->run(BACKWARD);
   delay(1080); // Exact time required to turn 90 degrees at speed 40
+
+  // Change direction after turning right
+  switch (currentDirection) {
+    case North:
+      currentDirection = East;
+      break;
+    case East:
+      currentDirection = South;
+      break;
+    case South:
+      currentDirection = West;
+      break;
+    case West:
+      currentDirection = North;
+      break;
+  }
 }
 
 short getFrontDistance() {
@@ -82,12 +98,22 @@ short getBackDistance() {
   return distance;
 }
 
+// Explained in the documentation
+float calculateDistanceMoved(int t) {
+  return (float)((0.28f * speed - 3.5f) * (t / 1000));
+}
+
 void moveRoboCar() {
+  if (startTime == 0 && (isForward || isBackward)) {
+    startTime = millis();
+    df(moveDBG, "startTime: %d", startTime);
+  }
+
   if (isAuto) {
     // Auto: Use ultrasonic sensors to prevent collision, has stuck counter
-    short d = isForward ? getFrontDistance() : getBackDistance();
+    short distance = isForward ? getFrontDistance() : getBackDistance();
 
-    if(d > MAX_DISTANCE) {
+    if (distance > MAX_DISTANCE) {
       stuckCounter = 0;
       if (isForward) {
         forward();
@@ -97,24 +123,39 @@ void moveRoboCar() {
     } else if (stuckCounter < MAX_STUCK) {
       turnRight90();
       stop();
-      stuckCounter++;
+
+      timeMoved = millis() - startTime;
+      startTime = 0; // Reset startTime since robot is stopped
+
+      // Calculate the distance moved before it met a wall
+      switch (currentDirection) {
+        case North:
+          y += calculateDistanceMoved(timeMoved);
+          break;
+        case East:
+          x += calculateDistanceMoved(timeMoved);
+          break;
+        case South:
+          y -= calculateDistanceMoved(timeMoved);
+          break;
+        case West:
+          x -= calculateDistanceMoved(timeMoved);
+          break;
+      }
+
       isForward = getFrontDistance() >= getBackDistance();
+      stuckCounter++; // There is a wall in front of the robot
     }
   } else {
     // Manual: User-controlled, record distance travelled
-    if (startTime == 0 && (isForward || isBackward)) {
-      startTime = millis();
-      df(moveDBG, "startTime: %d", startTime);
-    }
-
     if (isStop) {
       stop();
       isStop = false;
       if (startTime != 0) {
         timeMoved = millis() - startTime;
+        startTime = 0; // Reset startTime since robot is stopped
+        distanceMoved += calculateDistanceMoved(timeMoved);
         dln(moveDBG, timeMoved);
-        dist += (float)((0.28f * speed - 3.5f) * (timeMoved / 1000)); // explained in documentation
-        startTime = 0;                                                // Reset startTime since robot is stopped
       }
     } else if (isForward) {
       forward();
@@ -129,5 +170,11 @@ void moveRoboCar() {
 }
 
 void recall() {
-  // Calculate the distance between current position and original position
+  // x > 0: Need to move backward
+  // x < 0: Need to move forward
+  if (x > 0) {
+    
+  } else if (x < 0) {
+
+  }
 }

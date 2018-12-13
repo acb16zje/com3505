@@ -27,9 +27,17 @@ bool isBackward = false;
 bool isLeft = false;
 bool isRight = false;
 
+// For counting distance moved
+float distanceMoved = 0;
+int startTime, timeMoved;
+
 // Virtual direction
 enum Direction {North, East, South, West};
 Direction currentDirection = North;
+
+// X and Y coordinate
+float x = 0;
+float y = 0;
 
 // Methods
 void startMovementControl();

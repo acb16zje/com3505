@@ -25,13 +25,8 @@
 float aread;
 float avolt;
 
-// Distance counter
-float dist = 0;
+// Adafruit.io data logging 
 int period = 10000;
-
-int startTime;
-int timeMoved;
-
 int currentTime;
 int updatedTime;
 

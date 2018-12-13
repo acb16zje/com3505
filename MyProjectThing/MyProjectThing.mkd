@@ -2,9 +2,9 @@ Robocar Documentation
 ===
 
 # Objectives
-1. Able to control the Robocar on any devices using WiFi and web browser
-2. Able to perform OTA update and firmware reset on the Robocar
-3. Authentication required for all operations on Robocar
+1. Able to control the Robocar on **any devices** using **WiFi** and **web browser**
+2. Able to perform **OTA update** and **firmware reset** on the Robocar
+3. Authentication required to enter web server
 4. Autonomous Robocar with collision detection
 5. IFTTT notifications when Robocar is stucked in autonomous mode
 6. Push the total distance moved in manual mode to Adafruit.io
@@ -25,27 +25,28 @@ The following libraries and plugins have to be installed in order to compile and
 In addition to the *default* Robocar, this project used two **ultrasonic sensors** to improve the reliability
 and performance of the autonomous mode. The hardware setup is shown in [here](#hardware-setup).
 
-
 # Design
-## First Iteration
-Basic aREST over WiFi
+## System Specification
+| Criteria | Importance |
+|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------:|
+| **Software Robustness:** The unPhone should be bootable even if the system update has failed. | Essential |
+| **Completeness:** The Robocar should be able to move in both automatic and manual mode. The firmware should be updated to the latest version when the update has successfully completed. The firmware should downgrade to version 1 when firmware reset has successfully completed. | Essential |
+| **Security:** Authentication is required to enter the web server. OTA update and firmware reset are performed over HTTPS. | Essential |
+| **Network:** The unPhone should be able to scan and connect to any WiFi networks (hidden networks included), provided that the password entered is correct. | Essential |
+| **Informative:** The unPhone should be able to publish data to Adafruit.io, and send notifications through IFTTT. | Essential |
+| **Hardware Robustness:** The motor, ultrasonic sensors, and unPhone should be fully functioning | Desirable |
+| **Automatic:** The Robocar should be able to move randomly in automatic mode, while detecting possible obstacles in its front and back to prevent collision. | Desirable |
 
-## Second Iteration
-SD card and aSyncWebServer
-
-## Third Iteration
-SPIFFS and aSyncWebServer
+## Iterations
+|  | Iteration 1 | Iteration 2 | Iteration 3 |
+|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Features | <ul><li>Basic <code>aREST</code> API controls over WiFi connection</li></ul> | <ul><li>HTML, CSS, and JavaScript files saved in SD card</li><li>Web server loads HTML, CSS, and JS from SD card</li><li>Use jQuery Ajax to send the control command</li></ul> | <ul><li>HTML, CSS, and JavaScript files are saved in SPIFFS (SPI Flash File System)</li><li>Use [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) to handle all HTTP requests and Ajax calls</li><li>Cache control of static CSS and JS files</li><li>Use HTTP MD5 Digest Authentication for authentication check</li><li>Automatic Robocar mode with front and back collision detection</li><li>Able to recall the Robocar back to the origin point (automatic mode only)</li><li>Send IFTTT notification to the phone when Robocar is stuck</li><li>Push the total distance moved by Robocar in manual mode to Adafruit.io</li><li>OTA update using over GitHub.com using HTTPS protocol</li></ul> |
+| Advantages | <ul><li>Simple</li><li>Less power consumption</li></ul> | <ul><li>Able to control the Robocar in both PC and mobile devices</li><li>No longer requires local HTML files to control the Robocar</li></ul> | <ul><li>Feature-rich</li><li>Fast loading time of the AsyncWebServer</li><li>Able to control the Robocar in both PC and mobile devices</li><li>No longer requires local HTML files to control the Robocar</li><li>Secure HTTP authorization required before performing any operations</li></ul> |
+| Disadvantages | <ul><li>No web server, only able to control the Robocar using local HTML files</li><li>No authentication and OTA update functions, less secure</li><li>Lack of functionality</li></ul> | <ul><li>High power consumption</li><li>Long loading time of the files in SD card</li><li>No authentication and OTA update functions, less secure</li><li>Lack of functionality</li></ul> | <ul><li>Very high power consumption</li><li>Complex implementation and increased debugging difficulty</li></ul> |
 
 Wanderer
 
 Recall
-
-- Original HTML, CSS, and JS files are not saved inside the unPhone, we're going to flash
-  them inside the unPhone
-
-- SDWebServer too slow
-- AsyncWebServer fast
-- Data logging
 
 # Hardware Setup
 

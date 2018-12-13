@@ -12,6 +12,8 @@ void startWebServer() {
   WiFi.mode(WIFI_AP);
   WiFi.softAP(apSSID, apPass);
 
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+
   routes();
   aSyncServer.begin();
 }
@@ -323,11 +325,11 @@ void wifiJoin(AsyncWebServerRequest *request) {
     message = "<h2>Ooops, no SSID...?</h2>\n<p>Looks like a bug</p>";
   } else {
     WiFi.disconnect();
-    char ssidchars[ssid.length()+1];
-    char keychars[key.length()+1];
-    ssid.toCharArray(ssidchars, ssid.length() + 1);
-    key.toCharArray(keychars, key.length() + 1);
-    WiFi.begin(ssidchars, keychars);
+
+    const char* c = ssid.c_str();
+    const char* d = key.c_str();
+
+    WiFi.begin(c,d);
   }
 }
 

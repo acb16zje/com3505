@@ -67,7 +67,7 @@ void loop() {
 }
 
 void handleMessage(AdafruitIO_Data *data) {
-  df(dataDBG, "Received -> %f\n", data->value());
+  df(dataDBG, "Received -> %s\n", data->value());
   if (dist <= 0) {
     dist = atof(data->value());
   }

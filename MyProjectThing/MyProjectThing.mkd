@@ -2,12 +2,12 @@ Robocar Documentation
 ===
 
 # Objectives
-1. Able to control the Robocar on **any devices** using **WiFi** and **web browser**
+1. Able to control the Robocar on **any devices** using **WiFi** and **web server**
 2. Able to perform **OTA update** and **firmware reset** on the Robocar
-3. Authentication required to enter web server
-4. Autonomous Robocar with collision detection
-5. IFTTT notifications when Robocar is stucked in autonomous mode
-6. Push the total distance moved in manual mode to Adafruit.io
+3. **Authentication** required to enter web server
+4. **Automatic** Robocar with collision detection
+5. **IFTTT notifications** when Robocar is stucked in autonomous mode
+6. Push the total distance moved in manual mode to **Adafruit.io**
 
 # Prerequisite
 ## Libraries and Plugins
@@ -28,7 +28,7 @@ and performance of the autonomous mode. The hardware setup is shown in [here](#h
 # Design
 ## System Specification
 | Criteria | Importance |
-|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------:|
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------:|
 | **Software Robustness:** The unPhone should be bootable even if the system update has failed. | Essential |
 | **Completeness:** The Robocar should be able to move in both automatic and manual mode. The firmware should be updated to the latest version when the update has successfully completed. The firmware should downgrade to version 1 when firmware reset has successfully completed. | Essential |
 | **Security:** Authentication is required to enter the web server. OTA update and firmware reset are performed over HTTPS. | Essential |
@@ -48,14 +48,17 @@ Wanderer
 
 Recall
 
-# Hardware Setup
+
 
 # Implementation
 talk about how we calculate the distance, and how we got the formula
 
-# Challenges
+## Hardware Setup
+
+## Challenges
 - Calibration: It is required to experiment with different time values to find the correct value for
                turning the robot 90 degrees at different speed
+- Soldering: solder ultrasonic sensor
 
 # Hardware Problems
 Below are a list of hardware problems identified during the implementation and testing stage of the
@@ -77,3 +80,79 @@ project.
    - **Possible cause**: The electricity transmitted to the left motor is lower, the problem is
                          most obvious when the motor speed is low.
    - **Mitigation**: The problem could be mitigated by increasing the speed of both motors.
+
+# Debugging
+We have implemented a debugging infrastructure that makes use of macros for easier code debugging.
+The variables can be changed from `true` to `false` to enable or disable the function respectively.
+
+`setupDBG`: For printing messages related to the initial setup process.
+
+`netDBG`: For printing messages related to `AsyncWebServer` management.
+
+`otaDBG`: For printing messages in the `doOTAUpdate` method.
+
+`dataDBG`: For printing messages related to Adafruit.io data logging.
+
+`moveDBG`: For printing messages related to the `Movement` control of the Robocar.
+
+# Testing
+The system was tested manually to ensure that each feature functioned correctly. This included
+running the entire process from start to finish, followed by trying to reproduce the errors to
+ensure the error will be handled by the system.
+
+## Robocar Movement Test Cases
+|                                Test Case                                |                                     Expected Result                                    | Results |
+|:-----------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|:-------:|
+|    Clicking the up arrow button or pressing up arrow key on keyboard    |                                  Robocar moves forward                                 |   Pass  |
+|  Clicking the down arrow button or pressing down arrow key on keyboard  |                                 Robocar moves backward                                 |   Pass  |
+|  Clicking the left arrow button or pressing left arrow key on keyboard  |                                   Robocar turns left                                   |   Pass  |
+| Clicking the right arrow button or pressing right arrow key on keyboard |                                   Robocar turns right                                  |   Pass  |
+|                 Releasing mouse click or keyboard press                 |                                      Robocar stops                                     |   Pass  |
+|                 Change the speed slider and move forward                |                                  Motor speed increased                                 |   Pass  |
+|               Change the current mode from manual to auto               | Robot starts moving randomly, and turns right when a wall is detected in front or back |   Pass  |
+|   While the robocar is moving in auto mode, change the mode to manual   |                                   Robot stops moving                                   |   Pass  |
+|    While the robocar is moving in auto mode, navigate to another page   |                                   Robot stops moving                                   |   Pass  |
+
+## OTA Update Test Cases
+|                            Test Case                           |                         Expected Output                         | Results |
+|:--------------------------------------------------------------:|:---------------------------------------------------------------:|:-------:|
+|                  System unable to get version                  |         Monitor prints "Couldn't get version! rtn code:"        |   Pass  |
+|                      System is up to date                      |             Monitor prints "Firmware is up to date"             |   Pass  |
+|          System is able to download the firmware file          |       Monitor prints "Received bin file of size %d bytes."      |   Pass  |
+|           System failed to download the firmware file          | Monitor prints "An error occurred when retrieving the bin file" |   Pass  |
+|         System is able to fully write the firmware file        |  Monitor prints "OTA finished. Update completed successfully."  |   Pass  |
+| System is unable to fully write the firmware file successfully |         Monitor prints "Written only: %d / %d . Retry?"         |   Pass  |
+|            System encounters error during OTA update           |           Monitor prints "Error occurred. Error #: %d"          |   Pass  |
+|      Device does not have enough memory to perform update      |  Monitor prints "Not enough memory space to perform the update" |   Pass  |
+
+## AsyncWebServer Test Cases
+|                                  Test Case                                  |                                             Expected Output                                            | Results |
+|:---------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|:-------:|
+|                         Web server cannot find link                         |                                      Web page shows 404 Not Found                                      |   Pass  |
+|         Entering the wrong password when connecting to a new network        |                   Access Point resumes function with `/` showing no network connected                  |   Pass  |
+|                      Wrong Username / Password on Login                     |                     Unable to proceed. Asks for username and password input again.                     |   Pass  |
+|                    Visiting any pages without logging in                    |                                   User is redirected back to `/login`                                  |   Pass  |
+|                     Entering `/` with updates available                     |                        Update button is shown next to the latest version number                        |   Pass  |
+|                 Entering `/` while not connected to internet                |                         Update button does not appear and shows "No Connection"                        |   Pass  |
+|               Entering `/control` while connected to internet               |                        `/control` shows Directional Pad, Mode, and Speed options                       |   Pass  |
+|             Entering `/control` while not connected to internet             |                        `/control` shows Directional Pad, Mode, and Speed options                       |   Pass  |
+|                    Entering `/wifi` with no network found                   |                              `/wifi` prints "No WiFi access points found"                              |   Pass  |
+|                    Entering `/ota` with updates available                   |  `/ota` prompts user to press a confirmation button to start update or return to cancel update request |   Pass  |
+|               Entering `/ota` while not connected to internet               |                                  `/ota` shows"No Internet Connection"                                  |   Pass  |
+| Entering `/ota` while connected to internet and system is at newest version |                                  `/ota` shows "No updates available"                                   |   Pass  |
+|              Entering `/reset` while not connected to internet              |                                `/reset` prints "No Internet Connection"                                |   Pass  |
+|                  Entering `/reset` in a non factory version                 | `/reset` prompts user to press pull-up button to start factory reset or return to cancel reset request |   Pass  |
+
+# Conclusions
+Functionalities that have been implemented in into the Robocar system:
+
+1. Remotely control the Robocar using PC or mobile phones on web server (**Flexibility**)
+2. Send IFTTT notification when the Robocar is stucked during automatic mode (**Informative**)
+3. Push the total distance moved of the Robocar in manual mode to Adafruit.io (**Informative**)
+4. Authentication required to access the web server pages (**Security**)
+5. Check the latest version and download the bin file directly from GitHub over HTTPS (**Security**)
+6. Web server that display the status of the device and enable the ability to update or reset the
+   firmware remotely (**Flexibility**)
+7. The ability to reset the firmware back to version 1 and upgrade to latest version again for
+   testing purposes (**Repeatable**)
+8. Able to join both visible and hidden WiFi networks using the web server (**Networking**)

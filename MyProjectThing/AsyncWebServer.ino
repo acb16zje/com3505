@@ -40,7 +40,40 @@ void routes() {
     }
   });
 
+  aSyncServer.onNotFound([](AsyncWebServerRequest *request) {
+    // Static HTML page, not required to flash into SPIFFS
+    const char html[] = {
+      "<!DOCTYPE html><html>"
+      "<head>"
+        "<meta charset='utf-8'>"
+        "<meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>"
+        "<title>Gakki-bot</title>"
+        "<link rel='stylesheet' href='spectre.css'>"
+        "<link rel='stylesheet' href='style.css'>"
+      "</head>"
+      "<body>"
+        "<div class='container grid-sm'>"
+          "<div class='columns'>"
+            "<div class='column col-7 col-md-8 col-sm-10 is-centered'>"
+              "<div class='hero hero-lg'>"
+                "<div class='hero-body'>"
+                  "<h1 class='text-primary text-center'>404 Not Found</h1>"
+                  "<div class='text-center'>"
+                    "<a href='/' class='btn btn-lg'>Home</a>"
+                  "</div>"
+                "</div>"
+              "</div>"
+            "</div>"
+          "</div>"
+        "</div>"
+      "</body></html>"
+    };
+
+    request->send(404, "text/html", String(html));
+  });
+
   aSyncServer.on("/logout", [](AsyncWebServerRequest *request) {
+    // Static HTML page, not required to flash into SPIFFS
     const char html[] = {
       "<!DOCTYPE html><html>"
       "<head>"
@@ -401,7 +434,7 @@ String statusTable(const String& var) {
       s += "<a href='/ota' class='btn btn-success mx-2'>Update</a>";
     }
   } else {
-    s += "No connection";
+    s += "No Connection";
   }
 
   s += "</td></tr><tr><th>Total Distance Moved (cm)</th><td>";

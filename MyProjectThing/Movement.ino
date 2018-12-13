@@ -83,6 +83,30 @@ void turnRight90() {
   currentDirection = Direction((currentDirection + 1) % (West + 1));
 }
 
+void turnLeft90() {
+  L_MOTOR->setSpeed(speed);
+  R_MOTOR->setSpeed(speed);
+  L_MOTOR->run(BACKWARD);
+  R_MOTOR->run(FORWARD);
+  delay(1080); // Exact time required to turn 90 degrees at speed 40
+
+  // Change direction after turning right
+  switch (currentDirection) {
+    case North:
+      currentDirection = West;
+      break;
+    case East:
+      currentDirection = North;
+      break;
+    case South:
+      currentDirection = East;
+      break;
+    case West:
+      currentDirection = South;
+      break;
+  }
+}
+
 /**
  * Gets the front distance
  *
@@ -148,8 +172,9 @@ void moveRoboCar() {
   if (isAuto) {
     // Auto: Use ultrasonic sensors to prevent collision, has stuck counter
     short distance = isForward ? getFrontDistance() : getBackDistance();
-
+    Serial.println(distance);
     if (distance > MAX_DISTANCE) {
+      Serial.println("option 1");
       stuckCounter = 0;
       if (isForward) {
         forward();
@@ -157,6 +182,7 @@ void moveRoboCar() {
         backward();
       }
     } else if (stuckCounter < MAX_STUCK) {
+      Serial.println("option 2");
       turnRight90();
       stop();
 
@@ -209,9 +235,97 @@ void recall() {
   forward();
   // x > 0: Need to move backward
   // x < 0: Need to move forward
+  Serial.printf("X: %f", x);
+  Serial.printf("Y: %f", y);
   // if (x > 0) {
-
+  //   switch (currentDirection) {
+  //     case North:
+  //       turnLeft90();
+  //       stop();
+  //       break;
+  //     case East:
+  //       turnRight90();
+  //       turnRight90();
+  //       stop();
+  //       break;
+  //     case South:
+  //       turnRight90();
+  //       stop();
+  //       break;
+  //   }
+  //   int xTime = (int)(x*1000/(0.28f * speed - 3.5f)); 
+  //   forward();
+  //   Serial.print("GOSTAN ");
+  //   Serial.println(xTime);
+  //   delay(xTime);
+  //   stop();
   // } else if (x < 0) {
+  //   switch (currentDirection) {
+  //     case North:
+  //       turnRight90();
+  //       stop();
+  //       break;
+  //     case West:
+  //       turnRight90();
+  //       turnRight90();
+  //       stop();
+  //       break;
+  //     case South:
+  //       turnLeft90();
+  //       stop();
+  //       break;
+  //   }
+  //   int xTime = (int)(x*1000/(0.28f * speed - 3.5f)); 
+  //   forward();
+  //   Serial.print("PERGI DEPAN ");
+  //   Serial.println(xTime);
+  //   delay(xTime);
+  //   stop();
+  // } 
 
-  // }
+  if (y > 0) {
+    switch (currentDirection) {
+      case North:
+        turnRight90();
+        turnRight90();
+        stop();
+        break;
+      case East:
+        turnRight90();
+        stop();
+        break;
+      case West:
+        turnLeft90();
+        stop();
+        break;
+    }
+    int yTime = (int)(y*1000/(0.28f * speed - 3.5f)); 
+    forward();
+    Serial.print("SOUTH ");
+    Serial.println(yTime);
+    delay(yTime);
+    stop();
+  } else if (y < 0) {
+    switch (currentDirection) {
+      case South:
+        turnRight90();
+        turnRight90();
+        stop();
+        break;
+      case West:
+        turnRight90();
+        stop();
+        break;
+      case East:
+        turnLeft90();
+        stop();
+        break;
+    }
+    int yTime = (int)(y*1000/(0.28f * speed - 3.5f)); 
+    forward();
+    Serial.print("NORTH ");
+    Serial.println(yTime);
+    delay(yTime);
+    stop();
+  } 
 }

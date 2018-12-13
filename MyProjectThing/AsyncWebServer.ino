@@ -12,7 +12,7 @@ void startWebServer() {
     return;
   }
 
-  WiFi.mode(WIFI_AP);
+  WiFi.mode(WIFI_AP_STA);
   WiFi.softAP(apSSID, apPass);
   WiFi.begin(WIFI_SSID, WIFI_PASS); // wireless AP wont show up if this fails
 
@@ -138,7 +138,7 @@ void routes() {
       while (WiFi.status() != WL_CONNECTED) {
         delay(10);
       }
-      request->send(SPIFFS, "/wifi.html", String(), false, wifiList);
+      request->send(200, "text/plain", "GAKKI BLESS");
     } else {
       request->redirect("/login");
     }
@@ -298,6 +298,9 @@ void resetBools() {
   isBackward = false;
   isLeft = false;
   isRight = false;
+  x = 0;
+  y = 0;
+  currentDirection = North;
 }
 
 /**
@@ -310,6 +313,7 @@ String wifiList(const String& var) {
   String f = "";
   const char *checked = "checked";
   short n = WiFi.scanNetworks();
+  Serial.println(WiFi.status() == WL_CONNECTED);
   dbg(netDBG, "Scan done: ");
 
   if (n == 0) {
@@ -366,19 +370,27 @@ String wifiList(const String& var) {
  */
 void wifiJoin(AsyncWebServerRequest *request) {
   String ssid = "", key = "";
-
-  for (uint8_t i = 0; i < request->params(); i++ ) {
-    AsyncWebParameter* p = request->getParam(i);
-    if (p->name() == "ssid") {
-      ssid = p->value();
-    } else if (p->name() == "hidden" && ssid == "") {
-      ssid = p->value(); // hidden network is always the last option
-    } else if (p->name() == "key") {
-      key = p->value();
-    }
+  
+  if (request->hasArg("ssid")) {
+    ssid = request->arg("ssid");
+  } else if (request->hasArg("hidden")) {
+    ssid = request->arg("hidden");
   }
 
-  WiFi.disconnect();
+  key = request->arg("key");
+
+  // for (uint8_t i = 0; i < request->params(); i++) {
+  //   AsyncWebParameter* p = request->getParam(i);
+  //   if (p->name() == "ssid") {
+  //     ssid = p->value();
+  //   } else if (p->name() == "hidden" && ssid == "") {
+  //     ssid = p->value(); // hidden network is always the last option
+  //   } else if (p->name() == "key") {
+  //     key = p->value();
+  //   }
+  // }
+
+  // WiFi.disconnect();
   const char* c = ssid.c_str();
   const char* d = key.c_str();
   WiFi.begin(c, d);

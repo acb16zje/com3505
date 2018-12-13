@@ -18,7 +18,7 @@ const short MAX_DISTANCE = 6;
 
 // Variables
 uint8_t stuckCounter = 0;
-uint8_t speed = 40;                // Default minimum speed
+uint8_t speed = 50;                // Default minimum speed
 bool isAuto = false;
 bool isRecall = false;
 bool isStop = false;

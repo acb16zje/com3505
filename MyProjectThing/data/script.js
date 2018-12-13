@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
   let keyDict = { "ArrowLeft": false, "ArrowUp": false, "ArrowRight": false, "ArrowDown": false };
-  let speed = 40;
+  let speed = 50;
   let isMobile = 'ontouchstart' in document.documentElement;
 
   // Keyboard listener

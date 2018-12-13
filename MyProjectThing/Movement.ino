@@ -30,7 +30,7 @@ void stop() {
  * Sets the motor to run forward
  */
 void forward() {
-  L_MOTOR->setSpeed(speed);
+  L_MOTOR->setSpeed(speed+5);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(FORWARD);
   R_MOTOR->run(FORWARD);
@@ -40,7 +40,7 @@ void forward() {
  * Sets the motor to run backward
  */
 void backward() {
-  L_MOTOR->setSpeed(speed);
+  L_MOTOR->setSpeed(speed+5);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(BACKWARD);
   R_MOTOR->run(BACKWARD);
@@ -50,7 +50,7 @@ void backward() {
  * Sets the motor to turn left
  */
 void left() {
-  L_MOTOR->setSpeed(speed);
+  L_MOTOR->setSpeed(speed+5);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(BACKWARD);
   R_MOTOR->run(FORWARD);
@@ -60,7 +60,7 @@ void left() {
  * Sets the motor to turn right
  */
 void right() {
-  L_MOTOR->setSpeed(speed);
+  L_MOTOR->setSpeed(speed+5);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(FORWARD);
   R_MOTOR->run(BACKWARD);
@@ -70,25 +70,26 @@ void right() {
  * Turns the robocar 90 degrees to the right
  */
 void turnRight90() {
-  L_MOTOR->setSpeed(speed);
+  L_MOTOR->setSpeed(speed+5);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(FORWARD);
   R_MOTOR->run(BACKWARD);
 
   // Time required to turn 90 degrees right
   // (40 speed, 1160 ms), (100 speed, 460 ms), calculate using y = mx +c
-  delay(-35 * speed / 3 + 4880 / 3);
+  // delay(-35 * speed / 3 + 4880 / 3);
+  delay((int)(0.128*speed*speed - 28.8*speed + 2020));
 
   // Change direction after turning right (North to East, East to South etc.)
   currentDirection = Direction((currentDirection + 1) % (West + 1));
 }
 
 void turnLeft90() {
-  L_MOTOR->setSpeed(speed);
+  L_MOTOR->setSpeed(speed+5);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(BACKWARD);
   R_MOTOR->run(FORWARD);
-  delay(1080); // Exact time required to turn 90 degrees at speed 40
+  delay((int)(0.128*speed*speed - 28.8*speed + 2020));
 
   // Change direction after turning right
   switch (currentDirection) {
@@ -164,17 +165,15 @@ float calculateDistanceMoved(int t) {
  * Move the robocar, in auto or manual mode
  */
 void moveRoboCar() {
-  if (startTime == 0 && (isForward || isBackward)) {
-    startTime = millis();
-    df(moveDBG, "startTime: %d", startTime);
-  }
-
+  
   if (isAuto) {
+    if (startTime == 0) {
+      startTime = millis();
+      df(moveDBG, "startTime: %d", startTime);
+    }
     // Auto: Use ultrasonic sensors to prevent collision, has stuck counter
     short distance = isForward ? getFrontDistance() : getBackDistance();
-    Serial.println(distance);
     if (distance > MAX_DISTANCE) {
-      Serial.println("option 1");
       stuckCounter = 0;
       if (isForward) {
         forward();
@@ -182,33 +181,19 @@ void moveRoboCar() {
         backward();
       }
     } else if (stuckCounter < MAX_STUCK) {
-      Serial.println("option 2");
+      coordinate();
+
       turnRight90();
       stop();
-
-      timeMoved = millis() - startTime;
-      startTime = 0; // Reset startTime since robot is stopped
-
-      // Calculate the distance moved before it met a wall
-      switch (currentDirection) {
-        case North:
-          y += calculateDistanceMoved(timeMoved);
-          break;
-        case East:
-          x += calculateDistanceMoved(timeMoved);
-          break;
-        case South:
-          y -= calculateDistanceMoved(timeMoved);
-          break;
-        case West:
-          x -= calculateDistanceMoved(timeMoved);
-          break;
-      }
 
       isForward = getFrontDistance() >= getBackDistance();
       stuckCounter++; // There is a wall in front of the robot
     }
   } else {
+    if (startTime == 0 && (isForward || isBackward)) {
+      startTime = millis();
+      df(moveDBG, "startTime: %d", startTime);
+    }
     // Manual: User-controlled, record distance travelled
     if (isStop) {
       stop();
@@ -232,57 +217,60 @@ void moveRoboCar() {
 }
 
 void recall() {
-  forward();
+  coordinate();
+
+  // ,forward();
   // x > 0: Need to move backward
   // x < 0: Need to move forward
-  Serial.printf("X: %f", x);
-  Serial.printf("Y: %f", y);
-  // if (x > 0) {
-  //   switch (currentDirection) {
-  //     case North:
-  //       turnLeft90();
-  //       stop();
-  //       break;
-  //     case East:
-  //       turnRight90();
-  //       turnRight90();
-  //       stop();
-  //       break;
-  //     case South:
-  //       turnRight90();
-  //       stop();
-  //       break;
-  //   }
-  //   int xTime = (int)(x*1000/(0.28f * speed - 3.5f)); 
-  //   forward();
-  //   Serial.print("GOSTAN ");
-  //   Serial.println(xTime);
-  //   delay(xTime);
-  //   stop();
-  // } else if (x < 0) {
-  //   switch (currentDirection) {
-  //     case North:
-  //       turnRight90();
-  //       stop();
-  //       break;
-  //     case West:
-  //       turnRight90();
-  //       turnRight90();
-  //       stop();
-  //       break;
-  //     case South:
-  //       turnLeft90();
-  //       stop();
-  //       break;
-  //   }
-  //   int xTime = (int)(x*1000/(0.28f * speed - 3.5f)); 
-  //   forward();
-  //   Serial.print("PERGI DEPAN ");
-  //   Serial.println(xTime);
-  //   delay(xTime);
-  //   stop();
-  // } 
-
+  Serial.print("x: ");
+  Serial.println(x);
+  Serial.print("y: ");
+  Serial.println(y);
+  if (x > 0) {
+    switch (currentDirection) {
+      case North:
+        turnLeft90();
+        stop();
+        break;
+      case East:
+        turnRight90();
+        turnRight90();
+        stop();
+        break;
+      case South:
+        turnRight90();
+        stop();
+        break;
+    }
+    // int xTime = (int)(x*1000/(0.28f * speed - 3.5f)); 
+    forward();
+    Serial.print("GOSTAN ");
+    Serial.println(x);
+    delay(abs(x));
+    stop();
+  } else if (x < 0) {
+    switch (currentDirection) {
+      case North:
+        turnRight90();
+        stop();
+        break;
+      case West:
+        turnRight90();
+        turnRight90();
+        stop();
+        break;
+      case South:
+        turnLeft90();
+        stop();
+        break;
+    }
+    // int xTime = (int)(x*1000/(0.28f * speed - 3.5f)); 
+    forward();
+    Serial.print("PERGI DEPAN ");
+    Serial.println(x);
+    delay(abs(x));
+    stop();
+  } 
   if (y > 0) {
     switch (currentDirection) {
       case North:
@@ -299,11 +287,11 @@ void recall() {
         stop();
         break;
     }
-    int yTime = (int)(y*1000/(0.28f * speed - 3.5f)); 
+    // int yTime = (int)(y*1000/(0.28f * speed - 3.5f)); 
     forward();
     Serial.print("SOUTH ");
-    Serial.println(yTime);
-    delay(yTime);
+    Serial.println(y);
+    delay(abs(y));
     stop();
   } else if (y < 0) {
     switch (currentDirection) {
@@ -321,11 +309,43 @@ void recall() {
         stop();
         break;
     }
-    int yTime = (int)(y*1000/(0.28f * speed - 3.5f)); 
+    // int yTime = (int)(y*1000/(0.28f * speed - 3.5f)); 
     forward();
     Serial.print("NORTH ");
-    Serial.println(yTime);
-    delay(yTime);
+    Serial.println(y);
+    delay(abs(y));
     stop();
   } 
+  isRecall = false;
+  isAuto = false;
+}
+
+void coordinate() {
+  timeMoved = millis() - startTime;
+  startTime = 0; // Reset startTime since robot is stopped
+  Serial.print("timeMoved: ");
+  Serial.println(timeMoved);
+  // float tempDist = isForward ? calculateDistanceMoved(timeMoved) : -calculateDistanceMoved(timeMoved);
+  float tempDist = isForward ? timeMoved : -timeMoved;
+  Serial.print("isForward: ");
+  Serial.println(isForward);
+  Serial.print("tempDist: ");
+  Serial.println(tempDist);
+  Serial.print("direction: ");
+  Serial.println(currentDirection);
+  // Calculate the distance moved before it met a wall
+  switch (currentDirection) {
+    case North:
+      y += tempDist;
+      break;
+    case East:
+      x += tempDist;
+      break;
+    case South:
+      y -= tempDist;
+      break;
+    case West:
+      x -= tempDist;
+      break;
+  }
 }

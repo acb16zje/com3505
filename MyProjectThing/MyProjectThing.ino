@@ -23,10 +23,7 @@ void setup() {
   startBatteryRead();
   startMovementControl();
   startWebServer();
-
-  if (WiFi.status() == WL_CONNECTED) {
-    startAdafruitDataLog();
-  }
+  startAdafruitDataLog();
 }
 
 /**
@@ -35,6 +32,7 @@ void setup() {
 void loop() {
   checkPowerSwitch(); // shutdown if switch off
 
+  
   if (isRecall) {
     recall();
   } else {

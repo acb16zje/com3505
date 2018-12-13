@@ -14,7 +14,7 @@ Adafruit_DCMotor *R_MOTOR = AFMS.getMotor(4);
 
 // Constants
 const uint8_t MAX_STUCK = 4;
-const short MAX_DISTANCE = 4;
+const short MAX_DISTANCE = 6;
 
 // Variables
 uint8_t stuckCounter = 0;
@@ -29,7 +29,8 @@ bool isRight = false;
 
 // For counting distance moved
 float distanceMoved = 0;
-int startTime, timeMoved;
+int startTime = 0;
+int timeMoved = 0;
 
 // Virtual direction
 enum Direction {North, East, South, West};

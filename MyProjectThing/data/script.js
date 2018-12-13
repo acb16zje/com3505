@@ -170,7 +170,11 @@ $(document).ready(function () {
     }
   });
 
-  $('#recall').click(() => callFunction('recall'));
+  $('#recall').click(function() {
+    $(this).text('Recalling Robocar...');
+    $(this).prop('disabled', true);
+    callFunction('recall');
+  });
 
   // WiFi list page
   $('#ap tr').click(function() {
@@ -183,5 +187,5 @@ $(document).ready(function () {
   });
 
   // aREST function
-  function callFunction(n,a,l){$.ajax({type:"GET", url:"http://192.168.4.1/"+n+"?params="+a}).done(function(n){null!=l&&l(n)})}
+  function callFunction(n,a,l){$.ajax({url:"http://192.168.4.1/"+n+"?params="+a}).done(function(n){null!=l&&l(n)})}
 });

@@ -4,8 +4,6 @@
 #ifndef UNPHONE_H
 #define UNPHONE_H
 
-#include <lmic.h>               // IBM LMIC (LoraMAC-in-C) library
-#include <hal/hal.h>            // hardware abstraction for LMIC on Arduino
 #include <Wire.h>               // I²C comms on the Arduino
 #include <IOExpander.h>         // unPhone's IOExpander (controlled via I²C)
 #include <Adafruit_Sensor.h>    // base class etc. for sensor abstraction
@@ -33,23 +31,5 @@ void setRegister(byte address, byte reg, byte value);   //
 byte getRegister(byte address, byte reg);               // I²C...
 void write8(byte address, byte reg, byte value);        // ...helpers
 byte read8(byte address, byte reg);                     //
-
-// the mic, and the I²S bus /////////////////////////////////////////////////
-#define MIC_DOUT 35
-#define MIC_BCLK 13
-#define MIC_LRCL  4
-void i2s_config();
-uint32_t read_i2s();
-
-// the IR LED pins //////////////////////////////////////////////////////////
-#define IR_LEDS  12
-
-// the LoRa board and TTN LoRaWAN ///////////////////////////////////////////
-extern osjob_t sendjob;
-void os_getArtEui (u1_t*);
-void os_getDevEui (u1_t*);
-void os_getDevKey (u1_t*);
-void lmic_init();
-void lmic_do_send(osjob_t*);
 
 #endif

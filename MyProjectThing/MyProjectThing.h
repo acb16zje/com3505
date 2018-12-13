@@ -25,10 +25,10 @@
 float aread;
 float avolt;
 
-// Adafruit.io data logging 
-int period = 10000;
-int currentTime;
-int updatedTime;
+// Adafruit.io data logging
+const int INTERVAL = 10000;
+int currentTime = millis();
+int updatedTime = millis();
 
 // Adafruit.io data logging settings
 const char* IO_USERNAME = "njh97";
@@ -47,8 +47,8 @@ const String triggerName = "unphone";
 // Methods
 void setup();
 void loop();
-void handleMessage(AdafruitIO_Data *);
 void startBatteryCount();
+void startAdafruitDataLog();
 void sendIFTTT(HTTPClient *http);
 
 #endif

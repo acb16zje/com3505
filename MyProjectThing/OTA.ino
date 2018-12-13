@@ -3,7 +3,9 @@
 // Perform OTA update, or firmware reset
 // /////////////////////////////////////////////////////////////////////////////
 
-// OTA over-the-air update stuff ///////////////////////////////////////////
+/**
+ * Main logic for performing OTA update and firmware reset
+ */
 void doOTAUpdate() {
   // Do a GET to read the version file from the cloud
   // This step is already performed in AsyncWebServer.ino, double checking here
@@ -18,7 +20,7 @@ void doOTAUpdate() {
   }
   http.end(); // free resources
 
-  // do we know the latest version, and does the firmware need updating?
+  // Exit method when the device is already updated
   if (currentVersion >= highestAvailableVersion && !startReset) {
     dln(otaDBG, "Firmware is up to date\n\n");
     startOTA = false;
@@ -101,7 +103,15 @@ void doOTAUpdate() {
   aSyncServer.begin();
 }
 
-// Helper for downloading from cloud firmware server via HTTP GET
+/**
+ * Performs HTTP GET to GitHub server for retrieving firmware bin file
+ * or version file
+ *
+ * @param  http     HTTPClient pointer
+ * @param  gitID    GitHub username
+ * @param  fileName The filename to retrieve
+ * @return int      HTTP response code
+ */
 int doCloudGet(HTTPClient *http, String gitID, String fileName) {
   // Fetch from GitHub directly
   String url = "https://" + token + "@raw.githubusercontent.com/" +

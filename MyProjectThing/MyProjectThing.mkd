@@ -2,35 +2,59 @@ Robocar Documentation
 ===
 
 # Objectives
+1. Able to control the Robocar on any devices using WiFi and web browser
+2. Able to perform OTA update and firmware reset on the Robocar
+3. Authentication required for all operations on Robocar
+4. Autonomous Robocar with collision detection
+5. IFTTT notifications when Robocar is stucked in autonomous mode
+6. Push the total distance moved in manual mode to Adafruit.io
 
-# Libraries Used
-* Adafruit_IO_Arduino: Please make sure you have the latest version from their [official GitHub repository](https://github.com/adafruit/Adafruit_IO_Arduino)
+# Prerequisite
+## Libraries and Plugins
+The following libraries and plugins have to be installed in order to compile and run successfully.
+
+1. [ESP32 Filesystem Uploader](https://github.com/me-no-dev/arduino-esp32fs-plugin) installed, and
+   the `data` directory has been uploaded to the ESP32
+2. Latest version of [Adafruit_IO_Arduino](https://github.com/adafruit/Adafruit_IO_Arduino) library.
+   The one in University Linux machines does not have the `get()` method in `AdafruitIO_Feed`
+3. Latest version of [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer). The one in
+   University Linux machines is outdated. New version introduced several bug fixes and performance
+   improvements.
+
+## Hardware
+In addition to the *default* Robocar, this project used two **ultrasonic sensors** to improve the reliability
+and performance of the autonomous mode. The hardware setup is shown in [here](#hardware-setup).
+
 
 # Design
-## First concept
+## First Iteration
 Basic aREST over WiFi
 
-## Second concept
+## Second Iteration
 SD card and aSyncWebServer
 
-## Third concept
+## Third Iteration
 SPIFFS and aSyncWebServer
 
 Wanderer
 
 Recall
 
-* Original HTML, CSS, and JS files are not saved inside the unPhone, we're going to flash
+- Original HTML, CSS, and JS files are not saved inside the unPhone, we're going to flash
   them inside the unPhone
 
-* SDWebServer too slow
-* AsyncWebServer fast
-* Data logging
+- SDWebServer too slow
+- AsyncWebServer fast
+- Data logging
+
+# Hardware Setup
 
 # Implementation
 talk about how we calculate the distance, and how we got the formula
 
 # Challenges
+- Calibration: It is required to experiment with different time values to find the correct value for
+               turning the robot 90 degrees at different speed
 
 # Hardware Problems
 Below are a list of hardware problems identified during the implementation and testing stage of the

@@ -3,6 +3,9 @@
 // Handle web requests
 /////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Starts the WiFI AP and the AsyncWebServer
+ */
 void startWebServer() {
   if (!SPIFFS.begin()) {
     dln(netDBG, "An Error has occured while mounting SPIFFS");
@@ -11,13 +14,16 @@ void startWebServer() {
 
   WiFi.mode(WIFI_AP);
   WiFi.softAP(apSSID, apPass);
-
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  WiFi.begin(WIFI_SSID, WIFI_PASS); // wireless AP wont show up if this fails
 
   routes();
+  ajaxCalls();
   aSyncServer.begin();
 }
 
+/**
+ * Handles all general routes (ajax excluded)
+ */
 void routes() {
   // Assets
   aSyncServer.serveStatic("/spectre.css", SPIFFS, "/spectre.css").setCacheControl("max-age=600");
@@ -97,7 +103,7 @@ void routes() {
       resetBools();
       wifiJoin(request);
       while (WiFi.status() != WL_CONNECTED) {
-        delay(1);
+        delay(10);
       }
       request->send(SPIFFS, "/wifi.html", String(), false, wifiList);
     } else {
@@ -108,7 +114,7 @@ void routes() {
   aSyncServer.on("/ota", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
       resetBools();
-      request->send(SPIFFS, "/ota.html", String(), false, otaPrompt);
+      request->send(SPIFFS, "/ota.html", String(), false, otaConfirmation);
     } else {
       request->redirect("/login");
     }
@@ -118,7 +124,7 @@ void routes() {
     if (request->authenticate(loginID, loginPass)) {
       resetBools();
       startOTA = true;
-      request->send(200, "text/plain", !Update.hasError()? "OK" : "FAIL");
+      request->send(200, "text/plain", Update.hasError()? "OTA FAILED" : "OTA STARTED");
       aSyncServer.reset();
     } else {
       request->redirect("/login");
@@ -128,7 +134,7 @@ void routes() {
   aSyncServer.on("/reset", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
       resetBools();
-      request->send(SPIFFS, "/reset.html", String(), false, resetPrompt);
+      request->send(SPIFFS, "/reset.html", String(), false, resetConfirmation);
     } else {
       request->redirect("/login");
     }
@@ -139,15 +145,19 @@ void routes() {
       resetBools();
       startOTA = true;
       startReset = true;
-      request->send(200, "text/plain", !Update.hasError()? "OK" : "FAIL");
+      request->send(200, "text/plain", Update.hasError()? "RESET FAILED" : "RESET STARTED");
       aSyncServer.reset();
     } else {
       request->redirect("/login");
     }
   });
+}
 
-  // jQuery AJAX
-  aSyncServer.on("/setSpeed", HTTP_GET, [](AsyncWebServerRequest *request) {
+/**
+ * Handles all ajax calls
+ */
+void ajaxCalls() {
+  aSyncServer.on("/setSpeed", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
       speed = atoi(request->arg("params").c_str());
       request->send(200);
@@ -156,8 +166,9 @@ void routes() {
     }
   });
 
-  aSyncServer.on("/setMode", HTTP_GET, [](AsyncWebServerRequest *request) {
+  aSyncServer.on("/setMode", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
+      resetBools();
       isAuto = String(request->arg("params")) == "auto";
       isStop = !isAuto;
       isForward = isAuto;
@@ -167,20 +178,16 @@ void routes() {
     }
   });
 
-  aSyncServer.on("/stop", HTTP_GET, [](AsyncWebServerRequest *request) {
+  aSyncServer.on("/stop", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
-      isStop = true;
-      isForward = false;
-      isBackward = false;
-      isLeft = false;
-      isRight = false;
+      resetBools();
       request->send(200);
     } else {
       request->redirect("/login");
     }
   });
 
-  aSyncServer.on("/forward", HTTP_GET, [](AsyncWebServerRequest *request) {
+  aSyncServer.on("/forward", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
       isForward = true;
       isBackward = false;
@@ -192,7 +199,7 @@ void routes() {
     }
   });
 
-  aSyncServer.on("/backward", HTTP_GET, [](AsyncWebServerRequest *request) {
+  aSyncServer.on("/backward", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
       isForward = false;
       isBackward = true;
@@ -204,7 +211,7 @@ void routes() {
     }
   });
 
-  aSyncServer.on("/left", HTTP_GET, [](AsyncWebServerRequest *request) {
+  aSyncServer.on("/left", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
       isForward = false;
       isBackward = false;
@@ -216,7 +223,7 @@ void routes() {
     }
   });
 
-  aSyncServer.on("/right", HTTP_GET, [](AsyncWebServerRequest *request) {
+  aSyncServer.on("/right", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
       isForward = false;
       isBackward = false;
@@ -228,11 +235,12 @@ void routes() {
     }
   });
 
-  aSyncServer.on("/recall", HTTP_GET, [](AsyncWebServerRequest *request) {
+  aSyncServer.on("/recall", [](AsyncWebServerRequest *request) {
     if (request->authenticate(loginID, loginPass)) {
-      isRecall = isAuto;
+      isRecall = isAuto; // Recall is only available in auto mode
 
       if (isRecall) {
+        // Stop the auto movement
         isForward = false;
         isBackward = false;
       }
@@ -244,31 +252,44 @@ void routes() {
   });
 }
 
+/**
+ * Resets the booleans and stops all motor when the user navigate to another page
+ */
 void resetBools() {
   startOTA = false;
   startReset = false;
   isAuto = false;
   isRecall = false;
   isStop = true;
+  isForward = false;
+  isBackward = false;
+  isLeft = false;
+  isRight = false;
 }
 
+/**
+ * Template processor function for /wifi
+ *
+ * @param  var    The variable in wifi.html
+ * @return String The HTML code for a list of WiFI access points
+ */
 String wifiList(const String& var) {
   String f = "";
   const char *checked = "checked";
   short n = WiFi.scanNetworks();
   dbg(netDBG, "Scan done: ");
 
-  if(n == 0) {
+  if (n == 0) {
     dln(netDBG, "No networks found.");
     f += "No WiFi access points found";
-    f += "<a href='/'>Back</a><br/><a href='/wifi'>Try again?</a></p>\n";
+         "<a href='/'>Back</a><br/><a href='/wifi'>Try again?</a></p>\n";
   } else {
     dbg(netDBG, n); dln(netDBG, " networks found");
     if (WiFi.SSID() == "")  {
       f += "<p>WiFi access points available:</p>";
     } else {
-      f += "<p>Currently connected to <strong>" + WiFi.SSID() + "</strong>. ";
-      f += "WiFi access points available:</p>";
+      f += "<p>Currently connected to <strong>" + WiFi.SSID() + "</strong>. "
+           "WiFi access points available:</p>";
     }
     f += "<form method='POST' action='wifiJoin'>"
          "<table id='ap' class='table table-striped table-hover'>";
@@ -305,9 +326,12 @@ String wifiList(const String& var) {
   return f;
 }
 
+/**
+ * Joins the WiFi network selected
+ *
+ * @param request AsyncWebServerRequest pointer
+ */
 void wifiJoin(AsyncWebServerRequest *request) {
-  String message = "";
-
   String ssid = "", key = "";
 
   for (uint8_t i = 0; i < request->params(); i++ ) {
@@ -321,18 +345,18 @@ void wifiJoin(AsyncWebServerRequest *request) {
     }
   }
 
-  if (ssid == "") {
-    message = "<h2>Ooops, no SSID...?</h2>\n<p>Looks like a bug</p>";
-  } else {
-    WiFi.disconnect();
-
-    const char* c = ssid.c_str();
-    const char* d = key.c_str();
-
-    WiFi.begin(c,d);
-  }
+  WiFi.disconnect();
+  const char* c = ssid.c_str();
+  const char* d = key.c_str();
+  WiFi.begin(c, d);
 }
 
+/**
+ * Template processor function for /
+ *
+ * @param  var    The variable in index.html
+ * @return String The HTML code for status table
+ */
 String statusTable(const String& var) {
   String s = "<table class='table table-striped table-hover'>";
   s += "<tr><th>SSID</th><td>";
@@ -372,8 +396,8 @@ String statusTable(const String& var) {
   respCode = doCloudGet(&http, gitID, "version");
   if (respCode == 200) {
     highestAvailableVersion = atoi(http.getString().c_str());
-     s += String(highestAvailableVersion);
-     if (currentVersion < highestAvailableVersion) {
+    s += String(highestAvailableVersion);
+    if (currentVersion < highestAvailableVersion) {
       s += "<a href='/ota' class='btn btn-success mx-2'>Update</a>";
     }
   } else {
@@ -393,7 +417,13 @@ String statusTable(const String& var) {
   return s;
 }
 
-String otaPrompt(const String& var) {
+/**
+ * Template processor function for /ota
+ *
+ * @param  var    The variable in ota.html
+ * @return String The HTML code for OTA confirmation
+ */
+String otaConfirmation(const String& var) {
   String message;
   respCode = doCloudGet(&http, gitID, "version");
   if (respCode != 200) {
@@ -411,7 +441,13 @@ String otaPrompt(const String& var) {
   return message;
 }
 
-String resetPrompt(const String& var) {
+/**
+ * Template processor function for /reset
+ *
+ * @param  var    The variable in reset.html
+ * @return String The HTML codew for reset confirmation
+ */
+String resetConfirmation(const String& var) {
   String message;
   startReset = true;
   respCode = doCloudGet(&http, gitID, "1.bin");
@@ -428,7 +464,12 @@ String resetPrompt(const String& var) {
   return message;
 }
 
-// Utility for printing IP addresses
+/**
+ * Utility for printing IP addresses
+ *
+ * @param  address The IPAddress instance
+ * @return String  The IP address in String form
+ */
 String ip2str(IPAddress address) {
   return String(address[0]) + "." + String(address[1]) + "." +
          String(address[2]) + "." + String(address[3]);

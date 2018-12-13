@@ -15,12 +15,13 @@ const char* loginPass = "admin";
 // Methods
 void startWebServer();
 void routes();
+void ajaxCalls();
 void wifiJoin(AsyncWebServerRequest *);
 void resetBools();
 String wifiList(const String&);
 String statusTable(const String&);
-String otaPrompt(const String&);
-String resetPrompt(const String&);
+String otaConfirmation(const String&);
+String resetConfirmation(const String&);
 String ip2str(IPAddress address);
 
 #endif

@@ -40,46 +40,66 @@ and performance of the autonomous mode. The hardware setup is shown in [here](#h
 ## Iterations
 |  | Iteration 1 | Iteration 2 | Iteration 3 |
 |---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Features | <ul><li>Basic <code>aREST</code> API controls over WiFi connection</li></ul> | <ul><li>HTML, CSS, and JavaScript files saved in SD card</li><li>Web server loads HTML, CSS, and JS from SD card</li><li>Use jQuery Ajax to send the control command</li></ul> | <ul><li>HTML, CSS, and JavaScript files are saved in SPIFFS (SPI Flash File System)</li><li>Use [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) to handle all HTTP requests and Ajax calls</li><li>Cache control of static CSS and JS files</li><li>Use HTTP MD5 Digest Authentication for authentication check</li><li>Automatic Robocar mode with front and back collision detection</li><li>Able to recall the Robocar back to the origin point (automatic mode only)</li><li>Send IFTTT notification to the phone when Robocar is stuck</li><li>Push the total distance moved by Robocar in manual mode to Adafruit.io</li><li>OTA update using over GitHub.com using HTTPS protocol</li></ul> |
-| Advantages | <ul><li>Simple</li><li>Less power consumption</li></ul> | <ul><li>Able to control the Robocar in both PC and mobile devices</li><li>No longer requires local HTML files to control the Robocar</li></ul> | <ul><li>Feature-rich</li><li>Fast loading time of the AsyncWebServer</li><li>Able to control the Robocar in both PC and mobile devices</li><li>No longer requires local HTML files to control the Robocar</li><li>Secure HTTP authorization required before performing any operations</li></ul> |
-| Disadvantages | <ul><li>No web server, only able to control the Robocar using local HTML files</li><li>No authentication and OTA update functions, less secure</li><li>Lack of functionality</li></ul> | <ul><li>High power consumption</li><li>Long loading time of the files in SD card</li><li>No authentication and OTA update functions, less secure</li><li>Lack of functionality</li></ul> | <ul><li>Very high power consumption</li><li>Complex implementation and increased debugging difficulty</li></ul> |
+| Features | <ul><li>Basic <code>aREST</code> API controls over WiFi connection</li></ul> | <ul><li>HTML, CSS, and JavaScript files saved in SD card</li><li>Web server loads HTML, CSS, and JS from SD card</li><li>Use jQuery Ajax to send the control command</li></ul> | <ul><li>HTML, CSS, and JavaScript files are saved in SPIFFS (SPI Flash File System)</li><li>Use [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) to handle all HTTP requests and Ajax calls</li><li>Cache control of static CSS and JS files</li><li>Use HTTP MD5 Digest Authentication for authentication check</li><li>Automatic Robocar mode with front and back collision detection</li><li>Able to recall the Robocar back to the origin point (automatic mode only)</li><li>Send IFTTT notification to the phone when Robocar is stuck</li><li>Push the total distance moved by Robocar in manual mode to Adafruit.io</li><li>OTA update over Github.com using HTTPS protocol</li></ul> |
+| Advantages | <ul><li>Simple</li><li>Less power consumption</li></ul> | <ul><li>Able to control the Robocar in both PC and mobile devices</li><li>No longer requires local HTML files to control the Robocar</li></ul> | <ul><li>Feature-rich</li><li>Fast loading time of the AsyncWebServer <strong>(Figure 2)</strong></li><li>Able to control the Robocar in both PC and mobile devices</li><li>No longer requires local HTML files to control the Robocar</li><li>Secure HTTP authorization required before performing any operations</li></ul> |
+| Disadvantages | <ul><li>No web server, only able to control the Robocar using local HTML files</li><li>No authentication and OTA update functions, less secure</li><li>Lack of functionality</li></ul> | <ul><li>High power consumption</li><li>Long loading time of the files in SD card <strong>(Figure 1)</strong></li><li>No authentication and OTA update functions, less secure</li><li>Lack of functionality</li></ul> | <ul><li>Very high power consumption</li><li>Complex implementation and increased debugging difficulty</li></ul> |
 
-Wanderer
+**Figure 1** and **Figure 2** below shows the loading time of SD web server and AsyncWebServer
+respectively. Iteration 2 was not suitable for this project because of its slow performance.
 
-Recall
+<p align="center">
+  <img src="./images/SDserver.png">
+  <p align="center"><strong>Figure 1.</strong> Loading time of SD web server (Iteration 2)</p>
+</p>
 
-
+<p align="center">
+  <img src="./images/AsyncWebServer.png">
+  <p align="center"><strong>Figure 2.</strong> Loading time of AsyncWebServer (Iteration 3)</p>
+</p>
 
 # Implementation
 talk about how we calculate the distance, and how we got the formula
 
+## Automatic Mode
+<p align="center">
+  <img src="./images/automatic.png">
+  <p align="center"><strong>Figure 3.</strong> Flowchart of OTA update process</p>
+</p>
+
+## Recall
+<p align="center">
+  <img src="./images/recall.gif">
+  <p align="center"><strong>Image 1.</strong> Recall process, full video
+  <a href="./images/recall.mp4">here</a></p>
+</p>
+
+## OTA update
+The OTA update function in this project is a modified version of the previous project. The `PULLUP`
+button confirmation has been changed to a button click confirmation on the web page itself.
+
+<p align="center">
+  <img src="./images/ota_flowchart.png">
+  <p align="center"><strong>Figure 4.</strong> Flowchart of OTA update process</p>
+</p>
+
 ## Hardware Setup
 
 ## Challenges
-- Calibration: It is required to experiment with different time values to find the correct value for
-               turning the robot 90 degrees at different speed
-- Soldering: solder ultrasonic sensor
+### 1. Calibration:
+It is required to experiment with different time values at different speed to find the correct value
+for turning the robot 90 degrees. After that, the equation that represents the time change with
+respect to speed can be obtained through Excel graph, `time = 2020 - 28.8 * speed + 0.128 * speed *
+speed`, as shown in **Figure 5**.
 
-# Hardware Problems
-Below are a list of hardware problems identified during the implementation and testing stage of the
-project.
+<p align="center">
+  <img src="./images/turnRightGraph.png">
+  <p align="center"><strong>Figure 5.</strong> Manual calibration of the time required (ms) to turn the
+  robot 90 degrees</p>
+</p>
 
-1. **Problem 1**: LED light on the motor driver dims, and a very small beep sound is
-   emitted, motor will not move.
-   - **Cause**: The power switch of the AA battery case is not sensitive.
-   - **Fix**: Press the power switch down, or slightly adjust it to the left or right
-   - **Further note**: It is unable to confirm that flashing `BigDemo.ino` will fix this issue.
-
-2. **Problem 2**: LED light does not dim, no beep sound emitted, motor will not move.
-   - **Cause**: This problem occurred during the attempt to fix **Problem 1**, after
-     flashing BigDemo.ino and the code. It is unable to determine whether it was a
-     hardware or a software issue.
-   - **Possible Fix**: Flashing `BigDemo.ino` and `MyProjectThing.ino` again.
-
-3. **Problem 3**: Left motor rotates slower than right motor
-   - **Possible cause**: The electricity transmitted to the left motor is lower, the problem is
-                         most obvious when the motor speed is low.
-   - **Mitigation**: The problem could be mitigated by increasing the speed of both motors.
+### 2. Soldering
+Some soldering is required to position the ultrasonic sensors on the `PROTO AREA` of the expander
+board.
 
 # Debugging
 We have implemented a debugging infrastructure that makes use of macros for easier code debugging.
@@ -101,17 +121,18 @@ running the entire process from start to finish, followed by trying to reproduce
 ensure the error will be handled by the system.
 
 ## Robocar Movement Test Cases
-|                                Test Case                                |                                     Expected Result                                    | Results |
-|:-----------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|:-------:|
-|    Clicking the up arrow button or pressing up arrow key on keyboard    |                                  Robocar moves forward                                 |   Pass  |
-|  Clicking the down arrow button or pressing down arrow key on keyboard  |                                 Robocar moves backward                                 |   Pass  |
-|  Clicking the left arrow button or pressing left arrow key on keyboard  |                                   Robocar turns left                                   |   Pass  |
-| Clicking the right arrow button or pressing right arrow key on keyboard |                                   Robocar turns right                                  |   Pass  |
-|                 Releasing mouse click or keyboard press                 |                                      Robocar stops                                     |   Pass  |
-|                 Change the speed slider and move forward                |                                  Motor speed increased                                 |   Pass  |
-|               Change the current mode from manual to auto               | Robot starts moving randomly, and turns right when a wall is detected in front or back |   Pass  |
-|   While the robocar is moving in auto mode, change the mode to manual   |                                   Robot stops moving                                   |   Pass  |
-|    While the robocar is moving in auto mode, navigate to another page   |                                   Robot stops moving                                   |   Pass  |
+|                                Test Case                                |                                      Expected Result                                     | Results |
+|:-----------------------------------------------------------------------:|:----------------------------------------------------------------------------------------:|:-------:|
+|    Clicking the up arrow button or pressing up arrow key on keyboard    |                                   Robocar moves forward                                  |   Pass  |
+|  Clicking the down arrow button or pressing down arrow key on keyboard  |                                  Robocar moves backward                                  |   Pass  |
+|  Clicking the left arrow button or pressing left arrow key on keyboard  |                                    Robocar turns left                                    |   Pass  |
+| Clicking the right arrow button or pressing right arrow key on keyboard |                                    Robocar turns right                                   |   Pass  |
+|                 Releasing mouse click or keyboard press                 |                                       Robocar stops                                      |   Pass  |
+|                 Change the speed slider and move forward                |                                   Motor speed increased                                  |   Pass  |
+|               Change the current mode from manual to auto               | Robocar starts moving randomly, and turns right when a wall is detected in front or back |   Pass  |
+|   While the robocar is moving in auto mode, change the mode to manual   |                                    Robot stops moving                                    |   Pass  |
+|    While the robocar is moving in auto mode, navigate to another page   |                                    Robot stops moving                                    |   Pass  |
+| While the robocar is moving in the auto mode, press the "Recall" button |          Robocar moves back to the origin point where the auto mode was started          |   Pass  |
 
 ## OTA Update Test Cases
 |                            Test Case                           |                         Expected Output                         | Results |
@@ -143,16 +164,40 @@ ensure the error will be handled by the system.
 |              Entering `/reset` while not connected to internet              |                                `/reset` prints "No Internet Connection"                                |   Pass  |
 |                  Entering `/reset` in a non factory version                 | `/reset` prompts user to press pull-up button to start factory reset or return to cancel reset request |   Pass  |
 
+# Hardware Problems
+Below are a list of hardware problems identified during the implementation and testing stage of the
+project.
+
+1. **Problem 1**: LED light on the motor driver dims, and a very small beep sound is
+   emitted, motor will not move.
+   - **Cause**: The power switch of the AA battery case is not sensitive.
+   - **Fix**: Press the power switch down, or slightly adjust it to the left or right
+   - **Further note**: It is unable to confirm that flashing `BigDemo.ino` will fix this issue.
+
+2. **Problem 2**: LED light does not dim, no beep sound emitted, motor will not move.
+   - **Cause**: This problem occurred during the attempt to fix **Problem 1**, after
+     flashing BigDemo.ino and the code. It is unable to determine whether it was a
+     hardware or a software issue.
+   - **Possible Fix**: Flashing `BigDemo.ino` and `MyProjectThing.ino` again.
+
+3. **Problem 3**: Left motor rotates slower than right motor
+   - **Possible cause**: The electricity transmitted to the left motor is lower, the problem is
+                         most obvious when the motor speed is low.
+   - **Mitigation**: Increase the speed of the left motor by a small "offset" amount.
+
 # Conclusions
 Functionalities that have been implemented in into the Robocar system:
 
 1. Remotely control the Robocar using PC or mobile phones on web server (**Flexibility**)
-2. Send IFTTT notification when the Robocar is stucked during automatic mode (**Informative**)
-3. Push the total distance moved of the Robocar in manual mode to Adafruit.io (**Informative**)
-4. Authentication required to access the web server pages (**Security**)
-5. Check the latest version and download the bin file directly from GitHub over HTTPS (**Security**)
-6. Web server that display the status of the device and enable the ability to update or reset the
+2. Robocar will move randomly while preventing collision with walls using front and back ultrasonic
+   sensors (**Automatic**)
+3. Robocar will move
+4. Send IFTTT notification when the Robocar is stucked during automatic mode (**Informative**)
+5. Push the total distance moved of the Robocar in manual mode to Adafruit.io (**Informative**)
+6. Authentication required to access the web server pages (**Security**)
+7. Check the latest version and download the bin file directly from GitHub over HTTPS (**Security**)
+8. Web server that display the status of the device and enable the ability to update or reset the
    firmware remotely (**Flexibility**)
-7. The ability to reset the firmware back to version 1 and upgrade to latest version again for
+9. The ability to reset the firmware back to version 1 and upgrade to latest version again for
    testing purposes (**Repeatable**)
-8. Able to join both visible and hidden WiFi networks using the web server (**Networking**)
+10. Able to join both visible and hidden WiFi networks using the web server (**Networking**)

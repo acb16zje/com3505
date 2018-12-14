@@ -24,6 +24,7 @@ Robocar Documentation
       - [4. OTA update](#4-ota-update)
 - [Implementation](#implementation)
   - [Robocar Movement (Automatic and Manual Mode)](#robocar-movement-automatic-and-manual-mode)
+  - [Recall](#recall-1)
   - [OTA Update](#ota-update)
   - [Adafruit.io Data Logging](#adafruitio-data-logging)
   - [IFTTT Notification](#ifttt-notification)
@@ -120,7 +121,7 @@ respectively. Iteration 2 was not suitable for this project because of its slow 
       2. Turn 90 degrees to the right
 
 #### 3. Notification
-1. **IF** `stuckCounter == maximum allowed stuck count`, the robocar is probably surrounded by 4
+1. **IF** `stuckCounter == maximum allowed stuck count`, the Robocar is probably surrounded by 4
    walls and not able to move forward or backward. Send an IFTTT notification to the user.
 
 ### Recall
@@ -138,7 +139,7 @@ respectively. Iteration 2 was not suitable for this project because of its slow 
    2. **ELSE IF** horizontal distance is **negative**
       1. Rotate Robocar eastwards in accordance to the current direction
       2. Move Robocar for the horizontal distance
-2. Check for vertical distance from origin
+3. Check for vertical distance from origin
    1. **IF** vertical distance is **positive**
       1. Rotate Robocar southwards in accordance to the current direction
       2. Move Robocar for the vertical distance
@@ -185,15 +186,197 @@ click confirmation on the web page itself.
 
 # Implementation
 ## Robocar Movement (Automatic and Manual Mode)
+The pseudocode of the method for moving the Robocar is written below:
+
 ```c++
 void moveRoboCar() {
-  if robocar is in auto mode
+  if robocar is in automatic mode
+    if the startTime of this move == 0
+      set the startTime to millis() (current time in millisecond)
+
+    int distance = 0
+
     if robocar is moving forward
-      get the distance using front ultrasonic sensor
+      distance = get the distance using front ultrasonic sensor
     else
-      get the distance using back ultrasonic sensor
+      distance = get the distance using back ultrasonic sensor
+
+    if distance > MAXIMUM_ALLOWED_DISTANCE
+      stuckCounter = 0
+
+      if robocar is to move forward
+        move forward
+      else
+        move backward
+
+    else if stuckCounter < MAXIMUM_ALLOWED_STUCK_COUNT
+      update the coordinates of robocar
+      turn the robocar 90 degrees to the right
+
+      if the front distance >= the back distance
+        stuckCounter += 1
+        // IFTTT notification will be sent if the condition is met in loop()
+  else
+    // The robot is in manual mode
+    if the startTime of this move == 0 and the robocar is to move forward or backward
+      set the startTime to millis() (current time in millisecond)
+
+    if the robocar is to stop
+      stop the motor
+
+      if the startTime of this move != 0
+        timeMoved = calculate the total time moved before stopping
+        reset the startTime to 0
+        using timeMoved, calculate the total distance moved before stopping
+        // The total distance moved will be updated in loop()
+
+    else if the robocar is to move forward
+      move forward
+    else if the robocar is to move backward
+      move backward
+    else if the robocar is to turn left
+      turn left
+    else if the robocar is to turn right
+      turn right
 }
 ```
+
+In `moveRoboCar()` method, the `startTime` variable have different usage in **automatic** and
+**manual**:
+- In **automatic** mode, the `startTime` variable is used for calculating the coordinates in
+  `coordinate()`, which is used by the `recall()` method.
+- In **manual** mode, the `startTime` variable is used to calculate the total distance moved from
+  the previous motor stop to the current motor stop. Since there are no displacements when the
+  Robocar is turning left or right, it is only required to record the `timeMoved` when the robot is
+  moving forward or backward
+
+## Recall
+
+```c++
+void recall() {
+  call coordinate() to calculate the coordinates of the current robocar position
+
+  if x-coordinate > 0
+    // Robocar needs to move left
+    switch (current direction of robocar) {
+      case North:
+        turn the robocar 90 degrees to the left
+        break
+      case East:
+        turn the robocar 180 degrees to the right
+        break
+      case South:
+        turn the robocar 90 degress to the right
+        break
+    }
+
+  else if x-coordinate < 0
+    // Robocar needs to move right
+    switch (current direction of robocar) {
+      case North:
+        turn the robocar 90 degrees to the right
+        break
+      case South:
+        turn the robocar 180 degrees to the right
+        break
+      case West:
+        turn the robocar 90 degrees to the left
+        break
+    }
+
+  // Execute return for x axis
+  move the robocar forward for "x-coordinate amount" of time
+
+  if y-coordinate > 0
+    // Robocar needs to move backward
+    switch (current direction of robocar) {
+      case North:
+        turn the robocar 180 degrees to the right
+        break
+      case East:
+        turn the robocar 90 degrees to the right
+        break
+      case West:
+        turn the robocar 90 degrees to the left
+        break
+    }
+
+  else if y-coordinate < 0
+    // Robocar needs to move forward
+    switch (current direction of robocar) {
+      case East:
+        turn the robocar 90 degrees to the left
+        break
+      case South:
+        turn the robocar 180 degrees to the right
+        break
+      case West:
+        turn the robocar 90 degrees to the right
+        break
+    }
+
+  // Execute return for y axis
+  move the robocar forward for "y-coordinate amount" of time
+}
+
+void coordinate() {
+  timeMoved = millis() (current time in millisecond) - startTime
+  reset startTime back to 0
+
+  // Set the direction of the virtual distance (represented using time)
+  if robocar is to move forward
+    virtualDistance = timeMoved
+  else
+    virtualDistance = -timeMoved
+
+  // Calculate the distance moved before the robocar met an obstacle
+  switch (current direction of robocar) {
+    case North:
+      y-coordinate += virtualDistance
+      break
+    case East:
+      x-coordinate += virtualDistance
+      break
+    case South:
+      y-coordinate -= virtualDistance
+      break
+    case West:
+      x-coordinate -= virtualDistance
+      break
+  }
+}
+```
+
+The `recall()` method is the hardest function to implementation in this project. It required an
+extensive amount of debugging and testing before it could work. For the recall system to work, the
+Robocar needs to have a **virtual cardinal direction**, and a **coordinate system**. These systems are
+defined as below:
+  - The **virtual cardinal direction** consists of four direction `North`, `East`, `South`, and `West`.
+    The initial direction of the Robocar is set to `North` when the automatic mode is started. When
+    the Robocar turns 90 degrees to the left or right, its direction will change accordingly.
+  - The **coordinate system** is used to record the coordinates of the Robocar when it moves
+    randomly. When the automatic mode is started, the initial position of the Robocar is set to be
+    the origin point `(0, 0)`. There are four cases to consider:
+      1. The current direction of the Robocar is `North`: Add the total distance moved to the
+         current `y-coordinate` of the Robocar
+      2. The current direction of the Robocar is `East`: Add the total distance moved to the current
+         `x-coordinate` of the Robocar
+      3. The current direction of the Robocar is `South`: Subtract the total distance moved from the
+         current `y-coordinate` of the Robocar
+      4. The current direction of the Robocar is `West`: Subtract the total distance moved from the
+         current `x-coordinate` of the Robocar
+
+In the `recall()` method, the **virtual cardinal direction** and **coordinate system** can now be
+used to identify the **direction to turn** and **distance required to move** to reach the *origin
+point*. There are also four cases to consider:
+  1. **IF** the final `x-coordinate` of the Robocar is positive, it indicates that the Robocar is at
+     the *right* side of the *origin* point
+  2. **ELSE IF** the final `x-coordinate` of the Robocar is negative, it indicates that the Robocar is
+     at the *left* side of the *origin* point
+  3. **IF** the final `y-coordinate` of the Robocar is positive, it indicates that the Robocar is
+     *above* the *origin* point
+  4. **ELSE IF** the final `y-coordinate` of the Robocar is negative, it indicates that the Robocar
+     is *below* the *origin* point
 
 ## OTA Update
 The pseudocode of the modified version of OTA update from previous assessment is written below:
@@ -230,6 +413,9 @@ doOTAUpdate() {
 }
 ```
 
+No major changes from previous assessment except that `PULLUP` button confirmation and LED blink
+function are removed.
+
 ## Adafruit.io Data Logging
 **NOTE:** It is required to have the latest version of
 [Adafruit_IO_Arduino](https://github.com/adafruit/Adafruit_IO_Arduino) library installed. The reason
@@ -248,7 +434,7 @@ do not have internet access. Hence, `uos-other` is set to be the default WiFi ne
 
 After that, the method `save()` and `value()` in the `AdafruitIO_Feed` library can be used to fetch
 and push the feed (or data) respectively. In this project, it is used to record the total distance
-moved (in cm) by the robocar in **manual mode**.
+moved (in cm) by the Robocar in **manual mode**.
 
 ## IFTTT Notification
 Sending an IFTTT notification to the phone is relatively easier to implement compared to Adafruit.io
@@ -339,10 +525,10 @@ ensure the error will be handled by the system.
 |                 Releasing mouse click or keyboard press                 |                                       Robocar stops                                      |   Pass  |
 |                 Change the speed slider and move forward                |                                   Motor speed increased                                  |   Pass  |
 |               Change the current mode from manual to auto               | Robocar starts moving randomly, and turns right when a wall is detected in front or back |   Pass  |
-|   While the robocar is moving in auto mode, change the mode to manual   |                                    Robot stops moving                                    |   Pass  |
-|    While the robocar is moving in auto mode, navigate to another page   |                                    Robot stops moving                                    |   Pass  |
-|   While robocar is moving in auto mode, put an obstacle in front of it  |         Robocar turns right when it is close to the obstacle, and continue moving        |   Pass  |
-| While the robocar is moving in the auto mode, press the "Recall" button |   Robocar moves back to the origin point where the auto mode was started **(Image 4)**   |   Pass  |
+|   While the Robocar is moving in auto mode, change the mode to manual   |                                    Robot stops moving                                    |   Pass  |
+|    While the Robocar is moving in auto mode, navigate to another page   |                                    Robot stops moving                                    |   Pass  |
+|   While Robocar is moving in auto mode, put an obstacle in front of it  |         Robocar turns right when it is close to the obstacle, and continue moving        |   Pass  |
+| While the Robocar is moving in the auto mode, press the "Recall" button |   Robocar moves back to the origin point where the auto mode was started **(Image 4)**   |   Pass  |
 
 <p align="center">
   <img src="./images/recall.gif">
@@ -403,7 +589,7 @@ project.
 4. **Problem 4:** The ultrasonic sensor could return negative values
    - **Possible cause:** The ultrasonic sensor is unable to detect anything within its working range
                          (maximum 4 metres)
-   - **Fix:** Position the robocar in a place where objects and obstacles are present in its
+   - **Fix:** Position the Robocar in a place where objects and obstacles are present in its
               surroundings.
 
 # Conclusions

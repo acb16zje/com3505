@@ -313,7 +313,6 @@ String wifiList(const String& var) {
   String f = "";
   const char *checked = "checked";
   short n = WiFi.scanNetworks();
-  Serial.println(WiFi.status() == WL_CONNECTED);
   dbg(netDBG, "Scan done: ");
 
   if (n == 0) {
@@ -370,7 +369,7 @@ String wifiList(const String& var) {
  */
 void wifiJoin(AsyncWebServerRequest *request) {
   String ssid = "", key = "";
-  
+
   if (request->hasArg("ssid")) {
     ssid = request->arg("ssid");
   } else if (request->hasArg("hidden")) {

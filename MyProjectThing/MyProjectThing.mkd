@@ -129,6 +129,22 @@ button confirmation has been changed to a button click confirmation on the web p
 
 ## Hardware Setup
 
+The implemented project is the base Robocar, with the unPhone attached on top of  the chasis, followed by the IO Expander on the top.
+The base chasis consists of the provided two motor engines and their respectitive wheels, as well as the battery box in the middle layer. The battery box is taped using sticky pads, providing stable support for the battery box while remaining detachable in case the need of battery change. 
+
+<p align="center">
+  <img src="./images/robot.jpg">
+  <p align="center"><strong>Figure 5.</strong> Photo of Robocar Implementation</p>
+</p>
+
+Similarly, the IO Expander is attached in the same way. On top of the expander lies the bulk of the parts used in this project. Sitting in the middle, the Servo FeatherWing chip is responsible of controlling the motors, connecting them to the unPhone. On the other hand, the two ultrasonic sensors are attached on header pins, each facing forward and backward to provide sufficient coverage to detect obstacles for our **Automatic Mode** feature. The sensors are attached to the corresponding pins as shown in **Figure 6** below. 
+
+<p align="center">
+  <img src="./images/ultrasonic.png">
+  <p align="center"><strong>Figure 6.</strong> Chart of connections to Ultrasonic Sensors</p>
+</p>
+
+
 ## Challenges
 ### 1. Calibration
 It is required to experiment with different time values at different speed to find the correct value
@@ -138,7 +154,7 @@ speed`, as shown in **Figure 5**.
 
 <p align="center">
   <img src="./images/turnRightGraph.png">
-  <p align="center"><strong>Figure 5.</strong> Manual calibration of the time required (ms) to turn the
+  <p align="center"><strong>Figure 7.</strong> Manual calibration of the time required (ms) to turn the
   robot 90 degrees</p>
 </p>
 

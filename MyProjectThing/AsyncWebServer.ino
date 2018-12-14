@@ -403,9 +403,9 @@ void wifiJoin(AsyncWebServerRequest *request) {
  */
 String statusTable(const String& var) {
   String s = "<table class='table table-striped table-hover'>";
-  s += "<tr><th>SSID</th><td>";
+  s += "<tr><th>SSID</th><td colspan='2'>";
   s += WiFi.SSID() + "</td></tr>";
-  s += "<tr><th>Status</th><td>";
+  s += "<tr><th>Status</th><td colspan='2'>";
 
   switch(WiFi.status()) {
     case WL_IDLE_STATUS:
@@ -425,16 +425,30 @@ String statusTable(const String& var) {
     default:
       s += "WL_UNKNOWN";
   }
-  s += "</td></tr><tr><th>Local IP</th><td>";
+  s += "</td></tr><tr><th>Local IP</th><td colspan='2'>";
   s += ip2str(WiFi.localIP()) + "</td></tr>";
-  s += "<tr><th>Soft AP IP</th><td>";
+  s += "<tr><th>Soft AP IP</th><td colspan='2'>";
   s += ip2str(WiFi.softAPIP()) + "</td></tr>";
-  s += "<tr><th>AP SSID name</th><td>";
+  s += "<tr><th>AP SSID name</th><td colspan='2'>";
   s += String(apSSID) + "</td></tr>";
-  s += "<tr><th>Current Version</th><td>";
+  s += "<tr><th>Total Distance Moved</th><td colspan='2'>";
+  s += String(distanceMoved) + " cm</td></tr>";
+  s += "<tr><th>Battery Voltage</th><td colspan='2'>";
+  aread = analogRead(batteryPin);    // get a reading from the adc pin connected to battery
+  avolt = (aread/4095)*2.2*2;
+  s += String(avolt) + " V</td></tr>";
+  s += "<tr><th rowspan='3'>GPS Location</th><th>Latitude</th><td>";
+  location_t loc = location.getGeoFromWiFi();
+  s += String(loc.lat, 7) + "</td></tr>";
+  s += "<tr><th>Longitude</th><td>";
+  s += String(loc.lon, 7) + "</td></tr>";
+  s += "<tr><th>Accuracy</th><td>";
+  s += String(loc.accuracy) + " m</td></tr>";
+
+  s += "<tr><th>Current Version</th><td colspan='2'>";
   s += String(currentVersion);
   s += "<a href='/reset' class='btn btn-error mx-2'>Reset</a></td></tr>";
-  s += "</td></tr><tr><th>Latest Version</th><td>";
+  s += "</td></tr><tr><th>Latest Version</th><td colspan='2'>";
 
    // do a GET to read the version file from the cloud
   respCode = doCloudGet(&http, gitID, "version");
@@ -447,15 +461,7 @@ String statusTable(const String& var) {
   } else {
     s += "No Connection";
   }
-
-  s += "</td></tr><tr><th>Total Distance Moved (cm)</th><td>";
-  s += String(distanceMoved);
-
-  aread = analogRead(batteryPin);    // get a reading from the adc pin connected to battery
-  avolt = (aread/4095)*2.2*2;
-
-  s += "</td></tr><tr><th>Battery Voltage (V)</th><td>";
-  s += String(avolt) + "</td></tr></table>";
+  s += "</td></td></table>";
 
   http.end(); // Free resource
   return s;

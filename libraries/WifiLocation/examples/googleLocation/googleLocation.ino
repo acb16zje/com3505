@@ -7,13 +7,13 @@
 #include <WiFi.h>
 #else
 #error Wrong platform
-#endif 
+#endif
 
 #include <WifiLocation.h>
 
-const char* googleApiKey = "YOUR_GOOGLE_API_KEY";
-const char* ssid = "SSID";
-const char* passwd = "PASSWD";
+const char* googleApiKey = "AIzaSyDlV2k2civ3htfph1wiB27LS7lj90FR8ks";
+const char* ssid = "VM5521249";
+const char* passwd = "mgvw7GcNckn5";
 
 WifiLocation location(googleApiKey);
 

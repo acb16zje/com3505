@@ -21,18 +21,17 @@ Robocar Documentation
       - [3. Update Confirmation](#3-update-confirmation)
       - [4. OTA update](#4-ota-update)
 - [Implementation](#implementation)
+  - [Web Server Authentication](#web-server-authentication)
   - [Robocar Movement (Automatic and Manual Mode)](#robocar-movement-automatic-and-manual-mode)
   - [Recall](#recall-1)
   - [OTA Update](#ota-update)
+  - [Google Geolocation API](#google-geolocation-api)
   - [Adafruit.io Data Logging](#adafruitio-data-logging)
   - [IFTTT Notification](#ifttt-notification)
   - [Hardware Setup](#hardware-setup)
   - [Challenges](#challenges)
     - [1. Calibration](#1-calibration)
-    - [2. Soldering](#2-soldering)
-  - [Additional Features to be Implemented](#additional-features-to-be-implemented)
-    - [1. Google Geolocation API](#1-google-geolocation-api)
-    - [2. Additional Sensors](#2-additional-sensors)
+    - [2. Ultrasonic Sensors](#2-ultrasonic-sensors)
 - [Debugging](#debugging)
 - [Testing](#testing)
   - [Robocar Movement Test Cases](#robocar-movement-test-cases)
@@ -40,7 +39,7 @@ Robocar Documentation
   - [AsyncWebServer Test Cases](#asyncwebserver-test-cases)
   - [Adafruit.io Data Logging and IFTTT Notification Test Cases](#adafruitio-data-logging-and-ifttt-notification-test-cases)
 - [Hardware Problems](#hardware-problems)
-- [Possible Use of the Robocar](#possible-use-of-the-robocar)
+- [Possible Usage and Expansion of the Robocar Project](#possible-usage-and-expansion-of-the-robocar-project)
 - [Conclusions](#conclusions)
 
 # Objectives
@@ -48,8 +47,9 @@ Robocar Documentation
 2. Able to perform **OTA update** and **firmware reset** on the Robocar
 3. **Authentication** required to enter web server
 4. **Automatic** Robocar with collision detection
-5. **IFTTT notifications** when Robocar is stucked in autonomous mode
-6. Push the total distance moved in manual mode to **Adafruit.io**
+5. Able to locate the latitude and longitude of the Robocar using Google Geolocation API
+6. **IFTTT notifications** when Robocar is stucked in autonomous mode
+7. Push the total distance moved in manual mode to **Adafruit.io**
 
 # Prerequisites
 ## Libraries and Plugins
@@ -74,15 +74,15 @@ and performance of the autonomous mode. The hardware setup is shown in [here](#h
 | **Software Robustness:** The unPhone should be bootable even if the system update has failed. | Essential |
 | **Completeness:** The Robocar should be able to move in both automatic and manual mode. The firmware should be updated to the latest version when the update has successfully completed. The firmware should downgrade to version 1 when firmware reset has successfully completed. | Essential |
 | **Security:** Authentication is required to enter the web server. OTA update and firmware reset are performed over HTTPS. | Essential |
-| **Network:** The unPhone should be able to scan and connect to any WiFi networks (hidden networks included), provided that the password entered is correct. | Essential |
+| **Networking:** The unPhone should be able to scan and connect to any WiFi networks (hidden networks included), provided that the password entered is correct. The unPhone should also be able to get the its latitude and longitude using Google Geolocation API. | Essential |
 | **Informative:** The unPhone should be able to publish data to Adafruit.io, and send notifications through IFTTT. | Essential |
 | **Hardware Robustness:** The motor, ultrasonic sensors, and unPhone should be fully functioning | Desirable |
 | **Automatic:** The Robocar should be able to move randomly in automatic mode, while detecting possible obstacles in its front and back to prevent collision. | Desirable |
 
 ## Iterations
 |  | Iteration 1 | Iteration 2 | Iteration 3 |
-|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Features | <ul><li>Basic <code>aREST</code> API controls over WiFi connection</li></ul> | <ul><li>HTML, CSS, and JavaScript files saved in SD card</li><li>Web server loads HTML, CSS, and JS from SD card</li><li>Use jQuery Ajax to send the control command</li></ul> | <ul><li>HTML, CSS, and JavaScript files are saved in SPIFFS (SPI Flash File System)</li><li>Use [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) to handle all HTTP requests and Ajax calls</li><li>Cache control of static CSS and JS files</li><li>Use HTTP MD5 Digest Authentication for authentication check</li><li>Automatic Robocar mode with front and back collision detection</li><li>Able to recall the Robocar back to the origin point (automatic mode only)</li><li>Send IFTTT notification to the phone when Robocar is stuck</li><li>Push the total distance moved by Robocar in manual mode to Adafruit.io</li><li>OTA update over Github.com using HTTPS protocol</li></ul> |
+|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Features | <ul><li>Basic <code>aREST</code> API controls over WiFi connection</li></ul> | <ul><li>HTML, CSS, and JavaScript files saved in SD card</li><li>Web server loads HTML, CSS, and JS from SD card</li><li>Use jQuery Ajax to send the control command</li></ul> | <ul><li>HTML, CSS, and JavaScript files are saved in SPIFFS (SPI Flash File System)</li><li>Use [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) to handle all HTTP requests and Ajax calls</li><li>Cache control of static CSS and JS files</li><li>Use HTTP MD5 Digest Authentication for authentication check</li><li>Automatic Robocar mode with front and back collision detection</li><li>Able to recall the Robocar back to the origin point (automatic mode only)</li><li>Able to get the latitude and longitude of the Robocar using Google Geolocation API</li><li>Send IFTTT notification to the phone when Robocar is stuck</li><li>Push the total distance moved by Robocar in manual mode to Adafruit.io</li><li>OTA update over Github.com using HTTPS protocol</li></ul> |
 | Advantages | <ul><li>Simple</li><li>Less power consumption</li></ul> | <ul><li>Able to control the Robocar in both PC and mobile devices</li><li>No longer requires local HTML files to control the Robocar</li></ul> | <ul><li>Feature-rich</li><li>Fast loading time of the AsyncWebServer <strong>(Figure 2)</strong></li><li>Able to control the Robocar in both PC and mobile devices</li><li>No longer requires local HTML files to control the Robocar</li><li>Secure HTTP authorization required before performing any operations</li></ul> |
 | Disadvantages | <ul><li>No web server, only able to control the Robocar using local HTML files</li><li>No authentication and OTA update functions, less secure</li><li>Lack of functionality</li></ul> | <ul><li>High power consumption</li><li>Long loading time of the files in SD card <strong>(Figure 1)</strong></li><li>No authentication and OTA update functions, less secure</li><li>Lack of functionality</li></ul> | <ul><li>Very high power consumption</li><li>Complex implementation and increased debugging difficulty</li></ul> |
 
@@ -188,6 +188,16 @@ click confirmation on the web page itself.
    update process is written below:
 
 # Implementation
+## Web Server Authentication
+The [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) has a built-in HTTP Digest
+MD5 Authentication system. For every `request`, the `authenticate(username, password)` method can be
+used to check whether the current user session is authenticated using the correct `username` and
+`password` or not. It is more secure as it does not use HTTP GET or POST method to submit the
+`username` and `password`, hence the login details can not be seen in the request headers. The
+default login details are:
+- Username: esp32
+- Password: admin
+
 ## Robocar Movement (Automatic and Manual Mode)
 The pseudocode of the method for moving the Robocar is written below:
 
@@ -419,6 +429,46 @@ doOTAUpdate() {
 No major changes from previous assessment except that `PULLUP` button confirmation and LED blink
 function are removed.
 
+## Google Geolocation API
+This feature was originally implemented in **Iteration 2**, but the API was returning **latitude**
+and **longitude** as 0, and **accuracy** as 40000 at all times. Hence, this feature was removed from
+the program.
+
+In **Iteration 3**, it was found out that the HTTPS certificate used in `WifiLocation` library was
+outdated, which is why the Geolocation API was returning *error values* in **Iteration 2**. After
+updating the HTTPS certificate to the updated version below, it is now able to get the location of
+the Robocar, as shown in **Image 1**.
+
+```
+const char* googleCA = "-----BEGIN CERTIFICATE-----\n" \
+"MIIDujCCAqKgAwIBAgILBAAAAAABD4Ym5g0wDQYJKoZIhvcNAQEFBQAwTDEgMB4G\n" \
+"A1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjIxEzARBgNVBAoTCkdsb2JhbFNp\n" \
+"Z24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDYxMjE1MDgwMDAwWhcNMjExMjE1\n" \
+"MDgwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMjETMBEG\n" \
+"A1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZI\n" \
+"hvcNAQEBBQADggEPADCCAQoCggEBAKbPJA6+Lm8omUVCxKs+IVSbC9N/hHD6ErPL\n" \
+"v4dfxn+G07IwXNb9rfF73OX4YJYJkhD10FPe+3t+c4isUoh7SqbKSaZeqKeMWhG8\n" \
+"eoLrvozps6yWJQeXSpkqBy+0Hne/ig+1AnwblrjFuTosvNYSuetZfeLQBoZfXklq\n" \
+"tTleiDTsvHgMCJiEbKjNS7SgfQx5TfC4LcshytVsW33hoCmEofnTlEnLJGKRILzd\n" \
+"C9XZzPnqJworc5HGnRusyMvo4KD0L5CLTfuwNhv2GXqF4G3yYROIXJ/gkwpRl4pa\n" \
+"zq+r1feqCapgvdzZX99yqWATXgAByUr6P6TqBwMhAo6CygPCm48CAwEAAaOBnDCB\n" \
+"mTAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUm+IH\n" \
+"V2ccHsBqBt5ZtJot39wZhi4wNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5n\n" \
+"bG9iYWxzaWduLm5ldC9yb290LXIyLmNybDAfBgNVHSMEGDAWgBSb4gdXZxwewGoG\n" \
+"3lm0mi3f3BmGLjANBgkqhkiG9w0BAQUFAAOCAQEAmYFThxxol4aR7OBKuEQLq4Gs\n" \
+"J0/WwbgcQ3izDJr86iw8bmEbTUsp9Z8FHSbBuOmDAGJFtqkIk7mpM0sYmsL4h4hO\n" \
+"291xNBrBVNpGP+DTKqttVCL1OmLNIG+6KYnX3ZHu01yiPqFbQfXf5WRDLenVOavS\n" \
+"ot+3i9DAgBkcRcAtjOj4LaR0VknFBbVPFd5uRHg5h6h+u/N5GJG79G+dwfCMNYxd\n" \
+"AfvDbbnvRG15RjF+Cv6pgsH/76tuIMRQyV+dTZsXjAzlAcmgQWpzU/qlULRuJQ/7\n" \
+"TBj0/VLZjmmx6BEP3ojY+x1J96relc8geMJgEtslQIxq/H5COEBkEveegeGTLg==\n" \
+"-----END CERTIFICATE-----\n";
+```
+
+<p align="center">
+  <img src="./images/gps.png">
+  <p align="center"><strong>Image 1.</strong> Home page of the Robocar web server, showing all useful information.</p>
+</p>
+
 ## Adafruit.io Data Logging
 **NOTE:** It is required to have the latest version of
 [Adafruit_IO_Arduino](https://github.com/adafruit/Adafruit_IO_Arduino) library installed. The reason
@@ -456,7 +506,7 @@ case the need of battery change.
 
 <p align="center">
   <img src="./images/robot.jpg">
-  <p align="center"><strong>Image 1.</strong> Photo of Robocar Implementation</p>
+  <p align="center"><strong>Image 2.</strong> Photo of Robocar Implementation</p>
 </p>
 
 Similarly, the IO Expander is attached in the same way. On top of the expander lies the bulk of the
@@ -484,32 +534,20 @@ speed`, as shown in **Figure 7**.
   robot 90 degrees</p>
 </p>
 
-### 2. Soldering
+### 2. Ultrasonic Sensors
 In order to put the ultrasonic sensors on the `PROTO AREA` of the expander board and connect their
-pins to the respective `GPIO` pins **(Image 3)**, it is required to solder 4 header pins to the pins of the
-ultrasonic sensor, and connect them using *male-female* jumper wire **(Image 2)**.
+pins to the respective `GPIO` pins **(Image 4)**, it is required to solder 4 header pins to the pins of the
+ultrasonic sensor, and connect them using *male-female* jumper wire **(Image 3)**.
 
 <p align="center">
   <img src="./images/ultrasonic_solder.jpg">
-  <p align="center"><strong>Image 2.</strong> 4 headers pins are soldered on the pins of the each ultrasonic sensor</p>
+  <p align="center"><strong>Image 3.</strong> 4 headers pins are soldered on the pins of the each ultrasonic sensor</p>
 </p>
 
 <p align="center">
   <img src="./images/install_ultrasonic.gif">
-  <p align="center"><strong>Image 3.</strong> Installing the ultrasonic sensor into the header kit</p>
+  <p align="center"><strong>Image 4.</strong> Installing the ultrasonic sensor into the header kit</p>
 </p>
-
-## Additional Features to be Implemented
-Due to the time constraint, it is not able to fully implement (testing included) the following
-features in this project. However, they can be included into the future plan of the project.
-
-### 1. Google Geolocation API
-Since the Robocar is able to move in **automatic mode**, it would be appropriate to implement a GPS
-function in the Robocar. However, the battery life of the Robocar will be shorter as well.
-
-### 2. Additional Sensors
-Additional elements such as **temperature sensor** and **dust sensor** could also be integrated into
-the Robocar for pratical usage, which is explained in [here](#possible-use-of-the-robocar)
 
 # Debugging
 We have implemented a debugging infrastructure that makes use of macros for easier code debugging.
@@ -543,11 +581,11 @@ ensure the error will be handled by the system.
 |   While the Robocar is moving in auto mode, change the mode to manual   |                                    Robot stops moving                                    |   Pass  |
 |    While the Robocar is moving in auto mode, navigate to another page   |                                    Robot stops moving                                    |   Pass  |
 |   While Robocar is moving in auto mode, put an obstacle in front of it  |         Robocar turns right when it is close to the obstacle, and continue moving        |   Pass  |
-| While the Robocar is moving in the auto mode, press the "Recall" button |   Robocar moves back to the origin point where the auto mode was started **(Image 4)**   |   Pass  |
+| While the Robocar is moving in the auto mode, press the "Recall" button |   Robocar moves back to the origin point where the auto mode was started **(Image 5)**   |   Pass  |
 
 <p align="center">
   <img src="./images/recall.gif">
-  <p align="center"><strong>Image 4.</strong> Recall process in automatic mode</p>
+  <p align="center"><strong>Image 5.</strong> Recall process in automatic mode</p>
 </p>
 
 ## OTA Update Test Cases
@@ -563,22 +601,23 @@ ensure the error will be handled by the system.
 |      Device does not have enough memory to perform update      |  Monitor prints "Not enough memory space to perform the update" |   Pass  |
 
 ## AsyncWebServer Test Cases
-|                                  Test Case                                  |                                             Expected Output                                            | Results |
-|:---------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|:-------:|
-|                         Web server cannot find link                         |                                      Web page shows 404 Not Found                                      |   Pass  |
-|         Entering the wrong password when connecting to a new network        |                   Access Point resumes function with `/` showing no network connected                  |   Pass  |
-|                      Wrong Username / Password on Login                     |                     Unable to proceed. Asks for username and password input again.                     |   Pass  |
-|                    Visiting any pages without logging in                    |                                   User is redirected back to `/login`                                  |   Pass  |
-|                     Entering `/` with updates available                     |                        Update button is shown next to the latest version number                        |   Pass  |
-|                 Entering `/` while not connected to internet                |                         Update button does not appear and shows "No Connection"                        |   Pass  |
-|               Entering `/control` while connected to internet               |                        `/control` shows Directional Pad, Mode, and Speed options                       |   Pass  |
-|             Entering `/control` while not connected to internet             |                        `/control` shows Directional Pad, Mode, and Speed options                       |   Pass  |
-|                    Entering `/wifi` with no network found                   |                              `/wifi` prints "No WiFi access points found"                              |   Pass  |
-|                    Entering `/ota` with updates available                   |  `/ota` prompts user to press a confirmation button to start update or return to cancel update request |   Pass  |
-|               Entering `/ota` while not connected to internet               |                                  `/ota` shows"No Internet Connection"                                  |   Pass  |
-| Entering `/ota` while connected to internet and system is at newest version |                                  `/ota` shows "No updates available"                                   |   Pass  |
-|              Entering `/reset` while not connected to internet              |                                `/reset` prints "No Internet Connection"                                |   Pass  |
-|                  Entering `/reset` in a non factory version                 | `/reset` prompts user to press pull-up button to start factory reset or return to cancel reset request |   Pass  |
+| Test Case | Expected Output | Results |
+|:---------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------:|:-------:|
+| Web server cannot find link | Web page shows 404 Not Found | Pass |
+| Entering the wrong password when connecting to a new network | Access Point resumes function with `/` showing no network connected | Pass |
+| Wrong Username / Password on Login | Unable to proceed. Asks for username and password input again. | Pass |
+| Visiting any pages without logging in | User is redirected back to `/login` | Pass |
+| Entering `/` with internet connection | WiFi status, local IP, soft IP, total distance moved, battery output voltage, GPS location, and firmware version are shown | Pass |
+| Entering `/` with updates available | Update button is shown next to the latest version number | Pass |
+| Entering `/` while not connected to internet | Update button does not appear and shows "No Connection" | Pass |
+| Entering `/control` while connected to internet | `/control` shows Directional Pad, Mode, and Speed options | Pass |
+| Entering `/control` while not connected to internet | `/control` shows Directional Pad, Mode, and Speed options | Pass |
+| Entering `/wifi` with no network found | `/wifi` prints "No WiFi access points found" | Pass |
+| Entering `/ota` with updates available | `/ota` prompts user to press a confirmation button to start update or return to cancel update request | Pass |
+| Entering `/ota` while not connected to internet | `/ota` shows"No Internet Connection" | Pass |
+| Entering `/ota` while connected to internet and system is at newest version | `/ota` shows "No updates available" | Pass |
+| Entering `/reset` while not connected to internet | `/reset` prints "No Internet Connection" | Pass |
+| Entering `/reset` in a non factory version | `/reset` prompts user to press pull-up button to start factory reset or return to cancel reset request | Pass |
 
 ## Adafruit.io Data Logging and IFTTT Notification Test Cases
 |                          Test Case                         |                                 Expected Output                                 | Results |
@@ -606,8 +645,10 @@ project.
    - **Possible Fix:** Flashing `BigDemo.ino` and `MyProjectThing.ino` again.
 
 3. **Problem 3:** Left motor rotates slower than right motor
-   - **Possible cause:** The electricity transmitted to the left motor is lower, the problem is most
-                         obvious when the motor speed is low.
+   - **Possible cause:**
+      1. The electricity transmitted to the left motor is lower, the problem is most obvious when
+         the motor speed is slow.
+      2. The AA batteries are low
    - **Mitigation:** Increase the speed of the left motor by a small "offset" amount.
 
 4. **Problem 4:** The ultrasonic sensor could return negative values
@@ -616,26 +657,31 @@ project.
    - **Fix:** Position the Robocar in a place where objects and obstacles are present in its
               surroundings.
 
-# Possible Use of the Robocar
-The Robocar can be utilised for disaster situations, where human power is severely limted by the
-environment. For example, **Temperature sensor** and **dust sensor** from **air quality project**
-could be integrated into the Robocar as a cheap and efficient way to locate the fire source in a
-case of fire breakout. Firemen will be able to expand their search very quickly, while presenting
-themselves to less risk.
+# Possible Usage and Expansion of the Robocar Project
+1. The Robocar can be utilised for disaster situations, where human power is severely limted by the
+   environment. For example, the **temperature sensor** and **dust sensor** from **air quality
+   project** could be integrated into the Robocar as a cheap and efficient way to locate the fire
+   source in a case of fire breakout. Firemen will be able to expand their search very quickly,
+   while presenting themselves to less risk.
+
+2. The Robocar could also be used for exploration. The Robocar could be deployed to explore the
+   areas that are inaccessible for human due to physical size limitation. A camera could be
+   installed on the Robocar to stream the live scene over WiFi.
 
 # Conclusions
 Functionalities that have been implemented in into the Robocar system:
 
-1. Remotely control the Robocar using PC or mobile phones on web server (**Flexibility**)
-2. Robocar will move randomly while preventing collision with walls using front and back ultrasonic
+1. Robocar will move randomly while preventing collision with walls using front and back ultrasonic
    sensors (**Automatic**)
-3. Robocar will move back to the starting point where the automatic mode was started (**Automatic**)
-4. Send IFTTT notification when the Robocar is stucked during automatic mode (**Informative**)
-5. Push the total distance moved of the Robocar in manual mode to Adafruit.io (**Informative**)
-6. Authentication required to access the web server pages (**Security**)
-7. Check the latest version and download the bin file directly from GitHub over HTTPS (**Security**)
-8. Web server that display the status of the device and enable the ability to update or reset the
+2. Robocar will move back to the starting point where the automatic mode was started (**Automatic**)
+3. Remotely control the Robocar using PC or mobile phones on web server (**Flexibility**)
+4. Web server that display the status of the device and enable the ability to update or reset the
    firmware remotely (**Flexibility**)
+5. Send IFTTT notification when the Robocar is stucked during automatic mode (**Informative**)
+6. Push the total distance moved of the Robocar in manual mode to Adafruit.io (**Informative**)
+7. Authentication required to access the web server pages (**Security**)
+8. Check the latest version and download the bin file directly from GitHub over HTTPS (**Security**)
 9. The ability to reset the firmware back to version 1 and upgrade to latest version again for
    testing purposes (**Repeatable**)
 10. Able to join both visible and hidden WiFi networks using the web server (**Networking**)
+11. Able to get the latitude and longitude of the Robocar using Google Geolocation API (**Networking**)

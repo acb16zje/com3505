@@ -12,6 +12,10 @@ const char* apPass = "gakkismile";
 const char* loginID = "esp32";
 const char* loginPass = "admin";
 
+// Google geolocation
+const char* GOOGLE_API_KEY = "AIzaSyDlV2k2civ3htfph1wiB27LS7lj90FR8ks";
+WifiLocation location(GOOGLE_API_KEY);
+
 // Methods
 void startWebServer();
 void routes();

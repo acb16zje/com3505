@@ -32,7 +32,6 @@ void setup() {
 void loop() {
   checkPowerSwitch(); // shutdown if switch off
 
-  
   if (isRecall) {
     recall();
   } else {

@@ -262,7 +262,7 @@ void recall() {
         stop();
         break;
     }
-  } 
+  }
 
   //Execute return for x axis
   forward();
@@ -303,7 +303,7 @@ void recall() {
         stop();
         break;
     }
-  } 
+  }
 
   //Execute return for y axis
   forward();

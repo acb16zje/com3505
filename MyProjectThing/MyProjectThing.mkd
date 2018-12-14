@@ -1,6 +1,35 @@
 Robocar Documentation
 ===
 
+# Table of Contents
+- [Robocar Documentation](#robocar-documentation)
+- [Table of Contents](#table-of-contents)
+- [Objectives](#objectives)
+- [Prerequisite](#prerequisite)
+  - [Libraries and Plugins](#libraries-and-plugins)
+  - [Hardware](#hardware)
+- [Design](#design)
+  - [System Specification](#system-specification)
+  - [Iterations](#iterations)
+  - [Automatic Mode](#automatic-mode)
+    - [1. Initialisation](#1-initialisation)
+    - [2. Collision Detection](#2-collision-detection)
+    - [3. Notification](#3-notification)
+- [Implementation](#implementation)
+  - [Recall](#recall)
+  - [OTA update](#ota-update)
+  - [Hardware Setup](#hardware-setup)
+  - [Challenges](#challenges)
+    - [1. Calibration](#1-calibration)
+    - [2. Soldering](#2-soldering)
+- [Debugging](#debugging)
+- [Testing](#testing)
+  - [Robocar Movement Test Cases](#robocar-movement-test-cases)
+  - [OTA Update Test Cases](#ota-update-test-cases)
+  - [AsyncWebServer Test Cases](#asyncwebserver-test-cases)
+- [Hardware Problems](#hardware-problems)
+- [Conclusions](#conclusions)
+
 # Objectives
 1. Able to control the Robocar on **any devices** using **WiFi** and **web server**
 2. Able to perform **OTA update** and **firmware reset** on the Robocar
@@ -57,21 +86,37 @@ respectively. Iteration 2 was not suitable for this project because of its slow 
   <p align="center"><strong>Figure 2.</strong> Loading time of AsyncWebServer (Iteration 3)</p>
 </p>
 
-# Implementation
-talk about how we calculate the distance, and how we got the formula
-
 ## Automatic Mode
 <p align="center">
   <img src="./images/automatic.png">
   <p align="center"><strong>Figure 3.</strong> Flowchart of OTA update process</p>
 </p>
 
+### 1. Initialisation
+1. Switch from `manual` mode to `auto` mode
+2. Robocar is set to move forward initially
+
+### 2. Collision Detection
+1. Get the distance from the wall
+   1. **IF** the robot is moving forward, use the **front** ultrasonic sensor
+   2. **ELSE** use the **back** ultrasonic sensor
+2. Check distance
+   1. **IF** `distance > maximum allowed distance with the wall`
+      1. Reset the `stuckCounter`
+      2. Continue moving
+   2. **ELSE IF** `stuckCounter < maximum allowed stuck count`
+      1. Update the coordinates (to be used in the `recall()` function)
+      2. Turn 90 degrees to the right
+
+### 3. Notification
+1. **IF** `stuckCounter == maximum allowed stuck count`, the robocar is probably surrounded by 4
+   walls and not able to move forward or backward. Send an IFTTT notification to the user.
+
+# Implementation
+talk about how we calculate the distance, and how we got the formula
+
 ## Recall
-<p align="center">
-  <img src="./images/recall.gif">
-  <p align="center"><strong>Image 1.</strong> Recall process, full video
-  <a href="./images/recall.mp4">here</a></p>
-</p>
+
 
 ## OTA update
 The OTA update function in this project is a modified version of the previous project. The `PULLUP`
@@ -85,7 +130,7 @@ button confirmation has been changed to a button click confirmation on the web p
 ## Hardware Setup
 
 ## Challenges
-### 1. Calibration:
+### 1. Calibration
 It is required to experiment with different time values at different speed to find the correct value
 for turning the robot 90 degrees. After that, the equation that represents the time change with
 respect to speed can be obtained through Excel graph, `time = 2020 - 28.8 * speed + 0.128 * speed *
@@ -132,7 +177,12 @@ ensure the error will be handled by the system.
 |               Change the current mode from manual to auto               | Robocar starts moving randomly, and turns right when a wall is detected in front or back |   Pass  |
 |   While the robocar is moving in auto mode, change the mode to manual   |                                    Robot stops moving                                    |   Pass  |
 |    While the robocar is moving in auto mode, navigate to another page   |                                    Robot stops moving                                    |   Pass  |
-| While the robocar is moving in the auto mode, press the "Recall" button |          Robocar moves back to the origin point where the auto mode was started          |   Pass  |
+| While the robocar is moving in the auto mode, press the "Recall" button |   Robocar moves back to the origin point where the auto mode was started **(Image 1)**   |   Pass  |
+
+<p align="center">
+  <img src="./images/recall.gif">
+  <p align="center"><strong>Image 1.</strong> Recall process in automatic mode</p>
+</p>
 
 ## OTA Update Test Cases
 |                            Test Case                           |                         Expected Output                         | Results |
@@ -168,22 +218,22 @@ ensure the error will be handled by the system.
 Below are a list of hardware problems identified during the implementation and testing stage of the
 project.
 
-1. **Problem 1**: LED light on the motor driver dims, and a very small beep sound is
-   emitted, motor will not move.
-   - **Cause**: The power switch of the AA battery case is not sensitive.
-   - **Fix**: Press the power switch down, or slightly adjust it to the left or right
-   - **Further note**: It is unable to confirm that flashing `BigDemo.ino` will fix this issue.
+1. **Problem 1**: LED light on the motor driver dims, and a very small beep sound is emitted, motor
+   will not move.
+   - **Cause:** The power switch of the AA battery case is not sensitive.
+   - **Fix:** Press the power switch down, or slightly adjust it to the left or right
+   - **Further note:** It is unable to confirm that flashing `BigDemo.ino` will fix this issue.
 
-2. **Problem 2**: LED light does not dim, no beep sound emitted, motor will not move.
-   - **Cause**: This problem occurred during the attempt to fix **Problem 1**, after
-     flashing BigDemo.ino and the code. It is unable to determine whether it was a
-     hardware or a software issue.
-   - **Possible Fix**: Flashing `BigDemo.ino` and `MyProjectThing.ino` again.
+2. **Problem 2:** LED light does not dim, no beep sound emitted, motor will not move.
+   - **Cause:** This problem occurred during the attempt to fix **Problem 1**, after flashing
+                BigDemo.ino and the code. It is unable to determine whether it was a hardware or a
+                software issue.
+   - **Possible Fix:** Flashing `BigDemo.ino` and `MyProjectThing.ino` again.
 
-3. **Problem 3**: Left motor rotates slower than right motor
-   - **Possible cause**: The electricity transmitted to the left motor is lower, the problem is
-                         most obvious when the motor speed is low.
-   - **Mitigation**: Increase the speed of the left motor by a small "offset" amount.
+3. **Problem 3:** Left motor rotates slower than right motor
+   - **Possible cause:** The electricity transmitted to the left motor is lower, the problem is most
+                         obvious when the motor speed is low.
+   - **Mitigation:** Increase the speed of the left motor by a small "offset" amount.
 
 # Conclusions
 Functionalities that have been implemented in into the Robocar system:
@@ -191,7 +241,7 @@ Functionalities that have been implemented in into the Robocar system:
 1. Remotely control the Robocar using PC or mobile phones on web server (**Flexibility**)
 2. Robocar will move randomly while preventing collision with walls using front and back ultrasonic
    sensors (**Automatic**)
-3. Robocar will move
+3. Robocar will move back to the starting point where the automatic mode was started (**Automatic**)
 4. Send IFTTT notification when the Robocar is stucked during automatic mode (**Informative**)
 5. Push the total distance moved of the Robocar in manual mode to Adafruit.io (**Informative**)
 6. Authentication required to access the web server pages (**Security**)

@@ -19,6 +19,7 @@ const short MAX_DISTANCE = 6;
 // Variables
 uint8_t stuckCounter = 0;
 uint8_t speed = 50;                // Default minimum speed
+uint8_t offset = 5;                // deals with unsynchronisation of two wheels
 bool isAuto = false;
 bool isRecall = false;
 bool isStop = false;
@@ -47,9 +48,12 @@ void forward();
 void backward();
 void left();
 void right();
+void turnRight90();
+void turnLeft90();
 short getFrontDistance();
 short getBackDistance();
 void moveRoboCar();
 void recall();
+void coordinate();
 
 #endif

@@ -30,7 +30,7 @@ void stop() {
  * Sets the motor to run forward
  */
 void forward() {
-  L_MOTOR->setSpeed(speed+5);
+  L_MOTOR->setSpeed(speed+offset);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(FORWARD);
   R_MOTOR->run(FORWARD);
@@ -40,7 +40,7 @@ void forward() {
  * Sets the motor to run backward
  */
 void backward() {
-  L_MOTOR->setSpeed(speed+5);
+  L_MOTOR->setSpeed(speed+offset);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(BACKWARD);
   R_MOTOR->run(BACKWARD);
@@ -50,7 +50,7 @@ void backward() {
  * Sets the motor to turn left
  */
 void left() {
-  L_MOTOR->setSpeed(speed+5);
+  L_MOTOR->setSpeed(speed+offset);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(BACKWARD);
   R_MOTOR->run(FORWARD);
@@ -60,7 +60,7 @@ void left() {
  * Sets the motor to turn right
  */
 void right() {
-  L_MOTOR->setSpeed(speed+5);
+  L_MOTOR->setSpeed(speed+offset);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(FORWARD);
   R_MOTOR->run(BACKWARD);
@@ -70,7 +70,7 @@ void right() {
  * Turns the robocar 90 degrees to the right
  */
 void turnRight90() {
-  L_MOTOR->setSpeed(speed+5);
+  L_MOTOR->setSpeed(speed+offset);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(FORWARD);
   R_MOTOR->run(BACKWARD);
@@ -84,8 +84,11 @@ void turnRight90() {
   currentDirection = Direction((currentDirection + 1) % (West + 1));
 }
 
+/**
+ * Turns the robocar 90 degrees to the left
+ */
 void turnLeft90() {
-  L_MOTOR->setSpeed(speed+5);
+  L_MOTOR->setSpeed(speed+offset);
   R_MOTOR->setSpeed(speed);
   L_MOTOR->run(BACKWARD);
   R_MOTOR->run(FORWARD);
@@ -165,7 +168,7 @@ float calculateDistanceMoved(int t) {
  * Move the robocar, in auto or manual mode
  */
 void moveRoboCar() {
-  
+
   if (isAuto) {
     if (startTime == 0) {
       startTime = millis();
@@ -216,16 +219,17 @@ void moveRoboCar() {
   }
 }
 
+/**
+ * Returns Robocar to the starting position of the auto mode
+ */
 void recall() {
   coordinate();
 
-  // ,forward();
-  // x > 0: Need to move backward
-  // x < 0: Need to move forward
-  Serial.print("x: ");
-  Serial.println(x);
-  Serial.print("y: ");
-  Serial.println(y);
+  df(moveDBG, "dX: %d", x);
+  df(moveDBG, "dY: %d", y);
+
+  // x > 0: Need to move left
+  // x < 0: Need to move right
   if (x > 0) {
     switch (currentDirection) {
       case North:
@@ -242,12 +246,6 @@ void recall() {
         stop();
         break;
     }
-    // int xTime = (int)(x*1000/(0.28f * speed - 3.5f)); 
-    forward();
-    Serial.print("GOSTAN ");
-    Serial.println(x);
-    delay(abs(x));
-    stop();
   } else if (x < 0) {
     switch (currentDirection) {
       case North:
@@ -264,13 +262,15 @@ void recall() {
         stop();
         break;
     }
-    // int xTime = (int)(x*1000/(0.28f * speed - 3.5f)); 
-    forward();
-    Serial.print("PERGI DEPAN ");
-    Serial.println(x);
-    delay(abs(x));
-    stop();
   } 
+
+  //Execute return for x axis
+  forward();
+  delay(abs(x));
+  stop();
+
+  // y > 0: Need to move backward
+  // y < 0: Need to move forward
   if (y > 0) {
     switch (currentDirection) {
       case North:
@@ -287,12 +287,6 @@ void recall() {
         stop();
         break;
     }
-    // int yTime = (int)(y*1000/(0.28f * speed - 3.5f)); 
-    forward();
-    Serial.print("SOUTH ");
-    Serial.println(y);
-    delay(abs(y));
-    stop();
   } else if (y < 0) {
     switch (currentDirection) {
       case South:
@@ -309,33 +303,28 @@ void recall() {
         stop();
         break;
     }
-    // int yTime = (int)(y*1000/(0.28f * speed - 3.5f)); 
-    forward();
-    Serial.print("NORTH ");
-    Serial.println(y);
-    delay(abs(y));
-    stop();
   } 
-  isRecall = false;
-  isAuto = false;
-  isForward = false;
-  isBackward = false;
-  currentDirection = North;
+
+  //Execute return for y axis
+  forward();
+  delay(abs(y));
+  stop();
+
+  //turns off auto and resets values
+  resetBools();
 }
 
+/**
+ * Increments x and y values of the robocar from the origin position
+ */
 void coordinate() {
   timeMoved = millis() - startTime;
   startTime = 0; // Reset startTime since robot is stopped
-  Serial.print("timeMoved: ");
-  Serial.println(timeMoved);
-  Serial.print("isForward: ");
-  Serial.println(isForward);
-  // float tempDist = isForward ? calculateDistanceMoved(timeMoved) : -calculateDistanceMoved(timeMoved);
-  float tempDist = isForward ? timeMoved : -timeMoved;
-  Serial.print("tempDist: ");
-  Serial.println(tempDist);
-  Serial.print("direction: ");
-  Serial.println(currentDirection);
+  df(moveDBG,"timeMoved: %d", timeMoved);
+  df(moveDBG,"isForward: %d", isForward);
+  float tempDist = isForward ? timeMoved : -timeMoved; // set the direction of the distance
+  df(moveDBG,"tempDist: %f", tempDist);
+  df(moveDBG,"direction: ", currentDirection);
   // Calculate the distance moved before it met a wall
   switch (currentDirection) {
     case North:

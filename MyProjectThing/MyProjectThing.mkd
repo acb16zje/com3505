@@ -5,19 +5,28 @@ Robocar Documentation
 - [Robocar Documentation](#robocar-documentation)
 - [Table of Contents](#table-of-contents)
 - [Objectives](#objectives)
-- [Prerequisite](#prerequisite)
+- [Prerequisites](#prerequisites)
   - [Libraries and Plugins](#libraries-and-plugins)
   - [Hardware](#hardware)
 - [Design](#design)
   - [System Specification](#system-specification)
   - [Iterations](#iterations)
-  - [Automatic Mode](#automatic-mode)
-    - [1. Initialisation](#1-initialisation)
-    - [2. Collision Detection](#2-collision-detection)
-    - [3. Notification](#3-notification)
+  - [Flowcharts of Core Functionalities](#flowcharts-of-core-functionalities)
+    - [Automatic Mode](#automatic-mode)
+      - [1. Initialisation](#1-initialisation)
+      - [2. Collision Detection](#2-collision-detection)
+      - [3. Notification](#3-notification)
+    - [Recall](#recall)
+    - [OTA update](#ota-update)
+      - [1. Setting Up](#1-setting-up)
+      - [2. Web Page Interaction](#2-web-page-interaction)
+      - [3. Update Confirmation](#3-update-confirmation)
+      - [4. OTA update](#4-ota-update)
 - [Implementation](#implementation)
-  - [Recall](#recall)
-  - [OTA update](#ota-update)
+  - [Robocar Movement (Automatic and Manual Mode)](#robocar-movement-automatic-and-manual-mode)
+  - [OTA Update](#ota-update)
+  - [Adafruit.io Data Logging](#adafruitio-data-logging)
+  - [IFTTT Notification](#ifttt-notification)
   - [Hardware Setup](#hardware-setup)
   - [Challenges](#challenges)
     - [1. Calibration](#1-calibration)
@@ -38,7 +47,7 @@ Robocar Documentation
 5. **IFTTT notifications** when Robocar is stucked in autonomous mode
 6. Push the total distance moved in manual mode to **Adafruit.io**
 
-# Prerequisite
+# Prerequisites
 ## Libraries and Plugins
 The following libraries and plugins have to be installed in order to compile and run successfully.
 
@@ -86,17 +95,19 @@ respectively. Iteration 2 was not suitable for this project because of its slow 
   <p align="center"><strong>Figure 2.</strong> Loading time of AsyncWebServer (Iteration 3)</p>
 </p>
 
-## Automatic Mode
+## Flowcharts of Core Functionalities
+### Automatic Mode
+
 <p align="center">
   <img src="./images/automatic.png">
   <p align="center"><strong>Figure 3.</strong> Flowchart of OTA update process</p>
 </p>
 
-### 1. Initialisation
+#### 1. Initialisation
 1. Switch from `manual` mode to `auto` mode
 2. Robocar is set to move forward initially
 
-### 2. Collision Detection
+#### 2. Collision Detection
 1. Get the distance from the wall
    1. **IF** the robot is moving forward, use the **front** ultrasonic sensor
    2. **ELSE** use the **back** ultrasonic sensor
@@ -108,59 +119,175 @@ respectively. Iteration 2 was not suitable for this project because of its slow 
       1. Update the coordinates (to be used in the `recall()` function)
       2. Turn 90 degrees to the right
 
-### 3. Notification
+#### 3. Notification
 1. **IF** `stuckCounter == maximum allowed stuck count`, the robocar is probably surrounded by 4
    walls and not able to move forward or backward. Send an IFTTT notification to the user.
 
-# Implementation
-talk about how we calculate the distance, and how we got the formula
-
-## Recall
+### Recall
 
 
-## OTA update
-The OTA update function in this project is a modified version of the previous project. The `PULLUP`
-button confirmation has been changed to a button click confirmation on the web page itself.
+### OTA update
+The OTA update function in this project is a modified version of the previous project. This project
+uses [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) instead of the default
+`WebServer` to handle the requests. The `PULLUP` button confirmation has been changed to a button
+click confirmation on the web page itself.
 
 <p align="center">
   <img src="./images/ota_flowchart.png">
   <p align="center"><strong>Figure 4.</strong> Flowchart of OTA update process</p>
 </p>
 
-## Hardware Setup
+#### 1. Setting Up
+1. Start the WiFi access point
+2. Start the web server
+3. Connect to the WiFi network
+    1. **IF** a WiFi network was connected before (credentials stored on board), connect to it
+    2. **ELSE** wait for the user to connect to a WiFi network
+4. Handle the web server client requests
 
-The implemented project is the base Robocar, with the unPhone attached on top of  the chasis, followed by the IO Expander on the top.
-The base chasis consists of the provided two motor engines and their respectitive wheels, as well as the battery box in the middle layer. The battery box is taped using sticky pads, providing stable support for the battery box while remaining detachable in case the need of battery change. 
+#### 2. Web Page Interaction
+1. User connects to Access Point
+2. User is able to view details regarding the device
+3. User is able to click **UPDATE** if there is a *higher version available*
+4. User does not see **UPDATE** button if there is no update available
+
+#### 3. Update Confirmation
+1. User is required to **press a confirmation button** on `/ota` page to confirm the OTA update
+2. User will be able to **cancel the update request** by visiting another page
+3. Once the **confirmation button** is pressed and the update process has started, the user will be unable to access
+   the web pages until the update is completed or failed
+
+#### 4. OTA update
+1. System performs a HTTPS GET request to the GitHub server to check for new version.
+2. System downloads bin file directly from GitHub and perform the update. The pseudocode for the
+   update process is written below:
+
+# Implementation
+## Robocar Movement (Automatic and Manual Mode)
+```c++
+void moveRoboCar() {
+  if robocar is in auto mode
+    if robocar is moving forward
+      get the distance using front ultrasonic sensor
+    else
+      get the distance using back ultrasonic sensor
+}
+```
+
+## OTA Update
+The pseudocode of the modified version of OTA update from previous assessment is written below:
+
+```c++
+doOTAUpdate() {
+  respCode = HTTPS GET the URL of the version file
+
+  if respCode == 200
+    store the latest version number as highestAvailableVersion
+  else
+    print error messages
+    run setup() again
+
+  if currentVersionNumber >= highestAvailableVersion
+    return
+
+  respCode = get the firmware bin file over HTTPS
+  fileSize = get the file size using http.getSize()
+
+  if respCode == 200 and the fileSize is above 100KB and under 1MB
+    if Update.canBegin(fileSize)
+      starting flashing the firmware using Update.writeStream()
+
+      if Update.end()
+          if Update.isFinished()
+            set the currentVersion to highestAvailableVersion
+          else
+            print error messages
+      else
+        print error messages
+  else
+    print error message
+}
+```
+
+## Adafruit.io Data Logging
+**NOTE:** It is required to have the latest version of
+[Adafruit_IO_Arduino](https://github.com/adafruit/Adafruit_IO_Arduino) library installed. The reason
+is discussed [here](#prerequisites)
+
+Before pushing data to the Adafruit.io dashboard, it is required to have an **active internet
+connection**. AdafruitIO library uses its own method to connect to the WiFi, which is
+`AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS)`, where
+- `IO_USERNAME` is the username of the user account at Adafruit.io
+- `IO_KEY` is the API key of the user acoount at Adafruit.io
+- `WIFI_SSID` is the SSID of the WiFi access point to connect at system start up
+- `WIFI_PASS` is the password of the WiFi access point to connect at system start up
+
+It is discovered that the `AdafruitIO_WiFi io()` method will not connect to WiFi access points that
+do not have internet access. Hence, `uos-other` is set to be the default WiFi network to connect.
+
+After that, the method `save()` and `value()` in the `AdafruitIO_Feed` library can be used to fetch
+and push the feed (or data) respectively. In this project, it is used to record the total distance
+moved (in cm) by the robocar in **manual mode**.
+
+## IFTTT Notification
+Sending an IFTTT notification to the phone is relatively easier to implement compared to Adafruit.io
+data logging function. In this project, an IFTTT notification will only be sent when the Robocar
+detects itself as stucked in **automatic mode**. To send an IFTTT notification, it is only required
+to perform a `http->GET()` request to
+`https://maker.ifttt.com/trigger/TRIGGER_NAME/with/key/API_KEY`, where `TRIGGER_NAME` is the event /
+trigger name set by the user, and `API_KEY` is the API key of the user.
+
+## Hardware Setup
+The implemented project is the base Robocar, with the unPhone attached on top of  the chasis,
+followed by the IO Expander on the top. The base chasis consists of the provided two motor engines
+and their respectitive wheels, as well as the battery box in the middle layer. The battery box is
+taped using sticky pads, providing stable support for the battery box while remaining detachable in
+case the need of battery change.
 
 <p align="center">
   <img src="./images/robot.jpg">
-  <p align="center"><strong>Figure 5.</strong> Photo of Robocar Implementation</p>
+  <p align="center"><strong>Image 1.</strong> Photo of Robocar Implementation</p>
 </p>
 
-Similarly, the IO Expander is attached in the same way. On top of the expander lies the bulk of the parts used in this project. Sitting in the middle, the Servo FeatherWing chip is responsible of controlling the motors, connecting them to the unPhone. On the other hand, the two ultrasonic sensors are attached on header pins, each facing forward and backward to provide sufficient coverage to detect obstacles for our **Automatic Mode** feature. The sensors are attached to the corresponding pins as shown in **Figure 6** below. 
+Similarly, the IO Expander is attached in the same way. On top of the expander lies the bulk of the
+parts used in this project. Sitting in the middle, the Servo FeatherWing chip is responsible of
+controlling the motors, connecting them to the unPhone. On the other hand, the two ultrasonic
+sensors are attached on header pins, each facing forward and backward to provide sufficient coverage
+to detect obstacles for our **Automatic Mode** feature. The sensors are attached to the
+corresponding pins as shown in **Figure 5** below.
 
 <p align="center">
   <img src="./images/ultrasonic.png">
-  <p align="center"><strong>Figure 6.</strong> Chart of connections to Ultrasonic Sensors</p>
+  <p align="center"><strong>Figure 5.</strong> Chart of connections to Ultrasonic Sensors</p>
 </p>
-
 
 ## Challenges
 ### 1. Calibration
 It is required to experiment with different time values at different speed to find the correct value
 for turning the robot 90 degrees. After that, the equation that represents the time change with
 respect to speed can be obtained through Excel graph, `time = 2020 - 28.8 * speed + 0.128 * speed *
-speed`, as shown in **Figure 5**.
+speed`, as shown in **Figure 6**.
 
 <p align="center">
   <img src="./images/turnRightGraph.png">
-  <p align="center"><strong>Figure 7.</strong> Manual calibration of the time required (ms) to turn the
+  <p align="center"><strong>Figure 6.</strong> Manual calibration of the time required (ms) to turn the
   robot 90 degrees</p>
 </p>
 
 ### 2. Soldering
-Some soldering is required to position the ultrasonic sensors on the `PROTO AREA` of the expander
-board.
+In order to put the ultrasonic sensors on the `PROTO AREA` of the expander board and connect their
+pins to the respective `GPIO` pins **(Image 3)**, it is required to solder 4 header pins to the pins of the
+ultrasonic sensor, and connect them using *male-female* jumper wire **(Image 2)**.
+
+<p align="center">
+  <img src="./images/ultrasonic_solder.jpg">
+  <p align="center"><strong>Image 2.</strong> 4 headers pins are soldered on the pins of the each ultrasonic sensor</p>
+</p>
+
+<p align="center">
+  <img src="./images/install_ultrasonic.gif">
+  <p align="center"><strong>Image 3.</strong> Installing the ultrasonic sensor into the header kit</p>
+</p>
 
 # Debugging
 We have implemented a debugging infrastructure that makes use of macros for easier code debugging.
@@ -193,11 +320,12 @@ ensure the error will be handled by the system.
 |               Change the current mode from manual to auto               | Robocar starts moving randomly, and turns right when a wall is detected in front or back |   Pass  |
 |   While the robocar is moving in auto mode, change the mode to manual   |                                    Robot stops moving                                    |   Pass  |
 |    While the robocar is moving in auto mode, navigate to another page   |                                    Robot stops moving                                    |   Pass  |
-| While the robocar is moving in the auto mode, press the "Recall" button |   Robocar moves back to the origin point where the auto mode was started **(Image 1)**   |   Pass  |
+|   While robocar is moving in auto mode, put an obstacle in front of it  |         Robocar turns right when it is close to the obstacle, and continue moving        |   Pass  |
+| While the robocar is moving in the auto mode, press the "Recall" button |   Robocar moves back to the origin point where the auto mode was started **(Image 4)**   |   Pass  |
 
 <p align="center">
   <img src="./images/recall.gif">
-  <p align="center"><strong>Image 1.</strong> Recall process in automatic mode</p>
+  <p align="center"><strong>Image 4.</strong> Recall process in automatic mode</p>
 </p>
 
 ## OTA Update Test Cases
@@ -250,6 +378,12 @@ project.
    - **Possible cause:** The electricity transmitted to the left motor is lower, the problem is most
                          obvious when the motor speed is low.
    - **Mitigation:** Increase the speed of the left motor by a small "offset" amount.
+
+4. **Problem 4:** The ultrasonic sensor could return negative values
+   - **Possible cause:** The ultrasonic sensor is unable to detect anything within its working range
+                         (maximum 4 metres)
+   - **Fix:** Position the robocar in a place where objects and obstacles are present in its
+              surroundings.
 
 # Conclusions
 Functionalities that have been implemented in into the Robocar system:

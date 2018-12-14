@@ -30,6 +30,9 @@ Robocar Documentation
   - [Challenges](#challenges)
     - [1. Calibration](#1-calibration)
     - [2. Soldering](#2-soldering)
+  - [Additional Features to be Implemented](#additional-features-to-be-implemented)
+    - [1. Google Geolocation API](#1-google-geolocation-api)
+    - [2. Additional Sensors](#2-additional-sensors)
 - [Debugging](#debugging)
 - [Testing](#testing)
   - [Robocar Movement Test Cases](#robocar-movement-test-cases)
@@ -37,6 +40,7 @@ Robocar Documentation
   - [AsyncWebServer Test Cases](#asyncwebserver-test-cases)
   - [Adafruit.io Data Logging and IFTTT Notification Test Cases](#adafruitio-data-logging-and-ifttt-notification-test-cases)
 - [Hardware Problems](#hardware-problems)
+- [Possible Use of the Robocar](#possible-use-of-the-robocar)
 - [Conclusions](#conclusions)
 
 # Objectives
@@ -495,6 +499,18 @@ ultrasonic sensor, and connect them using *male-female* jumper wire **(Image 2)*
   <p align="center"><strong>Image 3.</strong> Installing the ultrasonic sensor into the header kit</p>
 </p>
 
+## Additional Features to be Implemented
+Due to the time constraint, it is not able to fully implement (testing included) the following
+features in this project. However, they can be included into the future plan of the project.
+
+### 1. Google Geolocation API
+Since the Robocar is able to move in **automatic mode**, it would be appropriate to implement a GPS
+function in the Robocar. However, the battery life of the Robocar will be shorter as well.
+
+### 2. Additional Sensors
+Additional elements such as **temperature sensor** and **dust sensor** could also be integrated into
+the Robocar for pratical usage, which is explained in [here](#possible-use-of-the-robocar)
+
 # Debugging
 We have implemented a debugging infrastructure that makes use of macros for easier code debugging.
 The variables can be changed from `true` to `false` to enable or disable the function respectively.
@@ -599,6 +615,13 @@ project.
                          (maximum 4 metres)
    - **Fix:** Position the Robocar in a place where objects and obstacles are present in its
               surroundings.
+
+# Possible Use of the Robocar
+The Robocar can be utilised for disaster situations, where human power is severely limted by the
+environment. For example, **Temperature sensor** and **dust sensor** from **air quality project**
+could be integrated into the Robocar as a cheap and efficient way to locate the fire source in a
+case of fire breakout. Firemen will be able to expand their search very quickly, while presenting
+themselves to less risk.
 
 # Conclusions
 Functionalities that have been implemented in into the Robocar system:

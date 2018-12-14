@@ -2,8 +2,6 @@ Robocar Documentation
 ===
 
 # Table of Contents
-- [Robocar Documentation](#robocar-documentation)
-- [Table of Contents](#table-of-contents)
 - [Objectives](#objectives)
 - [Prerequisites](#prerequisites)
   - [Libraries and Plugins](#libraries-and-plugins)
@@ -37,6 +35,7 @@ Robocar Documentation
   - [Robocar Movement Test Cases](#robocar-movement-test-cases)
   - [OTA Update Test Cases](#ota-update-test-cases)
   - [AsyncWebServer Test Cases](#asyncwebserver-test-cases)
+  - [Adafruit.io Data Logging and IFTTT Notification Test Cases](#adafruitio-data-logging-and-ifttt-notification-test-cases)
 - [Hardware Problems](#hardware-problems)
 - [Conclusions](#conclusions)
 
@@ -564,6 +563,15 @@ ensure the error will be handled by the system.
 | Entering `/ota` while connected to internet and system is at newest version |                                  `/ota` shows "No updates available"                                   |   Pass  |
 |              Entering `/reset` while not connected to internet              |                                `/reset` prints "No Internet Connection"                                |   Pass  |
 |                  Entering `/reset` in a non factory version                 | `/reset` prompts user to press pull-up button to start factory reset or return to cancel reset request |   Pass  |
+
+## Adafruit.io Data Logging and IFTTT Notification Test Cases
+|                          Test Case                         |                                 Expected Output                                 | Results |
+|:----------------------------------------------------------:|:-------------------------------------------------------------------------------:|:-------:|
+|           Robocar did not stuck in automatic mode          |                     No IFTTT notification sent to the phone                     |   Pass  |
+|   Connected to internet, Robocar stuck in automatic mode   |                       IFTTT notification sent to the phone                      |   Pass  |
+|   Not connected to internet, Robocar moved in manual mode  |                Monitor prints "Received <- 0" and "Sending -> %d"               |   Pass  |
+|     Connected to internet, Robocar moved in manual mode    | Monitor prints "Received <- %val1" and "Sending -> %val2", where %val1 != %val2 |   Pass  |
+| Connected to internet, Robocar did not move in manual mode |             Monitor prints "Received <- %val" and "Sending -> %val"             |   Pass  |
 
 # Hardware Problems
 Below are a list of hardware problems identified during the implementation and testing stage of the

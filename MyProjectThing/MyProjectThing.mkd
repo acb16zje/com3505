@@ -125,6 +125,27 @@ respectively. Iteration 2 was not suitable for this project because of its slow 
 
 ### Recall
 
+<p align="center">
+  <img src="./images/recall_flowchart.png">
+  <p align="center"><strong>Figure 4.</strong> Flowchart of recall function</p>
+</p>
+
+1. Recall function called
+2. Check for horizontal distance from origin
+   1. **IF** horizontal distance is **positive**
+      1. Rotate Robocar westwards in accordance to the current direction
+      2. Move Robocar for the horizontal distance
+   2. **ELSE IF** horizontal distance is **negative**
+      1. Rotate Robocar eastwards in accordance to the current direction
+      2. Move Robocar for the horizontal distance
+2. Check for vertical distance from origin
+   1. **IF** vertical distance is **positive**
+      1. Rotate Robocar southwards in accordance to the current direction
+      2. Move Robocar for the vertical distance
+   2. **ELSE IF** vertical distance is **negative**
+      1. Rotate Robocar northwards in accordance to the current direction
+      2. Move Robocar for the vertical distance
+4. Terminate Auto Mode
 
 ### OTA update
 The OTA update function in this project is a modified version of the previous project. This project
@@ -134,7 +155,7 @@ click confirmation on the web page itself.
 
 <p align="center">
   <img src="./images/ota_flowchart.png">
-  <p align="center"><strong>Figure 4.</strong> Flowchart of OTA update process</p>
+  <p align="center"><strong>Figure 5.</strong> Flowchart of OTA update process</p>
 </p>
 
 #### 1. Setting Up
@@ -254,11 +275,11 @@ parts used in this project. Sitting in the middle, the Servo FeatherWing chip is
 controlling the motors, connecting them to the unPhone. On the other hand, the two ultrasonic
 sensors are attached on header pins, each facing forward and backward to provide sufficient coverage
 to detect obstacles for our **Automatic Mode** feature. The sensors are attached to the
-corresponding pins as shown in **Figure 5** below.
+corresponding pins as shown in **Figure 6** below.
 
 <p align="center">
   <img src="./images/ultrasonic.png">
-  <p align="center"><strong>Figure 5.</strong> Chart of connections to Ultrasonic Sensors</p>
+  <p align="center"><strong>Figure 6.</strong> Chart of connections to Ultrasonic Sensors</p>
 </p>
 
 ## Challenges
@@ -266,11 +287,11 @@ corresponding pins as shown in **Figure 5** below.
 It is required to experiment with different time values at different speed to find the correct value
 for turning the robot 90 degrees. After that, the equation that represents the time change with
 respect to speed can be obtained through Excel graph, `time = 2020 - 28.8 * speed + 0.128 * speed *
-speed`, as shown in **Figure 6**.
+speed`, as shown in **Figure 7**.
 
 <p align="center">
   <img src="./images/turnRightGraph.png">
-  <p align="center"><strong>Figure 6.</strong> Manual calibration of the time required (ms) to turn the
+  <p align="center"><strong>Figure 7.</strong> Manual calibration of the time required (ms) to turn the
   robot 90 degrees</p>
 </p>
 

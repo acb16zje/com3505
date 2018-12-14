@@ -91,7 +91,7 @@ void turnLeft90() {
   R_MOTOR->run(FORWARD);
   delay((int)(0.128*speed*speed - 28.8*speed + 2020));
 
-  // Change direction after turning right
+  // Change direction after turning left
   switch (currentDirection) {
     case North:
       currentDirection = West;
@@ -318,6 +318,9 @@ void recall() {
   } 
   isRecall = false;
   isAuto = false;
+  isForward = false;
+  isBackward = false;
+  currentDirection = North;
 }
 
 void coordinate() {
@@ -325,10 +328,10 @@ void coordinate() {
   startTime = 0; // Reset startTime since robot is stopped
   Serial.print("timeMoved: ");
   Serial.println(timeMoved);
-  // float tempDist = isForward ? calculateDistanceMoved(timeMoved) : -calculateDistanceMoved(timeMoved);
-  float tempDist = isForward ? timeMoved : -timeMoved;
   Serial.print("isForward: ");
   Serial.println(isForward);
+  // float tempDist = isForward ? calculateDistanceMoved(timeMoved) : -calculateDistanceMoved(timeMoved);
+  float tempDist = isForward ? timeMoved : -timeMoved;
   Serial.print("tempDist: ");
   Serial.println(tempDist);
   Serial.print("direction: ");

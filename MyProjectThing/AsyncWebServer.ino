@@ -272,11 +272,11 @@ void ajaxCalls() {
     if (request->authenticate(loginID, loginPass)) {
       isRecall = isAuto; // Recall is only available in auto mode
 
-      if (isRecall) {
-        // Stop the auto movement
-        isForward = false;
-        isBackward = false;
-      }
+      // if (isRecall) {
+      //   // Stop the auto movement
+      //   isForward = false;
+      //   isBackward = false;
+      // }
 
       request->send(200);
     } else {
